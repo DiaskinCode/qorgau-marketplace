@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "beine-jarnama",
+    "slug": "beine-jarnama",
+    "version": "2.0.23",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.beinejarnama.milanium",
+      "config": {
+        "googleMapsApiKey": "AIzaSyBsasFM_cSM1v5WD3TjMt9ioLgzijOgxxY"
+      },
+      "buildNumber": "9"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "78c4d74f-9ba9-4d4c-a285-ffe66ea0ad6a"
+      }
+    }
+  }
+}
