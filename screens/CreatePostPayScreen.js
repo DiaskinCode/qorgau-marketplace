@@ -1,13 +1,28 @@
-import { useNavigation } from '@react-navigation/native';
-import { View, StyleSheet, Button,TextInput,Pressable, TouchableOpacity, FlatList, ScrollView, Image, Text } from 'react-native';
+import React from 'react';
+import { WebView } from 'react-native-webview';
+import CryptoJS from 'crypto-js';
 
-export const CreatePostPayScreen = () => {
-    const navigation = useNavigation()
-    return (
-        <View style={{alignSelf:'center',marginTop:200,width:'80%'}}>
-            <Text style={{fontSize:30,fontFamily:'bold',color:'#F26D1D',textAlign:'center'}}>Пост успешно создан</Text>
-            <Text style={{fontSize:15,marginTop:20,fontFamily:'regular',color:'#444',textAlign:'center'}}>Пост направлен на модерацию. Обычно модерацию поста занимает не больше дня</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Главная',{screen:'Home'})}><Text style={{fontSize:15,marginTop:30,fontFamily:'medium',color:'#111',textAlign:'center'}}>Вернутся на главную</Text></TouchableOpacity>
-        </View>
-    )
-}
+export const CreatePostPayScreen = ({ route }) => {
+    const { tariff,id } = route.params;
+
+const generatePaymentUrl = (login, pass1, invId, outSumm, desc) => {
+    // Включение пользовательских параметров в строку, которая будет хешироваться
+    const baseString = `${login}:${outSumm}:${invId}:${pass1}:Shp_post=${id}:Shp_tariff=${tariff}`;
+    const crc = CryptoJS.MD5(baseString).toString();
+
+    // Возвращение полного URL с правильно закодированным описанием и сгенерированной подписью
+    return `https://auth.robokassa.kz/Merchant/Index.aspx?MerchantLogin=${login}&OutSum=${outSumm}&InvId=${invId}&Description=${encodeURIComponent(desc)}&Shp_post=${id}&Shp_tariff=${tariff}&SignatureValue=${crc}`;
+};
+
+
+    // Предполагаемые значения для демонстрации
+    const login = "Beine-jarnama.kz";
+    const pass1 = "RBSfnQeFG41d5Cu30zEb";
+    const desc = tariff === 1 ? "Ваше объявление будет в первых рядах" : "Ваше объявление будет выделено цветом";
+    const outSumm = tariff === 1 ? "2500" : "1500";
+    const invId = 0;
+
+    const selectedUrl = generatePaymentUrl(login, pass1, invId, outSumm, desc);
+
+    return <WebView style={{ flex: 1,marginBottom:90 }} source={{ uri: selectedUrl }} />;
+};

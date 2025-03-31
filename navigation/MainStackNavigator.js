@@ -4,39 +4,16 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {HomeScreen} from '../screens/MainScreen'
 import { PostViewScreen } from '../screens/PostViewScreen';
+import { UserViewScreen } from '../screens/UserViewScreen';
 import { ResultsSearchScreen } from '../screens/ResultsSearchScreen';
 import { GetPostsByCategoryScreen } from '../screens/GetPostsByCategoryScreen';
 import { MapSearchScreen } from '../screens/MapSearchScreen';
 import { SearchScreen } from '../screens/SearchScreen';
 import { GetPostsByCityScreen } from '../screens/GetPostsByCityScreen';
-import { useAddToFavouritesMutation, useRemoveFromFavouritesMutation,useListFavouritesQuery } from '../api';
 
 const Main = createNativeStackNavigator();
 
 export default function MainStackNavigator({ route, navigation }) {
-    const postId = route.params?.postId;
-    const { data: userFavourites, isLoading: isLoadingFavourites } = useListFavouritesQuery();
-    const [isFavourite, setIsFavourite] = useState(false);
-    const [addToFavourites, { isLoading: isAdding }] = useAddToFavouritesMutation();
-    const [removeFromFavourites, { isLoading: isRemoving }] = useRemoveFromFavouritesMutation();
-
-    useEffect(() => {
-        if (userFavourites && !isLoadingFavourites) {
-          const isFav = userFavourites.some(fav => fav.id === postId);
-          setIsFavourite(isFav);
-        }
-      }, [userFavourites, isLoadingFavourites, postId]);
-
-      const toggleFavourite = async () => {
-        if (isFavourite) {
-          await removeFromFavourites(postId);
-          setIsFavourite(false);
-        } else {
-          await addToFavourites(postId);
-          setIsFavourite(true);
-        }
-      };
-    
 
     return (
         <Main.Navigator>
@@ -53,6 +30,9 @@ export default function MainStackNavigator({ route, navigation }) {
             <Main.Screen 
                 name='ViewPost' 
                 component={PostViewScreen}
+                screenOptions={{
+                    headerShown: false,
+                  }}
                 options={({ navigation }) => ({
                     contentStyle:{
                         backgroundColor:'#FAFAFF'
@@ -64,10 +44,22 @@ export default function MainStackNavigator({ route, navigation }) {
                             <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
                         </View>
                     ),
-                    headerRight: () => (
+                    })}/>
+            <Main.Screen 
+                name='ViewUser' 
+                component={UserViewScreen}
+                screenOptions={{
+                    headerShown: false,
+                  }}
+                options={({ navigation }) => ({
+                    contentStyle:{
+                        backgroundColor:'#FAFAFF'
+                      },
+                    headerShadowVisible:false,
+                    title: null,
+                    headerLeft: () => (
                         <View style={styles.HeaderRight}>
-                            <HeaderIcon side={'right'} source={require('../assets/share.png')} onPress={() => navigation.goBack()}/>
-                            <HeaderIcon side={'right'} source={isFavourite ? require('../assets/starOrange.png') : require('../assets/star.png')} onPress={toggleFavourite}/>
+                            <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
                         </View>
                     ),
                     })}/>

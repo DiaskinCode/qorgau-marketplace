@@ -1,18 +1,21 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, ScrollView, RefreshControl, Text, TouchableOpacity, FlatList, ActivityIndicator, StyleSheet, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../actions/authActions';
-import { persistor } from '../store/index';
+import React, { useState, useRef, useCallback } from 'react';
+import { View, Text,FlatList, ActivityIndicator } from 'react-native';
 import { ProductCard } from '../components/ProductCard';
 import { useFocusEffect } from '@react-navigation/native';
-import { useListFavouritesQuery } from '../api'; // Assuming this is your RTK Query hook for fetching favourites
+import { useListFavouritesQuery } from '../api';
 
 export const ProfileFavouriteScreen = () => {
-  const navigation = useNavigation();
-  const dispatch = useDispatch();
   const { data: favouritesData, isLoading, isFetching, refetch } = useListFavouritesQuery();
   const [refreshing, setRefreshing] = useState(false);
+  const [visibleItems, setVisibleItems] = useState([]);
+
+  const viewabilityConfig = {
+    itemVisiblePercentThreshold: 50,
+  };
+
+  const onViewableItemsChanged = useRef(({ viewableItems }) => {
+    setVisibleItems(viewableItems.map(item => item.item.id));
+  }).current;
 
   useFocusEffect(
     useCallback(() => {
@@ -43,31 +46,42 @@ export const ProfileFavouriteScreen = () => {
   }
 
   return (
-    <ScrollView
-      style={{ marginTop: 0 }}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-    >
-      <View style={{ paddingTop: 10,flexDirection:'row',flexWrap:'wrap',width:'93%',alignSelf:'center' }}>
-        {favouritesData?.length > 0 ? (
-          favouritesData.map((item, index) => (
+      <FlatList
+        data={favouritesData}
+        numColumns={2}
+        style={{paddingHorizontal:10,marginBottom:100}}
+        onViewableItemsChanged={onViewableItemsChanged}
+        viewabilityConfig={viewabilityConfig}
+        contentContainerStyle={{justifyContent:'center'}}
+        keyExtractor={item => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={{ width: '50%', alignItems: 'center' }}>
             <ProductCard
-              key={index}
+              key={item.id}
               id={item.id}
               title={item.title}
-              image={item.images[0]?.image} // Adjust according to your data structure
+              image={item.images[0].image}
               cost={item.cost}
-              media={item.images} // Assuming media structure is similar
+              media={item.images}
               condition={item.condition}
               mortage={item.mortage}
               delivery={item.delivery}
               city={item.geolocation}
               date={item.date}
+              tariff={item.tariff || 0}
+              isVisible={visibleItems.includes(item.id)}
             />
-          ))
-        ) : (
-          <Text style={{ alignSelf: 'center', fontFamily: 'medium', marginTop: 100, fontSize: 20, color: '#96949D',textAlign:'center',width:'100%' }}>Пусто</Text>
+          </View>
         )}
-      </View>
-    </ScrollView>
+        onEndReached={loadMoreItems}
+        onEndReachedThreshold={0.5}
+        ListEmptyComponent={
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+            <Text style={{ fontSize: 18, color: '#777' }}>Нет постов</Text>
+          </View>
+        }
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+      />
   );
 };

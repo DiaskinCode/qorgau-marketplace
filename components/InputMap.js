@@ -52,7 +52,12 @@ export const InputMap = (props) => {
                             );
                         }}
                         
-                        onPress={(data, details = null) => {props.onTapRow(details), console.log(data, details);
+                        onPress={(data, details = null) => {
+                            const newAddress = details?.formatted_address || "";
+                            if (props.onChangeText) {
+                                props.onChangeText(newAddress); // Update the address state in the parent component
+                            }
+                            setInputFocus(false); // Optionally reset input focus state
                         }}
                         query={{
                             key: 'AIzaSyCKKn8KVrLBr5jiIIgAC0mNpeWnZCObYq4',

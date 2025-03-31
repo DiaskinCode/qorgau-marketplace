@@ -14,6 +14,9 @@ import { ProfileDeletedScreen } from '../screens/ProfileDeletedScreen';
 import { ProfileadminScreen } from '../screens/ProfileadminScreen';
 import { ProfileSettingsScreen } from '../screens/ProfileSettingsScreen';
 import { ProfileFavouriteScreen } from '../screens/ProfileFavouriteScreen';
+import { EditPostScreen } from '../screens/EditPostScreen';
+import {CreatePostTarrifsScreen} from '../screens/CreatePostTarrifsScreen'
+import {CreatePostPayScreen} from '../screens/CreatePostPayScreen'
 
 const Stack = createNativeStackNavigator();
 
@@ -89,6 +92,18 @@ const ProfileStackNavigator = () => {
               <View style={styles.HeaderRight}>
                   <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
                   <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Активные</Text>
+              </View>
+          ),
+          })}/>
+      <Stack.Screen name="edit"
+        component={EditPostScreen}
+        options={({ navigation }) => ({
+          headerShadowVisible:false,
+          title: null,
+          headerLeft: () => (
+              <View style={styles.HeaderRight}>
+                  <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
+                  <Text style={{fontFamily:'medium',fontSize:18,marginLeft:15}}>Редактирование поста</Text>
               </View>
           ),
           })}/>
@@ -176,6 +191,33 @@ const ProfileStackNavigator = () => {
               </View>
           ),
           })}/>
+
+        <Stack.Screen 
+                name='PostTariffs' 
+                component={CreatePostTarrifsScreen}
+                options={({ navigation }) => ({
+                headerShadowVisible:false,
+                title: null,
+                headerLeft: () => (
+                    <View style={styles.HeaderRight}>
+                        <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
+                        <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Тарифы</Text>
+                    </View>
+                ),
+            })}/>
+        <Stack.Screen 
+            name='Pay' 
+            component={CreatePostPayScreen}
+            options={({ navigation }) => ({
+                headerShadowVisible:false,
+                title: null,
+                headerLeft: () => (
+                    <View style={styles.HeaderRight}>
+                        <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
+                        <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Тарифы</Text>
+                    </View>
+                ),
+            })}/>
     </Stack.Navigator>
   );
 };

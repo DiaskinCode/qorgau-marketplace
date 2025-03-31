@@ -1,25 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import React, { useState,useEffect } from 'react';
+import Navigation from './navigation/index'
+import { StyleSheet,Platform, NativeModules } from 'react-native';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import * as Font from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-import { store, persistor } from './store/index';
-import Navigation from './navigation/index';
+import i18n from 'i18next';
+import { store, persistor } from './store/index'; 
 import { enableScreens } from 'react-native-screens';
+import * as SplashScreen from 'expo-splash-screen';
+import { initReactI18next } from 'react-i18next';
+import { I18nextProvider } from 'react-i18next';
+
+SplashScreen.preventAutoHideAsync();
 
 enableScreens();
 
-// Prevent the splash screen from hiding on app load
-SplashScreen.preventAutoHideAsync();
-
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('ru');
+
+  useEffect(() => {
+    i18n.changeLanguage(selectedLanguage);
+  }, [selectedLanguage]);
 
   useEffect(() => {
     async function loadResourcesAndDataAsync() {
       try {
-        // Load fonts
         await Font.loadAsync({
           regular: require('./assets/fonts/SF-Pro-Display-Regular.otf'),
           medium: require('./assets/fonts/SF-Pro-Display-Medium.otf'),
@@ -27,28 +33,48 @@ export default function App() {
           bold: require('./assets/fonts/SF-Pro-Display-Bold.otf'),
           'bold-italic': require('./assets/fonts/SF-Pro-Display-BoldItalic.otf'),
         });
-      } catch (e) {
-        // We might want to provide this error information to an error reporting service
-        console.warn(e);
-      } finally {
-        // Hide the splash screen
-        await SplashScreen.hideAsync();
         setFontsLoaded(true);
+      } catch (error) {
+        console.warn(error);
+      } finally {
+        // Hide the splash screen once fonts are loaded
+        await SplashScreen.hideAsync();
       }
     }
 
     loadResourcesAndDataAsync();
   }, []);
 
+  i18n
+  .use(initReactI18next)
+  .init({
+    compatibilityJSON: 'v3',
+    lng: selectedLanguage,
+    resources: {
+      kz: {
+        translation: require('./locales/kz.json')
+      },
+      ru: {
+        translation: require('./locales/ru.json')
+      }
+    }
+  });
+
   if (!fontsLoaded) {
-    return <ActivityIndicator />; // or a placeholder/loading view until fonts are loaded
+    return null;
   }
 
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <Navigation/>
+        <I18nextProvider i18n={i18n}>
+          <Navigation />
+        </I18nextProvider>
       </PersistGate>
     </Provider>
   );
 }
+
+const styles = StyleSheet.create({
+  // Your styles here
+});

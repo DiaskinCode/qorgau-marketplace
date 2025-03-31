@@ -8,6 +8,7 @@ export const ProfileApproveScreen = () => {
   const video = useRef(null);
 
   useEffect(() => {
+    video.current?.setStatusAsync({ isMuted: true });
     video.current?.playAsync();
     refetch();
   }, [ActivePosts]);
@@ -17,6 +18,7 @@ export const ProfileApproveScreen = () => {
       <ProfileProductCard
         id={item.id}
         screen="Admin"
+        pk={item.post_pk}
         title={item.title}
         key={item.id}
         image={item.images[0].image}

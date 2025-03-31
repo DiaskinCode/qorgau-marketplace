@@ -9,9 +9,18 @@ export const ProductCardInfo = (props) => {
   const navigation = useNavigation()
   const video = useRef(null);
 
-  useEffect(()=>{
+  useEffect(() => {
     video.current?.playAsync();
-  })
+    video.current?.setStatusAsync({ isMuted: true });
+    const checkAndMuteVideo = async () => {
+      const status = await video.current?.getStatusAsync();
+      if (!status?.isMuted) {
+        await video.current?.setIsMutedAsync(true);
+      }
+    };
+  
+    checkAndMuteVideo();
+  }, []);
 
   const shadowStyle = {
     ...Platform.select({
@@ -48,6 +57,7 @@ export const ProductCardInfo = (props) => {
                 source={{
                     uri: `http://185.129.51.171${props.media[0].image}`,
                 }}
+                volume={0.0}
                 isMuted={true}
                 resizeMode={ResizeMode.COVER}
                 isLooping

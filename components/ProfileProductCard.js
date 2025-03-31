@@ -47,6 +47,7 @@ export const ProfileProductCard = (props) => {
   
     useEffect(() => {
       video.current?.playAsync();
+      video.current?.setStatusAsync({ isMuted: true });
     }, []);
   
     useEffect(() => {
@@ -84,6 +85,10 @@ export const ProfileProductCard = (props) => {
         console.error('Error handling post action:', error);
       }
     };
+    const handleAdvertise =  () => {
+      navigation.navigate('PostTariffs',{id:props.pk})
+    };
+
     const handleNotApprove = async () => {
       await deactivatePost(props.id);
       setDisappear(true);
@@ -120,7 +125,7 @@ export const ProfileProductCard = (props) => {
         }}
         key={props.id}
       >
-        <View key={props.id}>
+        <TouchableOpacity onPress={()=>{navigation.navigate('ViewPost',{id:props.id})}} key={props.id}>
             <View style={{flexDirection:'row',borderWidth:1,borderColor:'#F26F1D',borderRadius:5,position:'relative',alignItems:'center'}}>
                 {props.media[0].type === 'video' ? 
                       <Video
@@ -136,7 +141,7 @@ export const ProfileProductCard = (props) => {
                   :
                     <Image style={{width:120,height:120,borderTopLeftRadius:5,borderTopRightRadius:5,marginRight:10}} source={{uri:`http://185.129.51.171${props.media[0].image}`}}/>
                   }
-                  <TouchableOpacity style={{position:'absolute',top:10,right:15}} onPress={handleDelete}><Image source={require('../assets/trash.png')} style={{height:24,width:19}} /></TouchableOpacity>
+                  <TouchableOpacity style={{position:'absolute',top:10,right:15,height:30,width:30,zIndex:3}} onPress={handleDelete}><Image source={require('../assets/trash.png')} style={{height:24,width:19}}/></TouchableOpacity>
                   <View style={{paddingHorizontal:7}}>
                       <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
                         <View style={{width:190}}>
@@ -166,12 +171,12 @@ export const ProfileProductCard = (props) => {
                     <TouchableOpacity onPress={props.screen !== 'Payed' ? handleOnPress : null} style={{paddingVertical:15,width:170,borderRadius:5,alignItems:'center',borderColor:'#F26F1D',marginBottom:20,borderWidth:1}}>
                       <Text style={{color:'#F26F1D',fontSize:16,}}>{buttonText}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={props.screen == 'Admin' ? handleNotApprove : null} style={{paddingVertical:15,width:170,borderRadius:5,alignItems:'center',borderColor:'#F26F1D',marginBottom:20,borderWidth:1}}>
+                    <TouchableOpacity onPress={props.screen == 'Admin' ? handleNotApprove : () => {navigation.navigate('edit',{post:props.id})}} style={{paddingVertical:15,width:170,borderRadius:5,alignItems:'center',borderColor:'#F26F1D',marginBottom:20,borderWidth:1}}>
                       <Text style={{color:'#F26F1D',fontSize:16,}}>{props.screen == 'Admin' ? 'Отклонить' : 'Редактировать'}</Text>
                     </TouchableOpacity>
                   </View>
                   {props.screen !== 'Admin' ?
-                  <TouchableOpacity onPress={props.screen === 'Payed' ? handleOnPress : null} style={{ borderRadius: 5, overflow: 'hidden', marginBottom: 20 }}>
+                  <TouchableOpacity onPress={props.screen === 'Payed' ? handleOnPress : handleAdvertise} style={{ borderRadius: 5, overflow: 'hidden', marginBottom: 20 }}>
                     <LinearGradient
                       colors={['#F3B127', '#F26D1D']}
                       style={{ paddingVertical: 15, width: '100%', alignItems: 'center' }}
@@ -182,7 +187,7 @@ export const ProfileProductCard = (props) => {
                     </LinearGradient>
                   </TouchableOpacity> : null}
                 </View>
-              </View>
+              </TouchableOpacity>
     </Animated.View>
   );
 };

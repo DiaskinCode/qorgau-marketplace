@@ -9,6 +9,7 @@ export const ProfileNotActiveScreen = () => {
 
   useEffect(() => {
     video.current?.playAsync();
+    video.current?.setStatusAsync({ isMuted: true });
     refetch();
   }, [notActivePosts]);
 
@@ -21,6 +22,7 @@ export const ProfileNotActiveScreen = () => {
         key={item.id}
         image={item.images[0].image}
         cost={item.cost}
+        pk={item.post_pk}
         media={item.images}
         condition={item.condition}
         mortage={item.mortage}

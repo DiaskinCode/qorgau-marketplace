@@ -10,6 +10,7 @@ export const ProfileDeletedScreen = () => {
 
   useEffect(() => {
     video.current?.playAsync();
+    video.current?.setStatusAsync({ isMuted: true });
     refetch();
   }, [notActivePosts]);
 

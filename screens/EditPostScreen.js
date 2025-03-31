@@ -1,44 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Modal,ActivityIndicator,TextInput,Pressable, TouchableOpacity, FlatList, ScrollView, Image, Text } from 'react-native';
+import { View, StyleSheet, Modal,ActivityIndicator,TextInput,Pressable, TouchableOpacity, Platform, FlatList, ScrollView, Image, Text, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { useSelector } from 'react-redux';
 import { Video,ResizeMode } from 'expo-av';
 import { useGetCategoriesListQuery } from '../api';
 import { LinearGradient } from 'expo-linear-gradient';
-import { TextInputMask, TextInputMaskMethods } from 'react-native-masked-text';
+import { useGetPostByIdQuery } from '../api';
+import { TextInputMask } from 'react-native-masked-text';
 import {useTranslation} from 'react-i18next'
 import { InputMap } from '../components/InputMap';
-import * as ImageManipulator from 'expo-image-manipulator';
 
-export const CreatePostScreen = () => {
+export const EditPostScreen = ({route}) => {
+  post_id = route.params.post
+  const { data:postData,isLoading: isPostLoading,refetch } = useGetPostByIdQuery(post_id);
+
   const navigation = useNavigation();
   const {t} = useTranslation();
   const [loading,setLoading] = useState(false)
 
   const [openDropdown, setOpenDropdown] = useState(null);
+  const { data, error, isLoading } = useGetCategoriesListQuery();
 
   const toggleDropdown = (dropdownId) => {
     setOpenDropdown((prevOpen) => (prevOpen === dropdownId ? null : dropdownId));
-  };
+};
   
-  const [images, setImages] = useState([]);
-  const [cardImage, setCardImage] = useState(null);
-  const [category, setCategory] = useState(null);
 
   const user = useSelector(state => state.auth.token);
   const userId = useSelector(state => state.auth.user.id);
-  const id = Math.floor(Date.now() / 1000);;
   
+  const [city, setCity] = useState('');
   const [title, onChangeTitle] = useState('');
   const [cost, onChangeCost] = useState('');
-  const [content, onChangeContent] = useState('');
-  const [categoriesOpen, setCategoriesOpen] = useState(false);
-  const { data, error, isLoading, refetch } = useGetCategoriesListQuery();
 
+  const [adress, onChangeAdress] = useState('');
   const [AdressLat,setAdressLat] = useState('')
   const [AdressLng,setAdressLng] = useState('')
 
+  const [content, onChangeContent] = useState('');
+  const [images, setImages] = useState([]);
   const [phone, onChangePhone] = useState('');
   const [whatsapp, onChangeWhatsapp] = useState('');
   const [site, onChangeSite] = useState('');
@@ -47,7 +48,11 @@ export const CreatePostScreen = () => {
   const [facebook, onChangeFacebook] = useState('');
   const [tiktok, onChangeTiktok] = useState('');
   const [twogis, onChangeTwogis] = useState('');
-  
+  const [selectedCondition, setSelectedCondition] = useState('');
+  const [selectedMortage, setSelectedMortage] = useState(false);
+  const [selectedDelivery, setSelectedDelivery] = useState(false);
+  const [category, setCategory] = useState(null);
+
   const [brand, onChangeBrand] = useState('');
   const [color, onChangeColor] = useState('');
   const [fuel, setFuel] = useState('');
@@ -66,30 +71,74 @@ export const CreatePostScreen = () => {
   const [building, setBuilding] = useState('');
   const [heating, setHeating] = useState('');
   const [house3, onChangeHouse3] = useState('');
-  const [rent, onChangeRent] = useState('');
-  const [leaseTerm, onChangeLeaseTerm] = useState('');
-  const [adress, onChangeAdress] = useState('');
 
-  const [city, setCity] = useState('');
+    useEffect(()=>{
+        console.log(images);
+    },[images])
+
+  useEffect(() => {
+    if (!isPostLoading && postData) {
+      onChangeTitle(postData.title);
+      onChangeCost(postData.cost);
+      onChangeContent(postData.content);
+      setImages(postData.images); // Assuming images is an array of { image: url }
+
+      onChangePhone(postData.phone);
+      onChangeWhatsapp(postData.phone_whatsapp);
+      onChangeSite(postData.site);
+      onChangeTelegram(postData.telegram);
+      onChangeInsta(postData.insta);
+      onChangeFacebook(postData.facebook);
+      onChangeTiktok(postData.tiktok);
+      onChangeTwogis(postData.twogis);
+      setSelectedCondition(postData.condition);
+      setSelectedMortage(postData.mortage === 'true'); // Assuming mortage is a string 'true' or 'false'
+      setSelectedDelivery(postData.delivery === 'true');
+      setCategory(postData.categories); // Assuming you want to save the category id
+      setCity(postData.geolocation); // Assuming you want to save the category id
+
+      const fieldValues = postData.fields.reduce((acc, curr) => {
+        acc[curr.field_name] = curr.field_value;
+        return acc;
+      }, {});
+    
+      onChangeNumberOfRooms(fieldValues["Количество комнат"] || '');
+      onChangeTotalArea(fieldValues["Общая площадь"] || '');
+      onChangeProperty(fieldValues["Тип собственности"] || ''); // Assuming there's a field for this
+      setFurniture(fieldValues["Мебелирование"] || ''); // Assuming there's a field for this
+      setRenovation(fieldValues["Ремонт"] || '');
+      setBuilding(fieldValues["Тип строения"] || ''); // Assuming there's a field for this
+      setHeating(fieldValues["Отопление"] || '');
+      onChangeHouse3(fieldValues["Год постройки"] || '');
+      setBathroom(fieldValues["Санузел"] || '');
+    }
+  }, [postData, isPostLoading]);
+
+
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      }
+    })();
+  }, []);
   
-  // Extra 
-  const [selectedCondition, setSelectedCondition] = useState(null);
+
   
   const handleConditionPress = (condition) => {
     setSelectedCondition(condition);
   };
 
-  useEffect(()=>{
-    console.log(adress);
-  },[adress])
-  
-  const [selectedMortage, setSelectedMortage] = useState(null);
   
   const handleMortagePress = (mortage) => {
     setSelectedMortage(mortage);
   };
-  
-  const [selectedDelivery, setSelectedDelivery] = useState(null);
+
   
   const handleDeliveryPress = (delivery) => {
     setSelectedDelivery(delivery);
@@ -114,116 +163,37 @@ export const CreatePostScreen = () => {
     })();
   }, []);
 
-  async function resizeImage(uri, width, height) {
-    const actions = [{
-      resize: {
-        width,
-        height
-      }
-    }];
-    const saveOptions = {
-      compress: 1,
-      format: ImageManipulator.SaveFormat.JPEG,
-    };
-  
-    const result = await ImageManipulator.manipulateAsync(uri, actions, saveOptions);
-    return result;
-  }
-
-  function getFileType(uri) {
-    const extension = uri.split('.').pop().toLowerCase();
-    if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(extension)) {
-      return 'image';
-    } else if (['mp4', 'mov', 'avi', 'mkv', 'wmv'].includes(extension)) {
-      return 'video';
-    } else {
-      return 'unknown';
-    }
-  }
-  
-  async function resizeImage(uri, maxWidth, maxHeight) {
-    const { width: originalWidth, height: originalHeight } = await ImageManipulator.manipulateAsync(uri);
-  
-    let newWidth;
-    let newHeight;
-  
-    // Calculate the ratio
-    const widthRatio = originalWidth / maxWidth;
-    const heightRatio = originalHeight / maxHeight;
-    const maxRatio = Math.max(widthRatio, heightRatio);
-  
-    if (maxRatio > 1) {
-      newWidth = originalWidth / maxRatio;
-      newHeight = originalHeight / maxRatio;
-    } else {
-      newWidth = originalWidth;
-      newHeight = originalHeight;
-    }
-  
-    const actions = [{
-      resize: {
-        width: Math.round(newWidth),
-        height: Math.round(newHeight),
-      },
-    }];
-  
-    const saveOptions = {
-      compress: 1,  // Adjust compression as needed
-      format: ImageManipulator.SaveFormat.JPEG,
-    };
-  
-    return await ImageManipulator.manipulateAsync(uri, actions, saveOptions);
-  }
-
-  function getFileName(uri) {
-    const match = uri.match(/\/([^\/?#]+)[^\/]*$/);
-    if (match) {
-      return decodeURIComponent(match[1]);  // Decoding the URI component to handle encoded URIs
-    }
-    return null;
-  }
-  const removeImage = (index) => {
-    setImages(prevImages => prevImages.filter((_, i) => i !== index));
-  };
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: false,
+      allowsEditing: true,
+      aspect: [4, 3],
       quality: 1,
     });
-  
+
     if (!result.canceled) {
       const selectedFile = result.assets[0];
-      const fileType = getFileType(selectedFile.uri);
-      const fileName = getFileName(selectedFile.uri);
+      const fileSize = selectedFile.fileSize;
+      const maxSize = 10 * 1024 * 1024; // Максимальный размер файла (6 МБ в байтах)
   
-      if (fileType === 'image') {
-        const resizedImage = await resizeImage(selectedFile.uri, 600, 600);
-        const imageToAdd = { ...resizedImage, type: 'image',fileName: fileName };
-        setImages(prevImages => [...prevImages, imageToAdd]);  // Update state for images
-        if (!cardImage) {
-          setCardImage(imageToAdd);  // Set the first image for the card if not already set
-        }
-      } else if (fileType === 'video') {
-        const videoToAdd = { ...selectedFile, type: 'video',fileName: fileName };
-        setImages(prevVideos => [...prevVideos, videoToAdd]);  
-        video.current?.playAsync();
-        video.current?.setStatusAsync({ isMuted: true });
+      if (fileSize > maxSize) {
+        alert("Файл слишком большой","Размер файла не должен превышать 10 МБ.");
       } else {
-        console.error('Unknown file type');iiT
-        return;
+        setImages((prevImages) => [...prevImages, result.assets[0]]);
+      }
+
+      if(result.assets[0].type == 'video') {
+        video.current.playAsync()
       }
     }
-    console.log(images);
   };
 
 
   const sendPostRequest = async () => {
-    const apiUrl = 'http://185.129.51.171/api/posts/'; // Replace with your actual API endpoint
+    const apiUrl = `http://185.129.51.171/api/posts/edit/${postData.id}/`; // Replace with your actual API endpoint
     const formData = new FormData();
 
     formData.append('title', title);
-    formData.append('post_pk',id );
     formData.append('content', content);
     formData.append('category_id', category.id);
     formData.append('condition', selectedCondition);
@@ -260,7 +230,7 @@ export const CreatePostScreen = () => {
     ] : [];
 
     if (category.id === 4) {
-      formData.append('adress',adress);
+      formData.append('adress', adress);
       formData.append('lat', AdressLat);
       formData.append('lng', AdressLng);
     }
@@ -271,18 +241,25 @@ export const CreatePostScreen = () => {
     });
 
     images.forEach((image, index) => {
-        formData.append(`images[${index}][image]`, {
-            uri: image.uri,
-            name: `${image.fileName.toLowerCase()}`,
-            type: image,
-        });
-        formData.append(`images[${index}][type]`, image.type);
+        if (image.uri && image.uri.startsWith('file://')) {
+            console.log('Uploading newly picked image');
+            const file = {
+                uri: image.uri,
+                name: image.fileName || `image_${index}.jpg`,
+                type: image.type || 'image',
+            };
+
+            formData.append(`images[${index}][image]`, file);
+            formData.append(`images[${index}][type]`, image.type);
+        }
     });
+
+    
 
     try {
       setLoading(true)
       const response = await fetch(apiUrl, {
-        method: 'POST',
+        method: 'PATCH',
         body: formData,
         headers: {
             'Authorization':`Token ${user}`
@@ -291,7 +268,7 @@ export const CreatePostScreen = () => {
 
       if (response.ok) {
         setLoading(false)
-        navigation.navigate('PostTariffs',{id:id});
+        Alert.alert('Пост успешно изменен','')
       } else {
         setLoading(false);
         const errorData = await response.json();
@@ -302,6 +279,7 @@ export const CreatePostScreen = () => {
       console.error('Fetch error:', error.message);
     }
   };
+
 
   const CreateDropdown = ({ isOpen, toggleOpen, state, setState, title, placeholder, items = [] }) => { 
     return (
@@ -354,40 +332,30 @@ export const CreatePostScreen = () => {
     <Text style={{ fontSize: 16, fontFamily: 'bold' }}>Добавьте фотографии</Text>
     <ScrollView horizontal={true} contentContainerStyle={{flexDirection:'row',alignItems:'center',marginTop:10,paddingBottom:15}}>
         <TouchableOpacity style={{ marginRight: 10 }} onPress={pickImage}>
-            <View style={{ width: 110, height: 110, backgroundColor: '#F9F6FF', borderRadius: 10, borderWidth: 1, borderColor: '#c4c4c4', justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ width: 110, height: 110, backgroundColor: '#F9F6FF', borderRadius: 5, borderWidth: 1, borderColor: '#675BFB', justifyContent: 'center', alignItems: 'center' }}>
                 <Image style={{ height: 25, width: 25 }} source={require('../assets/plusBlue.png')} />
             </View>
         </TouchableOpacity>
         <FlatList
         data={images}
         horizontal
-        keyExtractor={(index) => index.toString()}
-        renderItem={({ item,index }) => (
-            item.type === 'image' ? 
-            <View>
-              <Image source={{ uri: item.uri }} style={{ width: 110, height: 110, borderRadius: 10, borderWidth: 1, borderColor: '#c4c4c4', marginRight: 10 }} />
-              <TouchableOpacity onPress={() => removeImage(index)} style={{ position: 'absolute', top: 5, right: 15, backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 15, padding: 5 }}>
-                  <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>✕</Text>
-                </TouchableOpacity>
-            </View>
-            :        
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+            item.type === 'image' ? <Image source={{ uri: item.image ? item.image : item.uri }} style={{ width: 110, height: 110, borderRadius: 5, borderWidth: 1, borderColor: '#675BFB', marginRight: 10 }} /> :
+        
             <View>
                 <Video
                 isMuted={true}
                 ref={video}
-                style={{ width: 110, height: 110, borderRadius: 10, borderWidth: 1, borderColor: '#c4c4c4', marginRight: 10 }}
+                style={{ width: 110, height: 110, borderRadius: 5, borderWidth: 1, borderColor: '#675BFB', marginRight: 10 }}
                 source={{
                     uri: item.uri,
                 }}
                 useNativeControls
                 resizeMode={ResizeMode.COVER}
                 isLooping
-                volume={0}
                 onPlaybackStatusUpdate={(status) => setStatus(() => status)}
                 />
-                <TouchableOpacity onPress={() => removeImage(index)} style={{ position: 'absolute', top: 5, right: 15, backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 15, padding: 5 }}>
-                  <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>✕</Text>
-                </TouchableOpacity>
             </View>
         )}
         />
@@ -402,13 +370,14 @@ export const CreatePostScreen = () => {
           width: '100%',
           paddingHorizontal: 10,
           height: 50,
-          borderRadius: 10,
-          borderWidth:1,
-          borderColor: '#c4c4c4',
+          borderWidth: 1,
+          borderRadius: 5,
+          borderColor: '#675BFB',
           backgroundColor: '#F9F6FF'
         }}
         placeholder={t('title.header')}
         maxLength={50}
+        value={title}
         onChangeText={onChangeTitle}
     />
     <Text style={{fontFamily:'bold',fontSize:16,marginBottom:10,marginTop:20,}}>{t('price.header')}</Text>
@@ -417,9 +386,9 @@ export const CreatePostScreen = () => {
           width: '100%',
           paddingHorizontal: 10,
           height: 50,
-          borderRadius: 10,
-          borderWidth:1,
-          borderColor: '#c4c4c4',
+          borderWidth: 1,
+          borderRadius: 5,
+          borderColor: '#675BFB',
           backgroundColor: '#F9F6FF'
         }}
         value={cost}
@@ -435,7 +404,7 @@ export const CreatePostScreen = () => {
     </Pressable>
 
     {categoriesOpen && data ? 
-        <View style={{backgroundColor: '#F9F6FF',borderEndEndRadius: 5,marginTop:-3,borderBottomLeftRadius: 5,borderColor: '#c4c4c4',borderWidth: 1,paddingVertical:10}}>
+        <View style={{backgroundColor: '#F9F6FF',borderEndEndRadius: 5,marginTop:-3,borderBottomLeftRadius: 5,borderColor: '#675BFB',borderWidth: 1,paddingVertical:10}}>
             {data.map((item) => {
             return (
                 <TouchableOpacity
@@ -467,8 +436,8 @@ export const CreatePostScreen = () => {
           height: 100,
           paddingTop:20,
           borderWidth: 1,
-          borderRadius: 10,
-          borderColor: '#c4c4c4',
+          borderRadius: 5,
+          borderColor: '#675BFB',
           backgroundColor: '#F9F6FF'
         }}
         value={content}
@@ -479,28 +448,9 @@ export const CreatePostScreen = () => {
         numberOfLines={3}
     />
 
-    <CreateDropdown isOpen={openDropdown === 'city'} toggleOpen={() => toggleDropdown('city')} state={city} setState={setCity} title={t('location.header')} placeholder={t('location.placeholder')} items={[
-        "Астана", 
-        "Алматы", 
-        "Шымкент", 
-        "Кызылорда",
-        "Весь Казахстан",
-        "Караганда",
-        "Актобе",
-        "Тараз",
-        "Павлодар",
-        "Усть-Каменогорск",
-        "Семей",
-        "Атырау",
-        "Костанай",
-        "Уральск",
-        "Петропавловск",
-        "Актау",
-        "Темиртау",
-        "Туркестан"
-      ]} />
+    <CreateDropdown isOpen={openDropdown === 'city'} toggleOpen={() => toggleDropdown('city')} state={city} setState={setCity} title={t('location.header')} placeholder={t('location.placeholder')} items={["Астана", "Алматы", "Шымкент", "Кызылорда"]} />
 
-    {category && category.id === 1 && (
+    {category && category.id === 3 && (
       <>
         <Text style={{fontFamily:'bold',fontSize:16,marginTop:20,marginBottom:10}}>{t('additional_fields.brand.header')}</Text>
         <TextInput
@@ -508,9 +458,9 @@ export const CreatePostScreen = () => {
           width: '100%',
           paddingHorizontal: 10,
           height: 50,
-          borderRadius: 10,
-          borderWidth:1,
-          borderColor: '#c4c4c4',
+          borderWidth: 1,
+          borderRadius: 5,
+          borderColor: '#675BFB',
           backgroundColor: '#F9F6FF'
         }}
           value={brand}
@@ -525,9 +475,9 @@ export const CreatePostScreen = () => {
           width: '100%',
           paddingHorizontal: 10,
           height: 50,
-          borderRadius: 10,
-          borderWidth:1,
-          borderColor: '#c4c4c4',
+          borderWidth: 1,
+          borderRadius: 5,
+          borderColor: '#675BFB',
           backgroundColor: '#F9F6FF'
         }}
           value={color}
@@ -548,9 +498,9 @@ export const CreatePostScreen = () => {
           width: '100%',
           paddingHorizontal: 10,
           height: 50,
-          borderRadius: 10,
-          borderWidth:1,
-          borderColor: '#c4c4c4',
+          borderWidth: 1,
+          borderRadius: 5,
+          borderColor: '#675BFB',
           backgroundColor: '#F9F6FF'
         }}
           value={engineVolume}
@@ -564,9 +514,9 @@ export const CreatePostScreen = () => {
           width: '100%',
           paddingHorizontal: 10,
           height: 50,
-          borderRadius: 10,
-          borderWidth:1,
-          borderColor: '#c4c4c4',
+          borderWidth: 1,
+          borderRadius: 5,
+          borderColor: '#675BFB',
           backgroundColor: '#F9F6FF'
         }}
           value={numberOfOwners}
@@ -587,8 +537,8 @@ export const CreatePostScreen = () => {
       paddingHorizontal: 10,
       height: 50,
       borderWidth: 1,
-      borderRadius: 10,
-      borderColor: '#c4c4c4',
+      borderRadius: 5,
+      borderColor: '#675BFB',
       backgroundColor: '#F9F6FF'
     }}
       value={numberOfRooms}
@@ -604,8 +554,8 @@ export const CreatePostScreen = () => {
       paddingHorizontal: 10,
       height: 50,
       borderWidth: 1,
-      borderRadius: 10,
-      borderColor: '#c4c4c4',
+      borderRadius: 5,
+      borderColor: '#675BFB',
       backgroundColor: '#F9F6FF'
     }}
       value={totalArea}
@@ -617,11 +567,8 @@ export const CreatePostScreen = () => {
     <InputMap
       value={adress}
       label="Адрес"
-      onChangeText={(text) => {
-        onChangeAdress(text);
-      }}
+      onChangeText={onChangeAdress}
     />
-
 
     <CreateDropdown isOpen={openDropdown === 'property'} toggleOpen={() => toggleDropdown('property')} state={property} setState={onChangeProperty} title="Тип собственности" placeholder="Выберите тип собственности" items={['От хозяина','Долевая']} />
     <CreateDropdown isOpen={openDropdown === 'furniture'} toggleOpen={() => toggleDropdown('furniture')} state={furniture} setState={setFurniture} title="Мебелирование" placeholder="Выберите мебелирование" items={['Полное', 'Частичное', 'Нет']} />
@@ -634,8 +581,8 @@ export const CreatePostScreen = () => {
       paddingHorizontal: 10,
       height: 50,
       borderWidth: 1,
-      borderRadius: 10,
-      borderColor: '#c4c4c4',
+      borderRadius: 5,
+      borderColor: '#675BFB',
       backgroundColor: '#F9F6FF'
     }}
       value={house3}
@@ -654,9 +601,9 @@ export const CreatePostScreen = () => {
           width: '100%',
           paddingHorizontal: 10,
           height: 50,
-          borderRadius: 10,
-          borderWidth:1,
-          borderColor: '#c4c4c4',
+          borderWidth: 1,
+          borderRadius: 5,
+          borderColor: '#675BFB',
           backgroundColor: '#F9F6FF'
         }}
           value={numberOfRooms}
@@ -671,9 +618,9 @@ export const CreatePostScreen = () => {
           width: '100%',
           paddingHorizontal: 10,
           height: 50,
-          borderRadius: 10,
-          borderWidth:1,
-          borderColor: '#c4c4c4',
+          borderWidth: 1,
+          borderRadius: 5,
+          borderColor: '#675BFB',
           backgroundColor: '#F9F6FF'
         }}
           value={leaseTerm}
@@ -682,15 +629,14 @@ export const CreatePostScreen = () => {
           maxLength={70}
         />
 
-
         <InputMap
-          value={adress}
-          label="Адрес"
-          onChangeText={(text) => {
-            onChangeAdress(text);
-          }}
+            value={adress}
+            label="Адрес"
+            onTapRow={onChangeAdress('')}
+            onChangeText={(text) => {
+                onChangeAdress(text);
+            }}
         />
-
 
         <CreateDropdown isOpen={openDropdown === 'property'} toggleOpen={() => toggleDropdown('property')} state={property} setState={onChangeProperty} title="Тип собственности" placeholder="Выберите тип собственности" items={['От хозяина','Долевая']} />
         <CreateDropdown isOpen={openDropdown === 'furniture'} toggleOpen={() => toggleDropdown('furniture')} state={furniture} setState={setFurniture} title="Мебелирование" placeholder="Выберите мебелирование" items={['Полное', 'Частичное', 'Нет']} />
@@ -703,9 +649,9 @@ export const CreatePostScreen = () => {
           width: '100%',
           paddingHorizontal: 10,
           height: 50,
-          borderRadius: 10,
-          borderWidth:1,
-          borderColor: '#c4c4c4',
+          borderWidth: 1,
+          borderRadius: 5,
+          borderColor: '#675BFB',
           backgroundColor: '#F9F6FF'
         }}
           value={totalArea}
@@ -724,9 +670,9 @@ export const CreatePostScreen = () => {
           width: '100%',
           paddingHorizontal: 10,
           height: 50,
-          borderRadius: 10,
-          borderWidth:1,
-          borderColor: '#c4c4c4',
+          borderWidth: 1,
+          borderRadius: 5,
+          borderColor: '#675BFB',
           backgroundColor: '#F9F6FF'
         }}
           value={house3}
@@ -749,8 +695,8 @@ export const CreatePostScreen = () => {
             paddingHorizontal: 10,
             height: 50,
             borderWidth: 1,
-            borderRadius: 10,
-            borderColor: '#c4c4c4',
+            borderRadius: 5,
+            borderColor: '#675BFB',
             backgroundColor: '#F9F6FF'
           }}
           options={{
@@ -770,8 +716,8 @@ export const CreatePostScreen = () => {
             paddingHorizontal: 10,
             height: 50,
             borderWidth: 1,
-            borderRadius: 10,
-            borderColor: '#c4c4c4',
+            borderRadius: 5,
+            borderColor: '#675BFB',
             backgroundColor: '#F9F6FF'
           }}
           options={{
@@ -790,8 +736,8 @@ export const CreatePostScreen = () => {
             paddingHorizontal: 10,
             height: 50,
             borderWidth: 1,
-            borderRadius: 10,
-            borderColor: '#c4c4c4',
+            borderRadius: 5,
+            borderColor: '#675BFB',
             backgroundColor: '#F9F6FF'
           }}
           value={site}
@@ -807,8 +753,8 @@ export const CreatePostScreen = () => {
             paddingHorizontal: 10,
             height: 50,
             borderWidth: 1,
-            borderRadius: 10,
-            borderColor: '#c4c4c4',
+            borderRadius: 5,
+            borderColor: '#675BFB',
             backgroundColor: '#F9F6FF'
           }}
           value={telegram}
@@ -824,8 +770,8 @@ export const CreatePostScreen = () => {
             paddingHorizontal: 10,
             height: 50,
             borderWidth: 1,
-            borderRadius: 10,
-            borderColor: '#c4c4c4',
+            borderRadius: 5,
+            borderColor: '#675BFB',
             backgroundColor: '#F9F6FF'
           }}
           value={tiktok}
@@ -841,8 +787,8 @@ export const CreatePostScreen = () => {
             paddingHorizontal: 10,
             height: 50,
             borderWidth: 1,
-            borderRadius: 10,
-            borderColor: '#c4c4c4',
+            borderRadius: 5,
+            borderColor: '#675BFB',
             backgroundColor: '#F9F6FF'
           }}
           value={facebook}
@@ -858,8 +804,8 @@ export const CreatePostScreen = () => {
             paddingHorizontal: 10,
             height: 50,
             borderWidth: 1,
-            borderRadius: 10,
-            borderColor: '#c4c4c4',
+            borderRadius: 5,
+            borderColor: '#675BFB',
             backgroundColor: '#F9F6FF'
           }}
           value={insta}
@@ -875,8 +821,8 @@ export const CreatePostScreen = () => {
             paddingHorizontal: 10,
             height: 50,
             borderWidth: 1,
-            borderRadius: 10,
-            borderColor: '#c4c4c4',
+            borderRadius: 5,
+            borderColor: '#675BFB',
             backgroundColor: '#F9F6FF'
           }}
           value={twogis}
@@ -893,9 +839,9 @@ export const CreatePostScreen = () => {
                 paddingVertical: 15,
                 width: 170,
                 backgroundColor: selectedCondition === 'Новый' ? '#675BFB' : '#F9F6FF',
-                borderRadius: 10,
+                borderRadius: 5,
                 alignItems: 'center',
-                borderColor: '#c4c4c4',
+                borderColor: '#675BFB',
                 borderWidth: 1,
                 }}
             >
@@ -909,9 +855,9 @@ export const CreatePostScreen = () => {
                 paddingVertical: 15,
                 width: 170,
                 backgroundColor: selectedCondition === 'Б/У' ? '#675BFB' : '#F9F6FF',
-                borderRadius: 10,
+                borderRadius: 5,
                 alignItems: 'center',
-                borderColor: '#c4c4c4',
+                borderColor: '#675BFB',
                 borderWidth: 1,
                 }}
             >
@@ -927,9 +873,9 @@ export const CreatePostScreen = () => {
                 paddingVertical: 15,
                 width: 170,
                 backgroundColor: selectedMortage === false ? '#675BFB' : '#F9F6FF',
-                borderRadius: 10,
+                borderRadius: 5,
                 alignItems: 'center',
-                borderColor: '#c4c4c4',
+                borderColor: '#675BFB',
                 borderWidth: 1,
                 }}
             >
@@ -943,9 +889,9 @@ export const CreatePostScreen = () => {
                 paddingVertical: 15,
                 width: 170,
                 backgroundColor: selectedMortage === true ? '#675BFB' : '#F9F6FF',
-                borderRadius: 10,
+                borderRadius: 5,
                 alignItems: 'center',
-                borderColor: '#c4c4c4',
+                borderColor: '#675BFB',
                 borderWidth: 1,
                 }}
             >
@@ -962,9 +908,9 @@ export const CreatePostScreen = () => {
                 paddingVertical: 15,
                 width: 170,
                 backgroundColor: selectedDelivery === false ? '#675BFB' : '#F9F6FF',
-                borderRadius: 10,
+                borderRadius: 5,
                 alignItems: 'center',
-                borderColor: '#c4c4c4',
+                borderColor: '#675BFB',
                 borderWidth: 1,
                 }}
             >
@@ -978,9 +924,9 @@ export const CreatePostScreen = () => {
                 paddingVertical: 15,
                 width: 170,
                 backgroundColor: selectedDelivery === true ? '#675BFB' : '#F9F6FF',
-                borderRadius: 10,
+                borderRadius: 5,
                 alignItems: 'center',
-                borderColor: '#c4c4c4',
+                borderColor: '#675BFB',
                 borderWidth: 1,
                 }}
             >
@@ -988,7 +934,7 @@ export const CreatePostScreen = () => {
             </TouchableOpacity>
         </View>
 
-        <TouchableOpacity onPress={sendPostRequest} style={{ borderRadius: 10, overflow: 'hidden', marginBottom: 20,marginTop:40 }}>
+        <TouchableOpacity onPress={sendPostRequest} style={{ borderRadius: 5, overflow: 'hidden', marginBottom: 20,marginTop:40 }}>
                 <LinearGradient
                   colors={['#F3B127', '#F26D1D']}
                   style={{ paddingVertical: 15, width: '100%', alignItems: 'center' }}
@@ -1010,8 +956,8 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'space-between',
       backgroundColor: '#F9F6FF',
-      borderRadius: 10,
-      borderColor: '#c4c4c4',
+      borderRadius: 5,
+      borderColor: '#675BFB',
       borderWidth: 1,
       paddingHorizontal: 10,
       paddingVertical: 17,

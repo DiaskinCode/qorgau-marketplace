@@ -1,23 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput,  TouchableOpacity, TouchableWithoutFeedback, FlatList, ScrollView, RefreshControl, Dimensions, Image, Text } from 'react-native';
+import { View, TextInput,  TouchableOpacity, KeyboardAvoidingView,Platform, ScrollView, Image, Text, Modal, ActivityIndicator, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { loginSuccess } from '../actions/authActions';
 import { useDispatch } from 'react-redux';
+import {useTranslation} from 'react-i18next'
 
 export const ProfileRegistrationScreen = ({route}) => {
     const { login, password } = route.params;
-    const navigation = useNavigation()
+    const {t} = useTranslation();
     const [name, onChangeName] = useState('');
     const dispatch = useDispatch()
     const [image, setImage] = useState(null);
+
+    const [nameError, setNameError] = useState('');
+    const [imageError, setImageError] = useState('');
+
+    const [isLoading, setIsLoading] = useState(false);
+
+    const validate = () => {
+      let isValid = true;
+  
+      // Проверка имени
+      if (!name.trim()) {
+        setNameError(t('register.error.name_required'));
+        isValid = false;
+    } else if (/[\s_]/.test(name)) {
+        // Проверяем наличие пробелов или символов подчеркивания
+        setNameError('Введите логин без пробелов и специальных знаков');
+        isValid = false;
+    } else {
+        setNameError('');
+    }
+  
+      // Проверка изображения
+      if (!image) {
+          setImageError(t('register.error.image_required'));
+          isValid = false;
+      } else {
+          setImageError('');
+      }
+  
+      return isValid;
+  };  
 
 
     useEffect(() => {
       (async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to make this work!');
+          alert('Нам нужно разрешение на использование галереи, для того чтобы прикрепить фото');
         }
       })();
     }, []);
@@ -26,10 +58,10 @@ export const ProfileRegistrationScreen = ({route}) => {
     const pickImage = async () => {
       // No permissions request is necessary for launching the image library
       let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         aspect: [4, 3],
-        quality: 1,
+        quality: 0.5,
       });
   
       console.log(result);
@@ -40,8 +72,13 @@ export const ProfileRegistrationScreen = ({route}) => {
     };
 
     const handleRegistration = async () => {
+        if (!validate()) {
+          return;
+        }
+        setIsLoading(true);
+        
         const formData = new FormData();
-        formData.append('username', login);
+        formData.append('username', name);
         formData.append('password', password);
         formData.append('email', login);
         formData.append('profile_image', {
@@ -66,7 +103,8 @@ export const ProfileRegistrationScreen = ({route}) => {
             // Handle successful registration, e.g., navigate to the next screen
             dispatch(loginSuccess(data.user, data.token));
           } else {
-            // Handle registration error
+            alert('Пользователь с таким логином уже существует','');
+            setIsLoading(false)
             console.error('Registration failed:', response.status);
           }
         } catch (error) {
@@ -75,19 +113,39 @@ export const ProfileRegistrationScreen = ({route}) => {
       };
 
     return (
+      <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+      >
+      <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isLoading}
+          onRequestClose={() => {
+          setIsLoading(false);
+          }}
+      >
+          <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+              <ActivityIndicator size="large" color="#0000ff" />
+              <Text style={styles.modalText}>Создание аккаунта</Text>
+          </View>
+          </View>
+      </Modal>
+       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={{alignItems:'center',width:'90%',marginHorizontal:'5%',marginTop:80}}>
             <Image style={{height:104,width:130,objectFit:'cover'}} source={require('../assets/logo.jpg')}/>
-            <Text style={{ fontFamily: 'bold',fontSize:25, textAlign:'center',marginTop:20}} >Регистрация аккаунта</Text>
-            <Text style={{ fontFamily: 'regular',fontSize:15,color:"#96949D",width:255,lineHeight:21,marginTop:10, textAlign:'center' }} >Создайте аккаунт чтобы пользоваться всеми функциями приложения</Text>
+            <Text style={{ fontFamily: 'bold',fontSize:25, textAlign:'center',marginTop:20}} >{t('register.register_of_acc')}</Text>
+            <Text style={{ fontFamily: 'regular',fontSize:15,color:"#96949D",width:255,lineHeight:21,marginTop:10, textAlign:'center' }} >{t('register.create_acc')}</Text>
 
 
             <TouchableOpacity style={{marginTop:40}} onPress={pickImage}>
                 {image ? (
-                    <Image source={{ uri: image }} style={{ width: 110, height: 110, borderRadius:5,borderWidth:1,borderColor:'#675BFB' }} />
+                    <Image source={{ uri: image }} style={{ width: 110, height: 110, borderRadius:15,borderWidth:1,borderColor:'#675BFB' }} />
                 ) : (
-                    <View style={{ width: 110, height: 110, backgroundColor: '#F9F6FF', borderRadius: 5,borderWidth:1,borderColor:'#675BFB', justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ width: 110, height: 110, backgroundColor: '#F9F6FF', borderRadius: 15,borderWidth:1,borderColor:'#675BFB', justifyContent: 'center', alignItems: 'center' }}>
                         <Image style={{height:25,width:25,marginTop:20}} source={require('../assets/plus.jpg')} />
-                        <Text style={{ fontFamily:'regular',fontSize:14,color:'#96949D',marginTop:10, }}>Фото профиля</Text>
+                        <Text style={{ fontFamily:'regular',fontSize:14,color:'#96949D',marginTop:10, }}>{t('register.profile_pic')}</Text>
                     </View>
                 )}
             </TouchableOpacity>
@@ -97,16 +155,58 @@ export const ProfileRegistrationScreen = ({route}) => {
                     style={{width:350,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:5,borderColor:'#675BFB'}}
                     onChangeText={onChangeName}
                     value={name}
-                    placeholder="Введите ваше имя"
+                    placeholder={t('register.write_name')}
                 />
             </View>
 
+            { nameError ? <Text style={{ color: 'red', marginTop: 15,alignSelf:'flex-start' }}>{nameError}</Text> : null }
+            { imageError ? <Text style={{ color: 'red', marginTop: 15,alignSelf:'flex-start' }}>{imageError}</Text> : null }
             <View style={{marginTop:20,justifyContent:'center'}}>
                 <TouchableOpacity onPress={handleRegistration} style={{paddingVertical:15,width:350,backgroundColor:'#F26F1D',borderRadius:5,alignItems:'center'}}>
-                    <Text style={{color:'#FFF',fontSize:16,}}>Продолжить</Text>
+                    <Text style={{color:'#FFF',fontSize:16,}}>{t('continue')}</Text>
                 </TouchableOpacity>
             </View>
-            <Text style={{fontFamily:'medium',fontSize:14,marginTop:120,marginBottom:35,textAlign:'center',color:'#24144E'}}>BEINE JARNAMA</Text>
         </View>
+        <Text style={{fontFamily:'medium',fontSize:14,bottom:45,textAlign:'center',color:'#24144E',position:'absolute',alignSelf:'center'}}>BEINE JARNAMA</Text>
+        </ScrollView>
+      </KeyboardAvoidingView>
     );
   }
+
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: 'white',
+      borderRadius: 20,
+      padding: 35,
+      paddingTop:50,
+      alignItems: 'center',
+      shadowColor: '#666',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    modalText: {
+      marginTop: 25,
+      fontFamily:'medium',
+      fontSize:16,
+      textAlign: 'center',
+    },
+  });
+  
+  

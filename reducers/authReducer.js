@@ -1,5 +1,3 @@
-// reducers/authReducer.js
-
 const initialState = {
   isAuthenticated: false,
   user: null,
@@ -16,9 +14,7 @@ const authReducer = (state = initialState, action) => {
         token: action.payload.token,
       };
     case 'LOGOUT':
-      // Handle logout action if needed
       return initialState;
-    // Add other cases for different actions
     default:
       return state;
   }

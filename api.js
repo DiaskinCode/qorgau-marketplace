@@ -4,6 +4,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const api = createApi({
   reducerPath: 'api',
+  refetchOnMountOrArgChange: true,
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://185.129.51.171/api/',
     prepareHeaders: (headers, { getState }) => {
@@ -22,6 +23,7 @@ export const api = createApi({
         console.log(`Querying with page: ${page}, limit: ${limit}`);
         return `posts/?page=${page}&page_size=${limit}`;
       },
+      keepUnusedDataFor: 120,
       providesTags: ['PostList'],
     }),
     getPostListCity: builder.query({
@@ -33,9 +35,11 @@ export const api = createApi({
     getPostListMap: builder.query({
       query: () => 'posts_map/',
       providesTags: ['PostListMap'],
+      keepUnusedDataFor: 400,
     }),
     getPostById: builder.query({
       query: (id) => `posts/${id}/`,
+      keepUnusedDataFor: 0,
     }),
     getCategoriesList: builder.query({
       query: () => `categories/`,
@@ -44,37 +48,63 @@ export const api = createApi({
     searchPosts: builder.query({
       query: (searchQuery) => `search_posts/?q=${searchQuery}`,
       providesTags: ['PostList'],
+      keepUnusedDataFor: 0,
     }),
     getActivePosts: builder.query({
       query: () => 'active_posts/',
       providesTags: ['PostList'],
+      keepUnusedDataFor: 100,
     }),
     getAdminPosts: builder.query({
       query: () => 'admin_posts/',
       providesTags: ['PostList'],
+      keepUnusedDataFor: 0,
     }),
     getNotActivePosts: builder.query({
       query: () => 'not_active_posts/',
       providesTags: ['PostList'],
+      keepUnusedDataFor: 0,
     }),
     getDeletedPosts: builder.query({
       query: () => 'deleted_posts/',
       providesTags: ['PostList'],
+      keepUnusedDataFor: 0,
     }),
     getNotPaidPosts: builder.query({
       query: () => 'paid_posts/',
       providesTags: ['PostList'],
+      keepUnusedDataFor: 0,
     }),
     getPostsByCategory: builder.query({
       query: ({category_id,page,limit}) => `posts/category/${category_id}?page=${page}&page_size=${limit}`,
       providesTags: (result, error, categoryId) => [
         { type: 'PostList', id: categoryId },
       ],
+      keepUnusedDataFor: 0,
+    }),
+    getPostsByCategoryAndCity:builder.query({
+      query: ({category_id,page,limit,city}) => `posts/category-city/${category_id}?page=${page}&page_size=${limit}&city=${city}`,
+      providesTags: (result, error, categoryId) => [
+        { type: 'PostList', id: categoryId },
+      ],
+      keepUnusedDataFor: 0,
     }),
 
     listFavourites: builder.query({
       query: () => 'favourites/',
       providesTags: ['Favourites'],
+      keepUnusedDataFor: 0,
+    }),
+
+    // 
+
+    getUserByUsername: builder.query({
+      query: (username) => `user/${username}/`,
+      keepUnusedDataFor: 0,
+    }),
+    getPostsByUser: builder.query({
+      query: (username) => `posts/user/${username}/`,
+      keepUnusedDataFor: 0,
     }),
     
     // POST Queries
@@ -144,6 +174,7 @@ export const {
   useGetPostListMapQuery,
   useGetPostByIdQuery,
   useGetCategoriesListQuery,
+  useGetPostsByCategoryAndCityQuery,
   useSearchPostsQuery,
   useGetActivePostsQuery,
   useGetAdminPostsQuery,
@@ -152,6 +183,9 @@ export const {
   useGetNotPaidPostsQuery,
   useGetPostsByCategoryQuery,
   useListFavouritesQuery,
+
+  useGetPostsByUserQuery,
+  useGetUserByUsernameQuery,
 
   // POST
 

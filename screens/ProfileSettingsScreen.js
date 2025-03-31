@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput,  TouchableOpacity, Image, Text } from 'react-native';
+import { View, TextInput,  TouchableOpacity, Image, Text,KeyboardAvoidingView,ActivityIndicator,Modal,Platform,StyleSheet,ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { loginSuccess } from '../actions/authActions';
 import { logout } from '../actions/authActions';
 import { persistor } from '../store/index';
 import { useDispatch,useSelector } from 'react-redux';
 import { useUpdateUserProfileMutation } from '../api';
+import { useTranslation } from 'react-i18next';
 
 export const ProfileSettingsScreen = ({route}) => {
     const user = useSelector(state => state.auth.user);
@@ -13,6 +14,8 @@ export const ProfileSettingsScreen = ({route}) => {
     const [name, onChangeName] = useState(user?.username);
     const [email, onChangeEmail] = useState(user?.email);
     const [phone, onChangePhone] = useState(user?.profile?.phone_number);
+    const { t, i18n } = useTranslation();
+    const [loading, setLoading] = useState(false);
 
     const dispatch = useDispatch()
     const [image, setImage] = useState(null);
@@ -38,10 +41,10 @@ export const ProfileSettingsScreen = ({route}) => {
 
     const pickImage = async () => {
       let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        mediaTypes: ImagePicker.MediaTypeOptions.Photos,
         allowsEditing: true,
         aspect: [4, 3],
-        quality: 1,
+        quality: 0.5,
       });
   
       console.log(result);
@@ -51,8 +54,13 @@ export const ProfileSettingsScreen = ({route}) => {
       }
     };
 
+    const handleLanguage = (language) => {
+      i18n.changeLanguage(language)
+    }
+
     const handleProfileEdit = async () => {
         try {
+          setLoading(true);
           const formData = new FormData();
           formData.append('profile_image', {
             uri: image,
@@ -60,15 +68,17 @@ export const ProfileSettingsScreen = ({route}) => {
             name: 'profile_image.jpg',
           });
           formData.append('username', name);
-          formData.append('profile.phone_number', phone);
+          formData.append('phone_number', phone);
           formData.append('email', email);
     
           const result = await updateUserProfile(formData);
     
           if (result.error) {
+            setLoading(false);
             console.error('Profile update failed:', result.error);
           } else {
             console.log(result.data.user);
+            setLoading(false);
             dispatch(loginSuccess(result.data.user, token));
           }
         } catch (error) {
@@ -77,7 +87,25 @@ export const ProfileSettingsScreen = ({route}) => {
       };
 
     return (
-        <View style={{alignItems:'center',width:'90%',marginHorizontal:'5%',marginTop:0}}>
+      <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={isLoading}
+            onRequestClose={() => {
+            setIsLoading(false);
+            }}
+        >
+            <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+                <ActivityIndicator size="large" color="#0000ff" />
+                <Text style={styles.modalText}>Редактирование профиля</Text>
+            </View>
+            </View>
+        </Modal>
+        <ScrollView contentContainerStyle={{alignItems:'center',width:'90%',marginHorizontal:'5%',marginTop:0}}>
             <TouchableOpacity style={{marginTop:40}} onPress={pickImage}>
                 {image ? (
                     <View >
@@ -119,6 +147,16 @@ export const ProfileSettingsScreen = ({route}) => {
                     placeholder="Введите почту"
                 />
             </View>
+
+            <View style={{marginTop:20,flexDirection:'row',justifyContent:'center'}}>
+                <TouchableOpacity onPress={() => {handleLanguage('kz')}} style={{paddingVertical:15,width:165,backgroundColor:'#F9F6FF',borderRadius:5,alignItems:'center',borderColor:'#675BFB',borderWidth:1}}>
+                    <Text style={{color:'#F26F1D',fontSize:16,}}>{t('kaz')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => {handleLanguage('ru')}} style={{marginLeft:10,paddingVertical:15,width:165,backgroundColor:'#F9F6FF',borderRadius:5,alignItems:'center',borderColor:'#675BFB',borderWidth:1}}>
+                    <Text style={{color:'#F26F1D',fontSize:16,}}>{t('rus')}</Text>
+                </TouchableOpacity>
+            </View>
+
             <View style={{marginTop:20,justifyContent:'center'}}>
                 <TouchableOpacity onPress={handleProfileEdit} style={{paddingVertical:15,width:350,backgroundColor:'#F26F1D',borderRadius:5,alignItems:'center'}}>
                     <Text style={{color:'#FFF',fontSize:16,}}>Изменить профиль</Text>
@@ -126,6 +164,38 @@ export const ProfileSettingsScreen = ({route}) => {
             </View>
             <TouchableOpacity onPress={handleLogout} style={{marginTop:20}}><Text style={{fontFamily:'medium',opacity:.4}}>Выйти из аккаунта</Text></TouchableOpacity>
             <Text style={{fontFamily:'medium',fontSize:14,marginTop:120,marginBottom:35,textAlign:'center',color:'#24144E'}}>BEINE JARNAMA</Text>
-        </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
   }
+
+
+  const styles = StyleSheet.create({
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: 'white',
+      borderRadius: 20,
+      padding: 35,
+      paddingTop:50,
+      alignItems: 'center',
+      shadowColor: '#666',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    modalText: {
+      marginTop: 25,
+      fontFamily:'medium',
+      fontSize:16,
+      textAlign: 'center',
+    },
+  });

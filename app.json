@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "jsEngine": "jsc",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -20,7 +21,34 @@
       "config": {
         "googleMapsApiKey": "AIzaSyBsasFM_cSM1v5WD3TjMt9ioLgzijOgxxY"
       },
-      "buildNumber": "9"
+      "buildNumber": "30",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        },
+        "NSPhotoLibraryUsageDescription": "This app uses your photo library to let you choose photos to upload and enhance your profile and post posts with photos.",
+        "NSPhotoLibraryAddUsageDescription": "This app uses your photo library to let you choose photos to upload and enhance your profile and post posts with photos.",
+        "NSLocationWhenInUseUsageDescription": "We use the location to display posts in your city and for a better experience with the map",
+        "NSLocationAlwaysUsageDescription":"We use the location to display posts in your city and for a better experience with the map",
+        "NSPrivacyAccessedAPICategoryDiskSpace":"Our application uses the disk space access API to optimize the storage of data required for operation.",
+        "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "85F4.1 - Display disk space information to users, may send over local network with permission.",
+              "E174.1 - Check disk space for file operations, adjust app behavior based on space availability."
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "DDA9.1 - Display file timestamps to users, not sent off-device.",
+              "C617.1 - Access metadata of files within the app's container for internal use."
+            ]
+          }
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -33,8 +61,25 @@
     },
     "extra": {
       "eas": {
-        "projectId": "78c4d74f-9ba9-4d4c-a285-ffe66ea0ad6a"
+        "projectId": "4f2ea93d-f248-41b5-b4f9-878768cb9f06"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": ["./assets/fonts/SF-Pro-Display-Regular.otf",
+            "./assets/fonts/SF-Pro-Display-Medium.otf",
+            "./assets/fonts/SF-Pro-Display-Semibold.otf",
+            "./assets/fonts/SF-Pro-Display-Bold.otf",
+            "./assets/fonts/SF-Pro-Display-BoldItalic.otf"
+          ]
+        }
+      ]
+    ]
   }
 }
+
+
+
+

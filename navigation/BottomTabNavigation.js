@@ -1,25 +1,32 @@
 import React, { Component,useEffect,useState } from 'react';
-import { View, Image, StyleSheet, Text } from 'react-native';
+import { View, Image, StyleSheet, Text, Dimensions } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MainStackNavigator from './MainStackNavigator'
 import ReelsStackNavigator from './ReelsStackNavigator'
 import MessagesStackNavigator from './MessagesStackNavigator'
 import ProfileStackNavigator from './ProfileStackNavigator'
 import CreatePostStackNavigation from './CreatePostStackNavigation'
-
+import {useTranslation} from 'react-i18next'
 
 const Tab = createBottomTabNavigator();
 
 export default function BottomTabNavigation () {
-
+    const {t} = useTranslation();
+    const screenWidth = Dimensions.get('window').width;
+    const isTablet = screenWidth >= 768;
     return (
         <View style={styles.container}>
             <Tab.Navigator
-                initialRouteName="Главная"
+                initialRouteName={t("tabs.home")}
                 screenOptions={({ route }) => ({
                     headerShown: false,
-                    tabBarLabel: ({focused}) => {
-                        return <Text style={focused ? styles.tabBarLabelActive : styles.tabBarLabel}>{route.name}</Text>},
+                    tabBarLabel: ({ color }) => {
+                        if (isTablet) {
+                          return null;
+                        } else {
+                          return <Text style={{ fontSize: 10, fontFamily: 'regular', color: '#9C9C9C' }}>{route.name}</Text>;
+                        }
+                      },
                     tabBarStyle: {
                         backgroundColor: '#FFF',
                         borderTopWidth: 0,
@@ -37,7 +44,7 @@ export default function BottomTabNavigation () {
                 })}
                 >
                 <Tab.Screen
-                    name={"Главная"}
+                    name={t("tabs.home")}
                     component={MainStackNavigator}
                     options={{tabBarIcon: ({focused}) => focused ? 
                         <TabIcon image={require('../assets/mainIconActive.png')}/> : 
@@ -45,7 +52,7 @@ export default function BottomTabNavigation () {
                     }}
                 />
                 <Tab.Screen
-                    name={"Лента"}
+                    name={t("tabs.feed")}
                     component={ReelsStackNavigator}
                     options={{tabBarIcon: ({focused}) => focused ? 
                         <TabIcon image={require('../assets/reelsIconActive.png')}/> : 
@@ -53,14 +60,14 @@ export default function BottomTabNavigation () {
                     }}
                 />
                 <Tab.Screen
-                    name={"Создать новое"}
+                    name={t("tabs.create_new")}
                     component={CreatePostStackNavigation}
                     options={{tabBarIcon: () =>  
                         <CreateTabIcon image={require('../assets/createPostIcon.png')}/> 
                     }}
                 />
                 <Tab.Screen
-                    name={"Сообщения"}
+                    name={t("tabs.messages")}
                     component={MessagesStackNavigator}
                     options={{tabBarIcon: ({focused}) => focused ? 
                         <TabIcon image={require('../assets/messagesIconActive.png')}/> : 
@@ -68,7 +75,7 @@ export default function BottomTabNavigation () {
                     }}
                 />
                 <Tab.Screen
-                    name={"Профиль"}
+                    name={t("tabs.profile")}
                     component={ProfileStackNavigator}
                     options={{tabBarIcon: ({focused}) => focused ? 
                         <TabIcon image={require('../assets/profileIconActive.png')}/> : 
