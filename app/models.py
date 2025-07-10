@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+
         
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -16,7 +17,8 @@ class UserProfile(models.Model):
 
         
 class Category(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, verbose_name='Название категории')
+    image = models.ImageField(upload_to='category_images/', null=True, blank=True, verbose_name='Изображение')
 
     class Meta:
         verbose_name = 'Категория'
@@ -24,6 +26,19 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# Подкатегория
+class SubCategory(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='subcategories', verbose_name='Родительская категория')
+    name = models.CharField(max_length=255, verbose_name='Название подкатегории')
+
+    class Meta:
+        verbose_name = 'Подкатегория'
+        verbose_name_plural = 'Подкатегории'
+
+    def __str__(self):
+        return f"{self.category.name} → {self.name}"
     
 class Tariff(models.Model):
     name = models.CharField(max_length=255)
@@ -43,25 +58,29 @@ class Post(models.Model):
     content = models.TextField(verbose_name='Содержание')
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
     approved = models.BooleanField(default=False, verbose_name='Одобрено')
-    cost = models.CharField(max_length=255, default=False, verbose_name='Цена')
+    cost = models.CharField(max_length=255, default='', verbose_name='Цена')
     geolocation = models.CharField(max_length=255, verbose_name='Геолокация')
 
     condition = models.CharField(max_length=255, verbose_name='Состояние')
     mortage = models.CharField(max_length=255, verbose_name='Рассрочка')
     delivery = models.CharField(max_length=255, verbose_name='Доставка')
 
-    views = models.IntegerField(default=0,verbose_name='Просмотры')
+    views = models.IntegerField(default=0, verbose_name='Просмотры')
 
     tariff = models.ForeignKey(Tariff, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Тариф')
 
     date = models.DateField(auto_now=True, verbose_name='Дата')
-    adress = models.CharField(max_length=255, default='', verbose_name='Адрес',blank=True)
-    lat = models.CharField(max_length=255, default='', verbose_name='Широта',blank=True)
-    lng = models.CharField(max_length=255, default='', verbose_name='Долгота',blank=True)
+    adress = models.CharField(max_length=255, default='', verbose_name='Адрес', blank=True)
+    lat = models.CharField(max_length=255, default='', verbose_name='Широта', blank=True)
+    lng = models.CharField(max_length=255, default='', verbose_name='Долгота', blank=True)
+
     isActive = models.BooleanField(default=True, verbose_name='Активно')
     isDeleted = models.BooleanField(default=False, verbose_name='Удалено')
     isPayed = models.BooleanField(default=False, verbose_name='Оплачено')
-    categories = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Категории')
+
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Категория')
+    subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Подкатегория')
+
     phone = models.CharField(max_length=255, default='', blank=False, verbose_name='Телефон')
     phone_whatsapp = models.CharField(max_length=255, default='', blank=True, verbose_name='WhatsApp')
     site = models.CharField(max_length=255, default='', blank=True, verbose_name='Сайт')
@@ -70,7 +89,7 @@ class Post(models.Model):
     facebook = models.CharField(max_length=255, default='', blank=True, verbose_name='Facebook')
     insta = models.CharField(max_length=255, default='', blank=True, verbose_name='Instagram')
     twogis = models.CharField(max_length=255, default='', blank=True, verbose_name='2GIS')
-    
+
     class Meta:
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
@@ -78,6 +97,7 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
 
 
 class Favourite(models.Model):

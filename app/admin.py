@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Image, Post, Category, UserProfile, Tariff
+from .models import Image, Post, Category, UserProfile, Tariff, SubCategory
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'isActive', 'approved')
@@ -9,6 +9,7 @@ class PostAdmin(admin.ModelAdmin):
 
 admin.site.register(Post, PostAdmin)
 admin.site.register(Category)
+admin.site.register(SubCategory)
 admin.site.register(Tariff)
 admin.site.register(UserProfile)
 admin.site.register(Image)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Category, Image, UserProfile, User, Field, Tariff
+from .models import Post, Category, Image, UserProfile, User, Field, Tariff, SubCategory
 import json
 
 class TariffSerializer(serializers.ModelSerializer):
@@ -29,11 +29,15 @@ class UserSerializer(serializers.ModelSerializer):
         return None
 
 
-
-
 class CategorySerializer(serializers.ModelSerializer):
+    image = serializers.FileField()
     class Meta:
         model = Category
+        fields = ['id', 'name', 'image']
+
+class SubCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubCategory
         fields = ['id', 'name']
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -54,8 +58,17 @@ class PostSerializer(serializers.ModelSerializer):
     category_id = serializers.PrimaryKeyRelatedField(
         write_only=True,
         queryset=Category.objects.all(),
-        source='categories'
+        source='category'
     )
+    category = CategorySerializer(read_only=True)
+
+    subcategory_id = serializers.PrimaryKeyRelatedField(
+        write_only=True,
+        queryset=SubCategory.objects.all(),
+        source='subcategory'
+    )
+    subcategory = serializers.StringRelatedField(read_only=True)
+
     fields = FieldSerializer(read_only=True, many=True)
     categories = CategorySerializer(read_only=True)
     
@@ -67,7 +80,6 @@ class PostSerializer(serializers.ModelSerializer):
         instance.approved = True
         instance.save()
         return instance
-
 
     def create(self, validated_data):
         if 'id' in validated_data:
@@ -84,13 +96,17 @@ class PostSerializer(serializers.ModelSerializer):
         images_data = validated_data.pop('images', [])
         category = validated_data.pop('categories', None)
 
-        # Create the post instance here, right after popping 'images_data' and 'categories'
-        post = Post.objects.create(**validated_data)
 
-        # Now, 'post' has been defined, so we can safely reference it
+        category = validated_data.pop('category', None)
+        subcategory = validated_data.pop('subcategory', None)
+
+        post = Post.objects.create(**validated_data)
+        
         if category:
-            post.categories = category  # Correctly assign the extracted category
-            post.save()
+            post.category = category
+        if subcategory:
+            post.subcategory = subcategory
+        post.save()
 
         fields_data = []
         for key, value in request.POST.lists():

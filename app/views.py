@@ -1,6 +1,10 @@
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
+
+from django.utils.timezone import make_aware, is_naive, now
+from datetime import datetime, timedelta, time
+
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 import hashlib
@@ -9,13 +13,13 @@ from urllib.parse import urlparse
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate, login
 from rest_framework.views import APIView
-from .models import Category, Post, UserProfile, Image, Favourite, Tariff
+from .models import Category, Post, UserProfile, Image, Favourite, Tariff, SubCategory
 from chat.models import Connection, Message
 from chat.serializers import ConnectionSerializer
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import parser_classes
-from .serializers import CategorySerializer, PostSerializer, UserSerializer, UserProfileSerializer, TariffSerializer
+from .serializers import CategorySerializer, PostSerializer, UserSerializer, UserProfileSerializer, TariffSerializer, SubCategorySerializer
 from pushnotifications.serializers import PushTokenSerializer
 from pushnotifications.models import PushToken
 import logging
@@ -96,6 +100,22 @@ class CategoryList(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
+@api_view(['GET', 'POST'])
+def subcategory_list(request, category_id):
+    category = get_object_or_404(Category, pk=category_id)
+    
+    if request.method == 'GET':
+        subcategories = SubCategory.objects.filter(category=category)
+        serializer = SubCategorySerializer(subcategories, many=True)
+        return Response(serializer.data)
+    
+    elif request.method == 'POST':
+        serializer = SubCategorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(category=category)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['GET'])
 def post_list_map(request):
     posts = Post.objects.exclude(
@@ -154,7 +174,22 @@ def post_list(request):
         data = request.data
         data['author'] = request.user.id
 
-        # Extract images data
+        last_post = Post.objects.filter(author=request.user).order_by('-date').first()
+        if last_post:
+            last_post_date = last_post.date
+
+            if not isinstance(last_post_date, datetime):
+                last_post_date = datetime.combine(last_post_date, time.min)
+
+            if is_naive(last_post_date):
+                last_post_date = make_aware(last_post_date)
+
+            if now() - last_post_date < timedelta(seconds=5):
+                return Response(
+                    {'detail': 'Пожалуйста, подождите немного перед созданием следующего поста.'},
+                    status=400
+                )
+
         print(data)
         images_data = []
         for key, value in data.items():
@@ -184,7 +219,7 @@ def post_list(request):
             subject = f'Создан новый пост "{post.title}" '
             message = f'Новый пост под названием "{post.title}" был создан в {post.date} от {post.author}'
             from_email = 'oralbekov.dias19@gmail.com'
-            recipient_list = ['oralbekov.dias19@gmail.com','beinejarnama@gmail.com']
+            recipient_list = ['oralbekov.dias19@gmail.com']
 
             send_mail(subject, message, from_email, recipient_list)
             return Response(serializer.data, status=201)
@@ -303,7 +338,7 @@ def search_posts(request):
 def sort_by_category_posts(request, category_id):
     category = get_object_or_404(Category, pk=category_id)
     # Adjust ordering logic to prioritize tariff
-    posts = Post.objects.filter(isActive=True,approved=True, categories=category,isDeleted=False).annotate(
+    posts = Post.objects.filter(isActive=True,approved=True, category=category,isDeleted=False).annotate(
         sort_order=Case(
             When(tariff__id=1, then=1),
             When(tariff__id=2, then=2),
@@ -327,7 +362,7 @@ def sort_by_category_posts(request, category_id):
 def sort_by_category_city_posts(request, category_id):
     category = get_object_or_404(Category, pk=category_id)
     city = request.query_params.get('city')
-    posts = Post.objects.filter(isActive=True,categories=category,geolocation=city,isDeleted=False)
+    posts = Post.objects.filter(isActive=True,category=category,geolocation=city,isDeleted=False)
     paginator = StandardResultsSetPagination()  
     page = paginator.paginate_queryset(posts, request)  
 

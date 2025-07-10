@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PushTokenCreateView,CategoryList,TariffViewSet,user_profile, posts_by_user, result_payment,update_post,post_list,post_list_map, PostDetail, register, login_view,create_post,search_posts,active_posts, not_active_posts, deleted_posts, paid_posts, deactivate_post, activate_post, delete_post, pay_post,sort_by_category_posts, UserProfileUpdateView, create_connection,income_messages, post_list_city,stats_view, approve_post, admin_posts, add_to_favourites, remove_from_favourites, list_favourites, sort_by_category_city_posts
+from .views import PushTokenCreateView,CategoryList,TariffViewSet,subcategory_list,user_profile, posts_by_user, result_payment,update_post,post_list,post_list_map, PostDetail, register, login_view,create_post,search_posts,active_posts, not_active_posts, deleted_posts, paid_posts, deactivate_post, activate_post, delete_post, pay_post,sort_by_category_posts, UserProfileUpdateView, create_connection,income_messages, post_list_city,stats_view, approve_post, admin_posts, add_to_favourites, remove_from_favourites, list_favourites, sort_by_category_city_posts
 
 urlpatterns = [
     path('push-tokens/', PushTokenCreateView.as_view(), name='push-token-create'),
@@ -12,6 +12,7 @@ urlpatterns = [
     path('stats/', stats_view, name='stats-view'),
     
     path('categories/', CategoryList.as_view(), name='category-list'),
+    path('categories/<int:category_id>/subcategories/', subcategory_list, name='sub-category-list'),
     path('posts/', post_list, name='post-list'),
     path('posts_city/', post_list_city, name='post-list-city'),
     path('posts_map/', post_list_map, name='post-list-map'),
