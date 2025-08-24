@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.db.models import JSONField
         
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -61,9 +61,7 @@ class Post(models.Model):
     cost = models.CharField(max_length=255, default='', verbose_name='Цена')
     geolocation = models.CharField(max_length=255, verbose_name='Геолокация')
 
-    condition = models.CharField(max_length=255, verbose_name='Состояние')
-    mortage = models.CharField(max_length=255, verbose_name='Рассрочка')
-    delivery = models.CharField(max_length=255, verbose_name='Доставка')
+    extra_fields = JSONField(default=dict, blank=True, verbose_name="Доп. поля")
 
     views = models.IntegerField(default=0, verbose_name='Просмотры')
 
