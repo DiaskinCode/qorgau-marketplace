@@ -228,24 +228,31 @@ def post_list(request):
 @api_view(['PATCH'])
 @permission_classes([permissions.IsAuthenticated])
 def update_post(request, post_id):
-    try:
-        post = Post.objects.get(id=post_id, author=request.user)
-    except Post.DoesNotExist:
-        post = get_object_or_404(Post, post_pk=post_id, author=request.user)
+    # Debug: логируем приходящий post_id и user
+    print("update_post called with post_id:", post_id, "user:", getattr(request.user, "id", None))
 
-    post.approved = False
-    serializer = PostSerializer(post, data=request.data, partial=True)
-    if serializer.is_valid():
+    # Пытаемся найти пост либо по id, либо по полю post_pk, принадлежащий автору
+    post = Post.objects.filter(
+        Q(id=post_id) | Q(post_pk=str(post_id)),
+        author=request.user
+    ).first()
+
+    if not post:
+        return Response({"detail": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    # Обновляем часть без файлов в транзакции
+    with transaction.atomic():
+        post.approved = False
+        serializer = PostSerializer(post, data=request.data, partial=True)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         updated_post = serializer.save()
-    else:
-        return Response(serializer.errors, status=400)
-    
-    for key in request.FILES:
-        image_file = request.FILES[key]
-        Image.objects.create(post=updated_post, image=image_file)
-    
-    updated_serializer = PostSerializer(updated_post)
-    return JsonResponse(updated_serializer.data)
+
+        # Сохраняем все присланные файлы (если есть)
+        for uploaded_file in request.FILES.values():
+            Image.objects.create(post=updated_post, image=uploaded_file)
+
+    return Response(PostSerializer(updated_post).data, status=status.HTTP_200_OK)
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
