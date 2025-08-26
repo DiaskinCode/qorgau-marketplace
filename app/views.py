@@ -228,31 +228,34 @@ def post_list(request):
 @api_view(['PATCH'])
 @permission_classes([permissions.IsAuthenticated])
 def update_post(request, post_id):
-    # Debug: логируем приходящий post_id и user
-    print("update_post called with post_id:", post_id, "user:", getattr(request.user, "id", None))
+    post = None
 
-    # Пытаемся найти пост либо по id, либо по полю post_pk, принадлежащий автору
-    post = Post.objects.filter(
-        Q(id=post_id) | Q(post_pk=str(post_id)),
-        author=request.user
-    ).first()
+    try:
+        post = Post.objects.get(id=post_id, author=request.user)
+    except (Post.DoesNotExist, ValueError):
+        pass
 
-    if not post:
-        return Response({"detail": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+    if post is None:
+        try:
+            post_pk = int(post_id)  # обязательно приводим к int
+            post = Post.objects.get(post_pk=post_pk, author=request.user)
+        except (Post.DoesNotExist, ValueError):
+            return Response({"detail": "Post not found"}, status=404)
 
-    # Обновляем часть без файлов в транзакции
-    with transaction.atomic():
-        post.approved = False
-        serializer = PostSerializer(post, data=request.data, partial=True)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    post.approved = False
+    serializer = PostSerializer(post, data=request.data, partial=True)
+    if serializer.is_valid():
         updated_post = serializer.save()
+    else:
+        return Response(serializer.errors, status=400)
 
-        # Сохраняем все присланные файлы (если есть)
-        for uploaded_file in request.FILES.values():
-            Image.objects.create(post=updated_post, image=uploaded_file)
+    for key in request.FILES:
+        image_file = request.FILES[key]
+        Image.objects.create(post=updated_post, image=image_file)
 
-    return Response(PostSerializer(updated_post).data, status=status.HTTP_200_OK)
+    updated_serializer = PostSerializer(updated_post)
+    return JsonResponse(updated_serializer.data)
+
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
