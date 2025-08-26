@@ -489,7 +489,7 @@ def delete_post(request, post_id):
 @permission_classes([permissions.IsAuthenticated])
 def pay_post(request, post_id):
     try:
-        post = Post.objects.get(pk=post_id, author=request.user)
+        post = Post.objects.get(post_pk=post_id, author=request.user)
     except Post.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
