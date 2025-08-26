@@ -493,6 +493,7 @@ def pay_post(request, post_id):
     except Post.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    post.tariff = Tariff.objects.get(id=1)
     post.isPayed = True
     post.save()
 
