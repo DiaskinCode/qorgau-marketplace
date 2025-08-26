@@ -228,8 +228,11 @@ def post_list(request):
 @api_view(['PATCH'])
 @permission_classes([permissions.IsAuthenticated])
 def update_post(request, post_id):
-    post = get_object_or_404(Post, id=post_id, author=request.user)
-    # Process non-file fields first
+    try:
+        post = Post.objects.get(id=post_id, author=request.user)
+    except Post.DoesNotExist:
+        post = get_object_or_404(Post, post_pk=post_id, author=request.user)
+
     post.approved = False
     serializer = PostSerializer(post, data=request.data, partial=True)
     if serializer.is_valid():
