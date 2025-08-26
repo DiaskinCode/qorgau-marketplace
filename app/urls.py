@@ -5,9 +5,6 @@ urlpatterns = [
     path('push-tokens/', PushTokenCreateView.as_view(), name='push-token-create'),
     path('tariffs/', TariffViewSet.as_view({'get': 'list'}), name='tariff-list'),
 
-
-    path('payment_result/', result_payment, name='result_payment'),  # For handling Payments
-
     # stats
     path('stats/', stats_view, name='stats-view'),
     

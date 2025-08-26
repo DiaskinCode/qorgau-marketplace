@@ -228,19 +228,7 @@ def post_list(request):
 @api_view(['PATCH'])
 @permission_classes([permissions.IsAuthenticated])
 def update_post(request, post_id):
-    post = None
-
-    try:
-        post = Post.objects.get(id=post_id, author=request.user)
-    except (Post.DoesNotExist, ValueError):
-        pass
-
-    if post is None:
-        try:
-            post_pk = int(post_id)  # обязательно приводим к int
-            post = Post.objects.get(post_pk=post_pk, author=request.user)
-        except (Post.DoesNotExist, ValueError):
-            return Response({"detail": "Post not found"}, status=404)
+    post = get_object_or_404(Post, id=post_id, author=request.user)
 
     post.approved = False
     serializer = PostSerializer(post, data=request.data, partial=True)
@@ -248,14 +236,13 @@ def update_post(request, post_id):
         updated_post = serializer.save()
     else:
         return Response(serializer.errors, status=400)
-
+    
     for key in request.FILES:
         image_file = request.FILES[key]
         Image.objects.create(post=updated_post, image=image_file)
-
+    
     updated_serializer = PostSerializer(updated_post)
     return JsonResponse(updated_serializer.data)
-
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
