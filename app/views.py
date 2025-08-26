@@ -222,7 +222,7 @@ def post_list(request):
             recipient_list = ['oralbekov.dias19@gmail.com']
 
             send_mail(subject, message, from_email, recipient_list)
-            return Response(serializer.data, status=201)
+            return Response(PostSerializer(post, context={'request': request}).data, status=201)
         return Response(serializer.errors, status=400)
     
 @api_view(['PATCH'])
@@ -489,7 +489,7 @@ def delete_post(request, post_id):
 @permission_classes([permissions.IsAuthenticated])
 def pay_post(request, post_id):
     try:
-        post = Post.objects.get(post_pk=post_id, author=request.user)
+        post = Post.objects.get(id=post_id, author=request.user)
     except Post.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
