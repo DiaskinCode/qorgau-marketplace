@@ -635,15 +635,23 @@ def user_profile(request, username):
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     
     
-@api_view(['DELETE'])
+@api_view(['DELETE', 'POST'])
 @permission_classes([IsAuthenticated])
+# @authentication_classes([TokenAuthentication, SessionAuthentication])  # <- при необходимости
 def delete_user(request):
     user = request.user
-    try:
-        user.delete()
-        return Response({'message': 'User deleted'}, status=status.HTTP_204_NO_CONTENT)
-    except:
-        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    if not user or not user.is_authenticated:
+        return Response({'detail': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    # Удаляем и возвращаем корректный статус без тела
+    user.delete()
+
+    if request.method == 'DELETE':
+        # 204 No Content — без JSON тела
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    # Для POST вернём 200 OK с сообщением (допустимо)
+    return Response({'detail': 'Account deleted'}, status=status.HTTP_200_OK)
     
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
