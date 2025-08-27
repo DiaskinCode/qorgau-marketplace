@@ -637,20 +637,29 @@ def user_profile(request, username):
     
 @api_view(['DELETE', 'POST'])
 @permission_classes([IsAuthenticated])
-# @authentication_classes([TokenAuthentication, SessionAuthentication])  # <- при необходимости
-def delete_user(request):
-    user = request.user
-    if not user or not user.is_authenticated:
-        return Response({'detail': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+def delete_user(request, username):
+    """
+    Удаление пользователя по username.
+    Обычный пользователь может удалить только СВОЙ аккаунт.
+    Админ (is_staff / is_superuser) может удалить любого.
+    """
+    # Права: сам себя — ок; админ — ок; иначе 403
+    if (request.user.username != username) and not (request.user.is_staff or request.user.is_superuser):
+        return Response({'detail': 'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
 
-    # Удаляем и возвращаем корректный статус без тела
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Удаляем
     user.delete()
 
+    # Для DELETE — 204 без тела
     if request.method == 'DELETE':
-        # 204 No Content — без JSON тела
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    # Для POST вернём 200 OK с сообщением (допустимо)
+    # Для POST — 200 с сообщением
     return Response({'detail': 'Account deleted'}, status=status.HTTP_200_OK)
     
 @api_view(['GET'])

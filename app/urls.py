@@ -18,7 +18,7 @@ urlpatterns = [
     path('posts/edit/<int:post_id>/', update_post, name='update-post'),
 
     path('user/<str:username>/', user_profile, name='user-profile'),
-    path('user/delete/', delete_user, name='user-delete'),
+    path('user/<str:username>/delete/', delete_user, name='user-delete'),
     path('posts/user/<str:username>/', posts_by_user, name='user-posts'),
 
     path('register/', register, name='register'),
