@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PushTokenCreateView,CategoryList,TariffViewSet,subcategory_list,user_profile, posts_by_user, result_payment,update_post,post_list,post_list_map, PostDetail, register, login_view,create_post,search_posts,active_posts, not_active_posts, deleted_posts, paid_posts, deactivate_post, activate_post, delete_post, pay_post,sort_by_category_posts, UserProfileUpdateView, create_connection,income_messages, post_list_city,stats_view, approve_post, admin_posts, add_to_favourites, remove_from_favourites, list_favourites, sort_by_category_city_posts
+from .views import PushTokenCreateView,CategoryList,TariffViewSet,subcategory_list,user_profile, posts_by_user, delete_user,update_post,post_list,post_list_map, PostDetail, register, login_view,create_post,search_posts,active_posts, not_active_posts, deleted_posts, paid_posts, deactivate_post, activate_post, delete_post, pay_post,sort_by_category_posts, UserProfileUpdateView, create_connection,income_messages, post_list_city,stats_view, approve_post, admin_posts, add_to_favourites, remove_from_favourites, list_favourites, sort_by_category_city_posts
 
 urlpatterns = [
     path('push-tokens/', PushTokenCreateView.as_view(), name='push-token-create'),
@@ -18,6 +18,7 @@ urlpatterns = [
     path('posts/edit/<int:post_id>/', update_post, name='update-post'),
 
     path('user/<str:username>/', user_profile, name='user-profile'),
+    path('user/delete/', delete_user, name='user-delete'),
     path('posts/user/<str:username>/', posts_by_user, name='user-posts'),
 
     path('register/', register, name='register'),

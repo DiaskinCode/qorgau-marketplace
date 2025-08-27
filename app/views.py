@@ -634,6 +634,17 @@ def user_profile(request, username):
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     
+    
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_user(request):
+    user = request.user
+    try:
+        user.delete()
+        return Response({'message': 'User deleted'}, status=status.HTTP_204_NO_CONTENT)
+    except:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def posts_by_user(request, username):
