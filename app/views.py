@@ -340,7 +340,7 @@ def search_posts(request):
     base_qs = Post.objects.filter(isActive=True, approved=True, isDeleted=False)
 
     # --- Фильтр по городу ---
-    if city and city != ALL_KZ:
+    if city and city != 'Весь Казахстан':
         qs = base_qs.filter(geolocation__iexact=city)
         if not qs.exists():
             return Response(
@@ -358,7 +358,7 @@ def search_posts(request):
         )
         if not qs.exists():
             # Если задан город — уточним в сообщении
-            if city and city != ALL_KZ:
+            if city and city != 'Весь Казахстан':
                 return Response(
                     {'detail': f'В {city} нет постов по запросу: {q}'},
                     status=status.HTTP_404_NOT_FOUND
