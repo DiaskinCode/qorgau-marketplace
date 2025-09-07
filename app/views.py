@@ -327,12 +327,13 @@ def create_post(request):
 def search_posts(request):
     q = request.GET.get('q', '').strip()
     city = request.GET.get('city', '').strip()
+
     if not q and not city:
         return Response(
             {'error': 'Please provide at least q or city.'},
             status=status.HTTP_400_BAD_REQUEST
         )
-    
+
     results = Post.objects.filter(
         isActive=True,
         approved=True,
@@ -340,7 +341,7 @@ def search_posts(request):
     )
 
     if city:
-        results = results.filter(city__iexact=city)
+        results = results.filter(geolocation__iexact=city)
 
     if q:
         results = results.filter(
