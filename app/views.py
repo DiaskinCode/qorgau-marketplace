@@ -323,16 +323,31 @@ def create_post(request):
     return Response(serializer.errors, status=400)
 
 @api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
 def search_posts(request):
-    query = request.GET.get('q', '')
+    q = request.GET.get('q', '').strip()
+    city = request.GET.get('city', '').strip()
+    if not q and not city:
+        return Response(
+            {'error': 'Please provide at least q or city.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    results = Post.objects.filter(
+        isActive=True,
+        approved=True,
+        isDeleted=False
+    )
 
-    if not query:
-        return Response({'error': 'Please provide a search query.'}, status=400)
+    if city:
+        results = results.filter(city__iexact=city)
 
-    results = Post.objects.filter(title__icontains=query,isActive=True,approved=True,isDeleted=False)
+    if q:
+        results = results.filter(
+            Q(title__icontains=q) | Q(body__icontains=q)
+        )
     serializer = PostSerializer(results, many=True)
-
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def sort_by_category_posts(request, category_id):
