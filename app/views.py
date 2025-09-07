@@ -322,33 +322,51 @@ def create_post(request):
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework import permissions, status
+from rest_framework.response import Response
+from django.db.models import Q
+from .models import Post
+from .serializers import PostSerializer
+
+
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def search_posts(request):
-    q = request.GET.get('q', '').strip()
-    city = request.GET.get('city', '').strip()
+    q = (request.GET.get('q') or '').strip()
+    city = (request.GET.get('city') or '').strip()
+    base_qs = Post.objects.filter(isActive=True, approved=True, isDeleted=False)
 
-    if not q and not city:
-        return Response(
-            {'error': 'Please provide at least q or city.'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+    if city and city != 'Весь Казахстан':
+        city_qs = base_qs.filter(geolocation__iexact=city)
 
-    results = Post.objects.filter(
-        isActive=True,
-        approved=True,
-        isDeleted=False
-    )
-
-    if city:
-        results = results.filter(geolocation__iexact=city)
+        # Если в принципе нет постов в таком городе — 404
+        if not city_qs.exists():
+            return Response(
+                {'detail': f'Нет постов в городе: {city}'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        qs = city_qs
+    else:
+        qs = base_qs
 
     if q:
-        results = results.filter(
-            Q(title__icontains=q) | Q(body__icontains=q)
-        )
-    serializer = PostSerializer(results, many=True)
+        qs = qs.filter(Q(title__icontains=q) | Q(body__icontains=q))
+
+        if not qs.exists():
+            if city and city != 'Весь Казахстан':
+                return Response(
+                    {'detail': f'В {city} нет постов по запросу: {q}'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            return Response(
+                {'detail': f'Нет постов по запросу: {q}'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+    serializer = PostSerializer(qs.order_by('-id'), many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 @api_view(['GET'])
 def sort_by_category_posts(request, category_id):
