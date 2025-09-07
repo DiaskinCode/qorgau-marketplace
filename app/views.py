@@ -335,26 +335,30 @@ from .serializers import PostSerializer
 def search_posts(request):
     q = (request.GET.get('q') or '').strip()
     city = (request.GET.get('city') or '').strip()
+
+    # Базовый фильтр по статусам
     base_qs = Post.objects.filter(isActive=True, approved=True, isDeleted=False)
 
-    if city and city != 'Весь Казахстан':
-        city_qs = base_qs.filter(geolocation__iexact=city)
-
-        # Если в принципе нет постов в таком городе — 404
-        if not city_qs.exists():
+    # --- Фильтр по городу ---
+    if city and city != ALL_KZ:
+        qs = base_qs.filter(geolocation__iexact=city)
+        if not qs.exists():
             return Response(
                 {'detail': f'Нет постов в городе: {city}'},
                 status=status.HTTP_404_NOT_FOUND
             )
-        qs = city_qs
     else:
         qs = base_qs
 
+    # --- Фильтр по тексту (ИСПРАВЛЕНО: content вместо body) ---
     if q:
-        qs = qs.filter(Q(title__icontains=q) | Q(body__icontains=q))
-
+        qs = qs.filter(
+            Q(title__icontains=q) |
+            Q(content__icontains=q)  # <= вот это было причиной 500
+        )
         if not qs.exists():
-            if city and city != 'Весь Казахстан':
+            # Если задан город — уточним в сообщении
+            if city and city != ALL_KZ:
                 return Response(
                     {'detail': f'В {city} нет постов по запросу: {q}'},
                     status=status.HTTP_404_NOT_FOUND
