@@ -4,7 +4,7 @@ from django.db.models import JSONField
         
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+    profile_image = models.ImageField(upload_to='profile_images/',default='defaults/avatar.png', null=True, blank=True)
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
 
@@ -110,7 +110,7 @@ class Favourite(models.Model):
 
 class Image(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
-    image = models.FileField(upload_to='post_images/')
+    image = models.FileField(upload_to='post_images/',default='defaults/post.png', null=True, blank=True)
     type = models.CharField(default="image",max_length=6)
 
     def __str__(self):
