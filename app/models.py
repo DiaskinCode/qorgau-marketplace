@@ -61,7 +61,7 @@ class Post(models.Model):
     cost = models.CharField(max_length=255, default='', verbose_name='Цена')
     geolocation = models.CharField(max_length=255, verbose_name='Геолокация')
 
-    global_category = models.CharField(max_length=255, on_delete=models.CASCADE, null=True, verbose_name='Глобальная категория')
+    global_category = models.CharField(max_length=255, null=True, verbose_name='Глобальная категория')
 
     extra_fields = JSONField(default=dict, blank=True, verbose_name="Доп. поля")
 
