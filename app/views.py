@@ -224,19 +224,59 @@ def post_list(request):
         #     send_mail(subject, message, from_email, recipient_list)
         #     return Response(PostSerializer(post, context={'request': request}).data, status=201)
         # return Response(serializer.errors, status=400)
+
+
+        # serializer = PostSerializer(data=request.data, context={'request': request})
+        # if not serializer.is_valid():
+        #     # покажи причину 400, иначе будешь гадать
+        #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # post = serializer.save()  # author проставится в create()
+
+        # # Если не прислали ни одного изображения -> создаём запись с default
+        # if not post.images.exists():
+        #     Image.objects.create(post=post)  # FileField подставит default='defaults/post.png'
+
+        # return Response(PostSerializer(post, context={'request': request}).data,
+        #                 status=status.HTTP_201_CREATED)
+
         serializer = PostSerializer(data=request.data, context={'request': request})
         if not serializer.is_valid():
-            # покажи причину 400, иначе будешь гадать
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        post = serializer.save()  # author проставится в create()
+        post = serializer.save()  # author ставится в serializer.create
 
-        # Если не прислали ни одного изображения -> создаём запись с default
-        if not post.images.exists():
+        # ====== СОХРАНЯЕМ ПРИСЛАННЫЕ КАРТИНКИ ======
+        created_any = False
+        subject = f'Создан новый пост "{post.title}" '
+        message = f'Новый пост под названием "{post.title}" был создан в {post.date} от {post.author}'
+        from_email = 'oralbekov.dias19@gmail.com'
+        recipient_list = ['oralbekov.dias19@gmail.com']
+        send_mail(subject, message, from_email, recipient_list)
+        # 1) Формат images[0][image] (+ images[0][type])
+        for key, file in request.FILES.items():
+            if key.startswith('images[') and key.endswith('][image]'):
+                idx = key.split('[')[1].split(']')[0]
+                img_type = request.data.get(f'images[{idx}][type]', 'image')
+                Image.objects.create(post=post, image=file, type=img_type)
+                created_any = True
+
+        # 2) Формат: список файлов под одинаковым ключом "images"
+        if not created_any:
+            for file in request.FILES.getlist('images'):
+                Image.objects.create(post=post, image=file, type=request.data.get('type', 'image'))
+                created_any = True
+
+        # 3) Формат: одиночное поле "image"
+        if not created_any and 'image' in request.FILES:
+            Image.objects.create(post=post, image=request.FILES['image'], type=request.data.get('type', 'image'))
+            created_any = True
+
+        # 4) Если ничего не прислали — ставим дефолт
+        if not created_any and not post.images.exists():
             Image.objects.create(post=post)  # FileField подставит default='defaults/post.png'
 
-        return Response(PostSerializer(post, context={'request': request}).data,
-                        status=status.HTTP_201_CREATED)
+        return Response(PostSerializer(post, context={'request': request}).data, status=status.HTTP_201_CREATED)
     
 @api_view(['PATCH'])
 @permission_classes([permissions.IsAuthenticated])
