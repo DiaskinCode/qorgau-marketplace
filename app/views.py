@@ -371,19 +371,52 @@ def search_posts(request):
     serializer = PostSerializer(qs.order_by('-id'), many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+ALL_KZ = 'Весь Казахстан'
+
+class LimitPageNumberPagination(PageNumberPagination):
+    page_size = 20
+    page_size_query_param = 'limit'  # ?limit=6
+    page_query_param = 'page'        # ?page=1
+    max_page_size = 100
+
+def _filter_city(qs, request):
+    city = (request.query_params.get('city') or '').strip()
+    if city and city != ALL_KZ:
+        qs = qs.filter(geolocation__iexact=city)
+    return qs
+
+def _paginate(qs, request):
+    paginator = LimitPageNumberPagination()
+    page_qs = paginator.paginate_queryset(qs, request)
+    ser = PostSerializer(page_qs, many=True)
+    return paginator.get_paginated_response(ser.data)
+
 @api_view(['GET'])
 def search_by_sub_category(request, sub_category_id):
+    """
+    GET /api/posts/subcategory/5/?city=Алматы&page=1&limit=6
+    """
     sub_category = get_object_or_404(SubCategory, pk=sub_category_id)
-    qs = Post.objects.filter(isActive=True, approved=True, isDeleted=False, subcategory=sub_category)
-    serializer = PostSerializer(qs.order_by('-id'), many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    qs = Post.objects.filter(
+        isActive=True, approved=True, isDeleted=False,
+        subcategory=sub_category
+    ).order_by('-id')
 
+    qs = _filter_city(qs, request)
+    return _paginate(qs, request)
 
 @api_view(['GET'])
 def search_by_global_category(request, global_category):
-    qs = Post.objects.filter(isActive=True, approved=True, isDeleted=False, global_category=global_category)
-    serializer = PostSerializer(qs.order_by('-id'), many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    """
+    GET /api/posts/global_category/Пожарная%20безопасность/?city=Алматы&page=1&limit=6
+    """
+    qs = Post.objects.filter(
+        isActive=True, approved=True, isDeleted=False,
+        global_category=global_category
+    ).order_by('-id')
+
+    qs = _filter_city(qs, request)
+    return _paginate(qs, request)
 @api_view(['GET'])
 def sort_by_category_posts(request, category_id):
     category = get_object_or_404(Category, pk=category_id)
