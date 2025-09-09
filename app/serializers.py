@@ -122,4 +122,7 @@ class PostSerializer(serializers.ModelSerializer):
         for field in fields_data:
             Field.objects.create(field_name=field['field_name'], field_value=field['field_value'], post=post)
 
+        if not post.images.exists():
+            Image.objects.create(post=post)
+            
         return post
