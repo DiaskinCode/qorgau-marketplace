@@ -371,7 +371,19 @@ def search_posts(request):
     serializer = PostSerializer(qs.order_by('-id'), many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+def search_by_sub_category(request, sub_category_id):
+    sub_category = get_object_or_404(SubCategory, pk=sub_category_id)
+    qs = Post.objects.filter(isActive=True, approved=True, isDeleted=False, subcategory=sub_category)
+    serializer = PostSerializer(qs.order_by('-id'), many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+@api_view(['GET'])
+def search_by_global_category(request, global_category):
+    qs = Post.objects.filter(isActive=True, approved=True, isDeleted=False, global_category=global_category)
+    serializer = PostSerializer(qs.order_by('-id'), many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 @api_view(['GET'])
 def sort_by_category_posts(request, category_id):
     category = get_object_or_404(Category, pk=category_id)
