@@ -169,61 +169,74 @@ def post_list(request):
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
-
+    
     elif request.method == 'POST':
-        data = request.data
-        data['author'] = request.user.id
+        # data = request.data
+        # data['author'] = request.user.id
 
-        last_post = Post.objects.filter(author=request.user).order_by('-date').first()
-        if last_post:
-            last_post_date = last_post.date
+        # last_post = Post.objects.filter(author=request.user).order_by('-date').first()
+        # if last_post:
+        #     last_post_date = last_post.date
 
-            if not isinstance(last_post_date, datetime):
-                last_post_date = datetime.combine(last_post_date, time.min)
+        #     if not isinstance(last_post_date, datetime):
+        #         last_post_date = datetime.combine(last_post_date, time.min)
 
-            if is_naive(last_post_date):
-                last_post_date = make_aware(last_post_date)
+        #     if is_naive(last_post_date):
+        #         last_post_date = make_aware(last_post_date)
 
-            if now() - last_post_date < timedelta(seconds=5):
-                return Response(
-                    {'detail': 'Пожалуйста, подождите немного перед созданием следующего поста.'},
-                    status=400
-                )
+        #     if now() - last_post_date < timedelta(seconds=5):
+        #         return Response(
+        #             {'detail': 'Пожалуйста, подождите немного перед созданием следующего поста.'},
+        #             status=400
+        #         )
 
-        print(data)
-        images_data = []
-        for key, value in data.items():
-            if key.startswith('images'):
-                image_index = int(key.split('[')[1].split(']')[0])
-                image_type = key.split('[')[2].split(']')[0]
-                if image_index >= len(images_data):
-                    images_data.append({})
-                images_data[image_index][image_type] = value
+        # print(data)
+        # images_data = []
+        # for key, value in data.items():
+        #     if key.startswith('images'):
+        #         image_index = int(key.split('[')[1].split(']')[0])
+        #         image_type = key.split('[')[2].split(']')[0]
+        #         if image_index >= len(images_data):
+        #             images_data.append({})
+        #         images_data[image_index][image_type] = value
 
-        serializer = PostSerializer(data=data, context={'request': request})
+        # serializer = PostSerializer(data=data, context={'request': request})
 
-        if serializer.is_valid():
-            post = serializer.save()
+        # if serializer.is_valid():
+        #     post = serializer.save()
 
-            for image_data in images_data:
-                image_file = image_data.get('image')
-                image_type = image_data.get('type')
+        #     for image_data in images_data:
+        #         image_file = image_data.get('image')
+        #         image_type = image_data.get('type')
 
-                Image.objects.create(
-                    post=post,
-                    image=image_file,
-                    type=image_type
-                )
-            # admin_user = User.objects.get(username='admin')  # Получение пользователя Admin
-            # send_new_post_notification(admin_user, post.title)  # Отправка уведомления
-            subject = f'Создан новый пост "{post.title}" '
-            message = f'Новый пост под названием "{post.title}" был создан в {post.date} от {post.author}'
-            from_email = 'oralbekov.dias19@gmail.com'
-            recipient_list = ['oralbekov.dias19@gmail.com']
+        #         Image.objects.create(
+        #             post=post,
+        #             image=image_file,
+        #             type=image_type
+        #         )
+        #     # admin_user = User.objects.get(username='admin')  # Получение пользователя Admin
+        #     # send_new_post_notification(admin_user, post.title)  # Отправка уведомления
+        #     subject = f'Создан новый пост "{post.title}" '
+        #     message = f'Новый пост под названием "{post.title}" был создан в {post.date} от {post.author}'
+        #     from_email = 'oralbekov.dias19@gmail.com'
+        #     recipient_list = ['oralbekov.dias19@gmail.com']
 
-            send_mail(subject, message, from_email, recipient_list)
-            return Response(PostSerializer(post, context={'request': request}).data, status=201)
-        return Response(serializer.errors, status=400)
+        #     send_mail(subject, message, from_email, recipient_list)
+        #     return Response(PostSerializer(post, context={'request': request}).data, status=201)
+        # return Response(serializer.errors, status=400)
+        serializer = PostSerializer(data=request.data, context={'request': request})
+        if not serializer.is_valid():
+            # покажи причину 400, иначе будешь гадать
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        post = serializer.save()  # author проставится в create()
+
+        # Если не прислали ни одного изображения -> создаём запись с default
+        if not post.images.exists():
+            Image.objects.create(post=post)  # FileField подставит default='defaults/post.png'
+
+        return Response(PostSerializer(post, context={'request': request}).data,
+                        status=status.HTTP_201_CREATED)
     
 @api_view(['PATCH'])
 @permission_classes([permissions.IsAuthenticated])
