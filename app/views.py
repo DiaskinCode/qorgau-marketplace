@@ -273,8 +273,13 @@ def post_list(request):
             created_any = True
 
         # 4) Если ничего не прислали — ставим дефолт
-        if not created_any and not post.images.exists():
-            Image.objects.create(post=post)  # FileField подставит default='defaults/post.png'
+        if created_any:
+            # На всякий случай уберём заглушку, если она вдруг есть
+            post.images.filter(image='defaults/post.png').delete()
+        else:
+            # Ни одной картинки не пришло — ставим заглушку
+            if not post.images.exists():
+                Image.objects.create(post=post)  # FileField default='defaults/post.png'
 
         return Response(PostSerializer(post, context={'request': request}).data, status=status.HTTP_201_CREATED)
     
