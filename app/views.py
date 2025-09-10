@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 from .models import Category, Post, UserProfile, Image, Favourite, Tariff, SubCategory
 from chat.models import Connection, Message
 from chat.serializers import ConnectionSerializer
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import parser_classes
 from .serializers import CategorySerializer, PostSerializer, UserSerializer, UserProfileSerializer, TariffSerializer, SubCategorySerializer
@@ -314,40 +314,40 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
         return self.retrieve(request, *args, **kwargs)
 
 @api_view(['POST'])
-@permission_classes([permissions.AllowAny])
-@parser_classes([MultiPartParser, FormParser])
+@parser_classes([MultiPartParser, FormParser, JSONParser])
+@transaction.atomic
 def register(request):
-    with transaction.atomic():
-        print(request.data)  # Check the entire request data
-        print(request.data.get('profile_image')) 
-        
-        serialized = UserProfileSerializer(data=request.data)
-        if serialized.is_valid():
-            user = User.objects.create_user(
-                serialized.initial_data['username'],
-                serialized.initial_data['email'],
-                serialized.initial_data['password']
-            )
+    # Validate base user fields first (ideally use a dedicated serializer)
+    username = request.data.get('username')
+    email    = request.data.get('email')
+    password = request.data.get('password')
+    if not username or not email or not password:
+        return Response({"detail": "username, email, password are required"}, status=400)
 
-            # Now that the user is created, associate it with the profile
-            profile_data = {
-                "profile_image": request.data.get('profile_image'),
-                "phone_number": serialized.initial_data.get('profile', {}).get('phone_number'),
-                "user": user.id 
-            }
+    # Create user
+    user = User.objects.create_user(username=username, email=email, password=password)
 
-            profile_serialized = UserProfileSerializer(data=profile_data)
-            if profile_serialized.is_valid():
-                profile_serialized.save(user=user)  # Pass the user instance here
-                login(request, user)
-                token, created = Token.objects.get_or_create(user=user)
-                return Response({
-                    'token': token.key,
-                    'user': UserSerializer(user).data,
-                }, status=status.HTTP_201_CREATED)
-            return Response(profile_serialized.errors, status=status.HTTP_400_BAD_REQUEST)
+    # Build profile payload
+    profile_data = {
+        "phone_number": request.data.get('profile.phone_number') or request.data.get('phone_number') or "",
+        "user": user.id,
+    }
 
-        return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
+    # ONLY include the image if a file was uploaded
+    img = request.FILES.get('profile_image')
+    if img:
+        profile_data["profile_image"] = img
+
+    profile_serialized = UserProfileSerializer(data=profile_data)
+    if not profile_serialized.is_valid():
+        # roll back user if profile fails
+        user.delete()
+        return Response(profile_serialized.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    profile_serialized.save(user=user)
+    login(request, user)
+    token, _ = Token.objects.get_or_create(user=user)
+    return Response({"token": token.key, "user": UserSerializer(user).data}, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])

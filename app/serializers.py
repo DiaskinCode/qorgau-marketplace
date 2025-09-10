@@ -8,7 +8,7 @@ class TariffSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'desc', 'price']
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    profile_image = serializers.ImageField(write_only=True)
+    profile_image = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = UserProfile
