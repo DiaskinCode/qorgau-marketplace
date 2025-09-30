@@ -14,7 +14,7 @@ export const MessagesDmScreen = ({route}) => {
     const user = useSelector(state => state.auth);
     const [messages, setMessages] = useState([]);
     const video = useRef(null);
-    const socket = new WebSocket(`ws://185.129.51.171/chat/?token=${user.token}`);
+    const socket = new WebSocket(`ws://market.qorgau-city.kz/chat/?token=${user.token}`);
     const {height, width} = Dimensions.get('window')
 
     useEffect(() => {
@@ -43,7 +43,7 @@ export const MessagesDmScreen = ({route}) => {
                 user: {
                     _id: msg.user._id,
                     name: msg.user.username,
-                    avatar: `http://185.129.51.171/${msg.user.profile_image}`
+                    avatar: `http://market.qorgau-city.kz/${msg.user.profile_image}`
                 }
             }));
             console.log(receivedMessages);
@@ -57,7 +57,7 @@ export const MessagesDmScreen = ({route}) => {
                 user: {
                     _id: msg.user._id,
                     name: msg.user.username,
-                    avatar: `http://185.129.51.171/${msg.user.profile_image}`
+                    avatar: `http://market.qorgau-city.kz/${msg.user.profile_image}`
                 }
             }));
 
@@ -81,7 +81,7 @@ export const MessagesDmScreen = ({route}) => {
             user: {
                 _id: user.user.id,
                 name: user.user.username,
-                avatar: `http://185.129.51.171/${user.user.profile_image}`
+                avatar: `http://market.qorgau-city.kz/${user.user.profile_image}`
             },
         };
 
@@ -110,7 +110,7 @@ export const MessagesDmScreen = ({route}) => {
             {data ? 
                 <View style={{marginTop:20,width:'90%',alignSelf:'center'}}>
                     <View style={{marginBottom:10}}>
-                    <View style={{flexDirection:'row',borderWidth:1,borderColor:'#F26F1D',borderRadius:5,position:'relative',alignItems:'center'}}>
+                    <View style={{flexDirection:'row',borderWidth:1,borderColor:'#F09235',borderRadius:10,position:'relative',alignItems:'center'}}>
                     {data.images[0].type === 'video' ? 
                             <Video
                             isMuted={true}
@@ -134,15 +134,15 @@ export const MessagesDmScreen = ({route}) => {
                         </View>
                         <View style={{flexDirection:'row',marginTop:4}}>
                                 <View style={{borderRadius:2,overflow:'hidden',marginRight:2}}>
-                                <Text style={{fontFamily:'bold-italic',backgroundColor:'#675BFB',fontSize:9.5,color:'#fff',paddingHorizontal:3}}>{data.condition}</Text>
+                                <Text style={{fontFamily:'bold-italic',backgroundColor:'#D6D6D6',fontSize:9.5,color:'#fff',paddingHorizontal:3}}>{data.condition}</Text>
                                 </View>
                                 {data.mortage ?
                                 <View style={{borderRadius:2,overflow:'hidden',marginRight:4}}>
-                                <Text style={{fontFamily:'bold-italic',backgroundColor:'#675BFB',fontSize:9.5,color:'#fff',paddingHorizontal:3}}>в рассрочку</Text>
+                                <Text style={{fontFamily:'bold-italic',backgroundColor:'#D6D6D6',fontSize:9.5,color:'#fff',paddingHorizontal:3}}>в рассрочку</Text>
                                 </View> : null}
                                 {data.delivery ?
                                 <View style={{borderRadius:2,overflow:'hidden'}}>
-                                <Text style={{fontFamily:'bold-italic',backgroundColor:'#675BFB',fontSize:9.5,color:'#fff',paddingHorizontal:5}}>доставка</Text>
+                                <Text style={{fontFamily:'bold-italic',backgroundColor:'#D6D6D6',fontSize:9.5,color:'#fff',paddingHorizontal:5}}>доставка</Text>
                                 </View> : null}
                             </View>
                         <Text style={{fontFamily:'regular',fontSize:10,color:'#96949D',marginTop:5}}>{data.geolocation}</Text>

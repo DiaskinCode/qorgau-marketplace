@@ -7,9 +7,9 @@ import { PostViewScreen } from '../screens/PostViewScreen';
 import { UserViewScreen } from '../screens/UserViewScreen';
 import { ResultsSearchScreen } from '../screens/ResultsSearchScreen';
 import { GetPostsByCategoryScreen } from '../screens/GetPostsByCategoryScreen';
-import { MapSearchScreen } from '../screens/MapSearchScreen';
 import { SearchScreen } from '../screens/SearchScreen';
 import { GetPostsByCityScreen } from '../screens/GetPostsByCityScreen';
+import { QorgauAiScreen } from '../screens/QorgauAiScreen';
 
 const Main = createNativeStackNavigator();
 
@@ -24,7 +24,7 @@ export default function MainStackNavigator({ route, navigation }) {
                     headerShown:false,
                     title: null,
                     contentStyle:{
-                        backgroundColor:'#FAFAFF'
+                        backgroundColor:'#FFFFFF'
                       }
                     })}/>
             <Main.Screen 
@@ -35,7 +35,7 @@ export default function MainStackNavigator({ route, navigation }) {
                   }}
                 options={({ navigation }) => ({
                     contentStyle:{
-                        backgroundColor:'#FAFAFF'
+                        backgroundColor:'#FFFFFF'
                       },
                     headerShadowVisible:false,
                     title: null,
@@ -53,7 +53,7 @@ export default function MainStackNavigator({ route, navigation }) {
                   }}
                 options={({ navigation }) => ({
                     contentStyle:{
-                        backgroundColor:'#FAFAFF'
+                        backgroundColor:'#FFFFFF'
                       },
                     headerShadowVisible:false,
                     title: null,
@@ -68,7 +68,7 @@ export default function MainStackNavigator({ route, navigation }) {
                 component={GetPostsByCityScreen}
                 options={({ route, navigation }) => ({
                     contentStyle:{
-                        backgroundColor:'#FAFAFF'
+                        backgroundColor:'#FFFFFF'
                       },
                     headerShadowVisible:false,
                     title: route.params.categoryName || 'Поиск по городу',
@@ -83,7 +83,7 @@ export default function MainStackNavigator({ route, navigation }) {
                 component={ResultsSearchScreen}
                 options={({ navigation }) => ({
                     contentStyle:{
-                        backgroundColor:'#FAFAFF'
+                        backgroundColor:'#FFFFFF'
                       },
                     headerShadowVisible:false,
                     title: 'Поиск',
@@ -98,22 +98,7 @@ export default function MainStackNavigator({ route, navigation }) {
                 component={SearchScreen}
                 options={({ navigation }) => ({
                     contentStyle:{
-                        backgroundColor:'#FAFAFF'
-                      },
-                    headerShadowVisible:false,
-                    title: 'Поиск',
-                    headerLeft: () => (
-                        <View style={styles.HeaderRight}>
-                            <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                        </View>
-                    ),
-                    })}/>
-            <Main.Screen 
-                name='MapSearchScreen' 
-                component={MapSearchScreen}
-                options={({ navigation }) => ({
-                    contentStyle:{
-                        backgroundColor:'#FAFAFF'
+                        backgroundColor:'#FFFFFF'
                       },
                     headerShadowVisible:false,
                     title: 'Поиск',
@@ -128,10 +113,25 @@ export default function MainStackNavigator({ route, navigation }) {
                 component={GetPostsByCategoryScreen}
                 options={({ route, navigation }) => ({
                     contentStyle:{
-                        backgroundColor:'#FAFAFF'
+                        backgroundColor:'#FFFFFF'
                       },
                     headerShadowVisible:false,
                     title: route.params.categoryName || 'Услуги',
+                    headerLeft: () => (
+                        <View style={styles.HeaderRight}>
+                            <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
+                        </View>
+                    ),
+                    })}/>
+            <Main.Screen 
+                name='QorgauAi' 
+                component={QorgauAiScreen}
+                options={({ route, navigation }) => ({
+                    contentStyle:{
+                        backgroundColor:'#FFFFFF'
+                      },
+                    headerShadowVisible:false,
+                    title: 'Qorgau AI',
                     headerLeft: () => (
                         <View style={styles.HeaderRight}>
                             <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
@@ -153,8 +153,8 @@ function HeaderIcon(props) {
 const styles = StyleSheet.create({
     Icon: {
         marginLeft: 13,
-        width: 24,
-        height: 24,
+        width: 28,
+        height: 28,
         resizeMode: 'contain'
     },
     rightIcon: {

@@ -130,7 +130,7 @@ export const GetPostsByCityScreen = ({route}) => {
       backgroundColor: '#eee',
     },
     activeCityButton: {
-      backgroundColor: '#F26F1D',
+      backgroundColor: '#F09235',
     },
     cityText: {
       textAlign: 'center',

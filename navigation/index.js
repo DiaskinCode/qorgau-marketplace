@@ -17,17 +17,20 @@ export default function Navigation() {
         },
       };
     
-    const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
 
     return (
         <NavigationContainer theme={theme}>
-            {isAuthenticated ? (
-              <Stack.Navigator screenOptions={{ headerShown: false }}>
-                <Stack.Screen component={BottomTabNavigation} name='root'/>
-              </Stack.Navigator>
-            ) : (
-              <AuthStackNavigator />
-            )}
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen component={BottomTabNavigation} name="root"/>
+              <Stack.Screen
+                name="Auth"
+                component={AuthStackNavigator}
+                options={{
+                  gestureEnabled: false,
+                  animation: 'slide_from_right',
+                }}
+              />
+            </Stack.Navigator>
         </NavigationContainer>
     );
   }

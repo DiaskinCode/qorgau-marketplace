@@ -40,7 +40,7 @@ export const ProductCardInfo = (props) => {
   };
 
     return (
-        <TouchableOpacity onPress={()=>{navigation.navigate('ViewPost',{id:props.id})}} style={{...shadowStyle, width:140,height:200,marginRight:10, backgroundColor:'#ffffff',borderRadius:5,marginBottom:10}}>
+        <TouchableOpacity onPress={()=>{navigation.navigate('ViewPost',{id:props.id})}} style={{...shadowStyle, width:140,height:200,marginRight:10, backgroundColor:'#ffffff',borderRadius:10,marginBottom:10}}>
           <InsetShadow
             containerStyle={{height:130,borderTopLeftRadius:5,borderTopRightRadius:5}}
             shadowRadius={2}
@@ -55,7 +55,7 @@ export const ProductCardInfo = (props) => {
                 ref={video}
                 style={{ width: 170, height: 200 }}
                 source={{
-                    uri: `http://185.129.51.171${props.media[0].image}`,
+                    uri: `http://market.qorgau-city.kz${props.media[0].image}`,
                 }}
                 volume={0.0}
                 isMuted={true}
@@ -63,7 +63,7 @@ export const ProductCardInfo = (props) => {
                 isLooping
                 />
             :
-              <Image style={{width:'100%',height:170,borderTopLeftRadius:5,borderTopRightRadius:5}} source={{uri:`http://185.129.51.171${props.image}`}}/>
+              <Image style={{width:'100%',height:170,borderTopLeftRadius:5,borderTopRightRadius:5}} source={{uri:`http://market.qorgau-city.kz${props.image}`}}/>
             }
           </InsetShadow>
           <View style={{paddingHorizontal:7}}>

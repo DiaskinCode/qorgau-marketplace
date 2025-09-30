@@ -1,118 +1,240 @@
-import React, { useState,useRef, useEffect, useMemo } from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity, TouchableWithoutFeedback, FlatList, ScrollView, RefreshControl, Dimensions, Image, Text } from 'react-native';
+import React, { useState, useRef, useEffect, use } from 'react';
+import { View, Text, TextInput, TouchableOpacity, FlatList, Image, Modal, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import MapView, { Marker,PROVIDER_GOOGLE } from 'react-native-maps'
-import * as Location from 'expo-location';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { useGetPostListMapQuery, useSearchPostsQuery } from '../api';
+import { useSearchPostsByCityQuery, useSearchPostsQuery } from '../api';
 import { ProductCard } from '../components/ProductCard';
+import { setCity } from '../actions/locationActions';
+import { cities } from '../constants/cities';
 
+const ALL_KZ = 'Весь Казахстан';
 
 export const SearchScreen = () => {
-    const [search, onChangeSearch] = useState('');
-    const [screen, setScreen] = useState(1);
-    const navigation = useNavigation()
-    const {height, width} = Dimensions.get('window')
-    const [region, setRegion] = useState(null);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
 
-    const [viewableItems, setViewableItems] = useState([]);
-    const viewabilityConfig = useRef({
-      itemVisiblePercentThreshold: 50
-    });
+  const selectedCity = useSelector((s) => s.city.selectedCity);
+  const isAllKazakhstan = !selectedCity || selectedCity === ALL_KZ;
+  const [visible, setVisible] = useState(false);
+
+  const effectiveCity = selectedCity;
+
+  const [search, onChangeSearch] = useState('');
+
+  const [viewableItems, setViewableItems] = useState([]);
+  const viewabilityConfig = useRef({ itemVisiblePercentThreshold: 50 });
+  const handleViewableItemsChanged = useRef(({ viewableItems }) => {
+    setViewableItems(viewableItems.map((item) => item.key));
+  });
+
+  const {
+    data: searchResultsAll,
+    isFetching: isFetchingAll,
+    refetch: refetchAll,
+    isLoading: isLoadingAll,
+    isError: isErrorAll,
+    error: allError,
+  } = useSearchPostsQuery(
+    search,
+    { skip: !search || search.length <= 2 || !isAllKazakhstan, refetchOnMountOrArgChange: true }
+  );
   
-    const handleViewableItemsChanged = useRef(({ viewableItems }) => {
-      setViewableItems(viewableItems.map(item => item.key));
-    });
+  const {
+    data: searchResultsByCity,
+    isFetching: isFetchingCity,
+    refetch: refetchByCity,
+    isLoading: isLoadingCity,
+    isError: isErrorCity,
+    error: cityError,
+  } = useSearchPostsByCityQuery(
+    { q: search, city: effectiveCity },
+    { skip: !search || search.length <= 2 || isAllKazakhstan, refetchOnMountOrArgChange: true }
+  );
+  
 
-    const { data:PostsOnMap, error, isLoading, refetch } = useGetPostListMapQuery();
-    const { data: searchResults,refetch: refetchSearchResults } = useSearchPostsQuery(search);
+  console.log('searchResultsByCity', searchResultsByCity);
+  
 
-    useEffect(() => {
-        refetch();
-        (async () => {
-          let { status } = await Location.requestForegroundPermissionsAsync();
-          if (status !== 'granted') {
-            console.log('Permission to access location was denied');
-            return;
-          }
-    
-          let location = await Location.getCurrentPositionAsync({});
-          setRegion({
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          });
-        })();
-      }, []);
+  const data = isAllKazakhstan
+  ? (isErrorAll ? [] : (searchResultsAll || []))
+  : (isErrorCity ? [] : (searchResultsByCity || []));
 
-      useEffect(() => {
-        if (search && search.length > 2) {
-            refetchSearchResults();
-        }
-    }, [search]);
+  const isBusy = isAllKazakhstan
+  ? (isLoadingAll || isFetchingAll)
+  : (isLoadingCity || isFetchingCity);
 
-    return (
-        <View style={{width:'100%',alignItems:'center'}}>
-            <View style={{marginTop:20,width:'90%',backgroundColor:'#FFFFFF',borderRadius:15,height:46,flexDirection:'row',position:'relative',zIndex:3}}>
-                <TouchableOpacity onPress={() => {setScreen(1)}} style={screen == 1 ? {width:'50%',backgroundColor:'#675BFB',borderRadius:15,justifyContent:'center',alignItems:'center'} : {width:'50%',justifyContent:'center',alignItems:'center'}}><Text style={screen == 1 ? {color:'#fff',fontFamily:'medium',fontSize:16} : {color:'#675BFB',fontFamily:'medium',fontSize:16}}>По названию</Text></TouchableOpacity>
-                <TouchableOpacity onPress={() => {setScreen(2)}} style={screen == 2 ? {width:'50%',backgroundColor:'#675BFB',borderRadius:15,justifyContent:'center',alignItems:'center'} : {width:'50%',justifyContent:'center',alignItems:'center'}}><Text style={screen == 2 ? {color:'#fff',fontFamily:'medium',fontSize:16} : {color:'#675BFB',fontFamily:'medium',fontSize:16}}>По карте</Text></TouchableOpacity>
-            </View>
-            {screen == 1 ?
-            <>
-                <TouchableOpacity onPress={()=>{navigation.navigate('SearchScreen')}} style={{ width: '90%', alignSelf: 'center', flexDirection: 'row', marginTop: 20, backgroundColor: '#F9F6FF', justifyContent: 'space-between', alignItems: 'center', width: 350, paddingHorizontal: 25, height: 50, borderWidth: 1, borderRadius: 10, borderColor: '#F26F1D' }}>
-                <Image style={{ width: 17, height: 17 }} source={require('../assets/search.png')} />
-                <TextInput
-                    style={{ width: '90%', fontSize: 16 }}
-                    onChangeText={onChangeSearch}
-                    placeholder="Поиск по каталогу"
-                    value={search}
-                />
-                </TouchableOpacity> 
-                <FlatList
-                data={searchResults}
-                contentContainerStyle={{ paddingBottom: 20, marginBottom: 90, marginTop: 10, justifyContent: 'space-between',width:'100%' }}
-                keyExtractor={(item) => item.id.toString()}
-                numColumns={2}
-                renderItem={({ item }) => (
-                    <ProductCard
-                    id={item.id}
-                    title={item.title}
-                    key={item.id}
-                    image={item.images[0].image}
-                    cost={item.cost}
-                    media={item.images}
-                    condition={item.condition}
-                    mortage={item.mortage}
-                    delivery={item.delivery}
-                    city={item.geolocation}
-                    date={item.date}
-                    isInView={viewableItems.includes(item.id.toString())}
-                    />
-                )}
-                onViewableItemsChanged={handleViewableItemsChanged.current}
-                viewabilityConfig={viewabilityConfig.current}
-                />
-            </>
-            :
+  const apiError = isAllKazakhstan ? allError : cityError;
 
-            <View style={{width: '100%', height: height,position:'absolute',top:0}}>
-                <MapView
-                    provider={PROVIDER_GOOGLE}
-                    style={{width: '100%', height: height}}
-                    showsUserLocation={true}
-                    initialRegion={region}
-                >
-                    {PostsOnMap && PostsOnMap.map((post) => (
-                        <Marker
-                            key={post.id}
-                            onPress= {()=>{navigation.navigate('ViewPost',{id:post.id})}}
-                            coordinate={{latitude: parseFloat(post.lat), longitude: parseFloat(post.lng)}}
-                        />
-                    ))}
-                </MapView>
-            </View>
-            }
+  const refetchActive = isAllKazakhstan ? refetchAll : refetchByCity;
+
+  useEffect(() => {
+    if (search && search.length > 2) {
+      refetchActive?.();
+    }
+  }, [search, selectedCity]);
+
+  // ----- CITY PICKER -----
+  const handleSelectCity = (city) => {
+    if (city === selectedCity) {
+      setVisible(false);
+      return;
+    }
+    dispatch(setCity(city));
+    setVisible(false);
+  };
+
+  return (
+    <View style={{ width: '100%', alignItems: 'center', justifyContent: 'space-between'}}>
+      <View style={{ width: '85%', alignItems: 'center', justifyContent: 'space-between',flexDirection: 'row'}}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('SearchScreen')}
+          style={styles.searchBox}
+          activeOpacity={1}
+        >
+          <Image style={{ width: 17, height: 17,marginRight: 10 }} source={require('../assets/search.png')} />
+          <TextInput
+            style={{ width: '90%', fontSize: 16 }}
+            onChangeText={onChangeSearch}
+            placeholder="Поиск по каталогу"
+            value={search}
+            returnKeyType="search"
+          />
+        </TouchableOpacity>
+        <View style={styles.filtersRow}>
+          <TouchableOpacity style={styles.cityChip} onPress={() => setVisible(true)}>
+            <Text style={styles.cityChipText} numberOfLines={1}>
+              {selectedCity || ALL_KZ}
+            </Text>
+            <Image style={{ width: 12, height: 12, marginLeft: 6 }} source={require('../assets/chevron-down.png')} />
+          </TouchableOpacity>
         </View>
-    );
-  }
+      </View>
+
+      {isBusy && (
+        <View style={{ marginTop: 12 }}>
+          <ActivityIndicator />
+        </View>
+      )}
+
+      <FlatList
+        data={data}
+        contentContainerStyle={{ paddingBottom: 20, marginBottom: 90, marginTop: 10, justifyContent: 'space-between', width: '100%' }}
+        keyExtractor={(item) => item.id.toString()}
+        numColumns={2}
+        renderItem={({ item }) => (
+          <ProductCard
+            id={item.id}
+            title={item.title}
+            key={item.id}
+            image={item.images?.[0]?.image}
+            cost={item.cost}
+            media={item.images}
+            condition={item.condition}
+            mortage={item.mortage}
+            delivery={item.delivery}
+            city={item.geolocation}
+            date={item.date}
+            isInView={viewableItems.includes(item.id.toString())}
+          />
+        )}
+        onViewableItemsChanged={handleViewableItemsChanged.current}
+        viewabilityConfig={viewabilityConfig.current}
+        ListEmptyComponent={
+          (!!search && search.length > 2 && !isBusy)
+            ? (
+              <View style={{ paddingTop: 24, alignItems: 'center' }}>
+                <Text>
+                  {
+                    (isAllKazakhstan ? isErrorAll : isErrorCity)
+                      ? (apiError?.data?.detail || 'Ничего не найдено')
+                      : 'Ничего не найдено'
+                  }
+                </Text>
+              </View>
+            )
+            : null
+        }
+      />
+
+      <Modal visible={visible} transparent>
+        <TouchableOpacity
+          style={styles.centeredView}
+          activeOpacity={1}
+          onPressOut={() => setVisible(false)}
+        >
+          <View style={styles.modalView}>
+            <ScrollView style={{ width: '100%', paddingHorizontal: 35 }}>
+              {cities.map((c) => (
+                <TouchableOpacity
+                  key={c.value}
+                  style={[styles.cityButton, selectedCity === c.value && styles.activeCityButton]}
+                  onPress={() => handleSelectCity(c.value)}
+                >
+                  <Text style={selectedCity === c.value ? styles.cityTextActive : styles.cityText}>
+                    {c.value}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  searchBox: {
+    width: '63%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#F7F8F9',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 25,
+    height: 50,
+    borderRadius: 15,
+  },
+  filtersRow: {
+    width: '35%',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  cityChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 30,
+    justifyContent: 'space-between',
+    height: 50,
+    borderRadius: 18,
+    backgroundColor: '#F0F1F3',
+  },
+  cityChipText: { fontSize: 14 },
+  centeredView: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    width: '85%',
+    maxHeight: '70%',
+    backgroundColor: 'white',
+    borderRadius: 16,
+    paddingVertical: 18,
+    alignItems: 'center',
+  },
+  cityButton: {
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#eee',
+  },
+  activeCityButton: {
+    backgroundColor: '#F5F7FF',
+    borderRadius: 8,
+  },
+  cityText: { fontSize: 16 },
+  cityTextActive: { fontSize: 16, fontWeight: '600' },
+});

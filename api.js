@@ -6,7 +6,7 @@ export const api = createApi({
   reducerPath: 'api',
   refetchOnMountOrArgChange: true,
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://185.129.51.171/api/',
+    baseUrl: 'http://market.qorgau-city.kz/api/',
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth.token;
       if (token) {
@@ -45,8 +45,58 @@ export const api = createApi({
       query: () => `categories/`,
       providesTags: ['CategoriesList'],
     }),
+    getSubCategoriesList: builder.query({
+      query: (id) => `categories/${id}/subcategories/`,
+      providesTags: ['CategoriesList'],
+    }),
     searchPosts: builder.query({
       query: (searchQuery) => `search_posts/?q=${searchQuery}`,
+      providesTags: ['PostList'],
+      keepUnusedDataFor: 0,
+    }),
+    getPostsBySubCategory: builder.query({
+      // arg может быть числом/строкой (старый вызов),
+      // или объектом { sub_category_id, city, page, limit } (новый вызов)
+      query: (arg) => {
+        if (typeof arg === 'object' && arg !== null) {
+          const { sub_category_id, city, page, limit } = arg || {};
+          const params = {};
+          if (city)  params.city  = city;
+          if (page)  params.page  = page;
+          if (limit) params.limit = limit;
+          return { url: `posts/subcategory/${sub_category_id}/`, params };
+        }
+        // старый вариант: только id, без параметров
+        return `posts/subcategory/${arg}/`;
+      },
+      providesTags: ['PostList'],
+      keepUnusedDataFor: 0,
+    }),
+    
+    getPostsByGlobalCategory: builder.query({
+      query: (arg) => {
+        if (typeof arg === 'object' && arg !== null) {
+          const { global_category, city, page, limit } = arg || {};
+          const params = {};
+          if (city)  params.city  = city;
+          if (page)  params.page  = page;
+          if (limit) params.limit = limit;
+          return {
+            url: `posts/global_category/${encodeURIComponent(global_category)}/`,
+            params,
+          };
+        }
+        // старый вариант: только строка категории
+        return `posts/global_category/${encodeURIComponent(arg)}/`;
+      },
+      providesTags: ['PostList'],
+      keepUnusedDataFor: 0,
+    }),
+    searchPostsByCity: builder.query({
+      query: ({ q, city }) => ({
+        url: 'search_posts/',
+        params: { q, city },
+      }),
       providesTags: ['PostList'],
       keepUnusedDataFor: 0,
     }),
@@ -174,8 +224,10 @@ export const {
   useGetPostListMapQuery,
   useGetPostByIdQuery,
   useGetCategoriesListQuery,
+  useGetSubCategoriesListQuery,
   useGetPostsByCategoryAndCityQuery,
   useSearchPostsQuery,
+  useSearchPostsByCityQuery,
   useGetActivePostsQuery,
   useGetAdminPostsQuery,
   useGetNotActivePostsQuery,
@@ -183,6 +235,9 @@ export const {
   useGetNotPaidPostsQuery,
   useGetPostsByCategoryQuery,
   useListFavouritesQuery,
+
+  useGetPostsBySubCategoryQuery,
+  useGetPostsByGlobalCategoryQuery,
 
   useGetPostsByUserQuery,
   useGetUserByUsernameQuery,

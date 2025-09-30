@@ -1,11 +1,8 @@
 import React, { useEffect } from 'react';
 import { View, Text, FlatList } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../actions/authActions';
-import { persistor } from '../store/index';
-import { ReelsCard } from '../components/ReelsCard';
 import { useSearchPostsQuery } from '../api';
+import { ProductCard } from '../components/ProductCard';
 
 export const ResultsSearchScreen = ({route}) => {
   const {searchQuery} = route.params
@@ -19,7 +16,7 @@ export const ResultsSearchScreen = ({route}) => {
   }, [searchResults]);
 
   const renderItem = ({ item }) => (
-    <ReelsCard
+    <ProductCard
       id={item.id}
       title={item.title}
       key={item.id}

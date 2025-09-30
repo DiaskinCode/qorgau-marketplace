@@ -16,7 +16,7 @@ const generatePaymentUrl = (login, pass1, invId, outSumm, desc) => {
 
 
     // Предполагаемые значения для демонстрации
-    const login = "Beine-jarnama.kz";
+    const login = "qorgau-marketplace.kz";
     const pass1 = "RBSfnQeFG41d5Cu30zEb";
     const desc = tariff === 1 ? "Ваше объявление будет в первых рядах" : "Ваше объявление будет выделено цветом";
     const outSumm = tariff === 1 ? "2500" : "1500";

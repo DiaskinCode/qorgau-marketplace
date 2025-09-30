@@ -2,7 +2,7 @@ import React, { Component,useEffect,useState } from 'react';
 import { View, Image, StyleSheet, Text, Dimensions } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MainStackNavigator from './MainStackNavigator'
-import ReelsStackNavigator from './ReelsStackNavigator'
+import FavoriteStackNavigator from './FavouriteStackNavigator'
 import MessagesStackNavigator from './MessagesStackNavigator'
 import ProfileStackNavigator from './ProfileStackNavigator'
 import CreatePostStackNavigation from './CreatePostStackNavigation'
@@ -17,7 +17,15 @@ export default function BottomTabNavigation () {
     return (
         <View style={styles.container}>
             <Tab.Navigator
-                initialRouteName={t("tabs.home")}
+                initialRouteName={'HomeTab'}
+                listeners={({ navigation }) => ({
+                    tabPress: e => {
+                      navigation.navigate('HomeTab', {
+                        screen: 'HomeScreen',
+                        params: { scrollToTop: true }
+                      });
+                    },
+                  })}
                 screenOptions={({ route }) => ({
                     headerShown: false,
                     tabBarLabel: ({ color }) => {
@@ -43,20 +51,20 @@ export default function BottomTabNavigation () {
                     },
                 })}
                 >
-                <Tab.Screen
-                    name={t("tabs.home")}
-                    component={MainStackNavigator}
-                    options={{tabBarIcon: ({focused}) => focused ? 
+                <Tab.Screen name="HomeTab" component={MainStackNavigator}
+                    options={{
+                        tabBarLabel: t('tabs.home'),
+                        tabBarIcon: ({focused}) => focused ? 
                         <TabIcon image={require('../assets/mainIconActive.png')}/> : 
                         <TabIcon image={require('../assets/mainIcon.png')}/>,
                     }}
                 />
                 <Tab.Screen
                     name={t("tabs.feed")}
-                    component={ReelsStackNavigator}
+                    component={FavoriteStackNavigator}
                     options={{tabBarIcon: ({focused}) => focused ? 
-                        <TabIcon image={require('../assets/reelsIconActive.png')}/> : 
-                        <TabIcon image={require('../assets/reelsIcon.png')}/>,
+                        <TabIcon image={require('../assets/Heart.png')}/> : 
+                        <TabIcon image={require('../assets/Favorite.png')}/>,
                     }}
                 />
                 <Tab.Screen
@@ -122,9 +130,8 @@ const styles = StyleSheet.create({
         resizeMode: 'contain'
     },
     CreatePostIcon: {
-        width:60,
-        height:60,
-        marginTop:-30
+        width:22,
+        height:20,
     },
     tabBarLabel: {
         fontSize: 10, 
@@ -134,7 +141,7 @@ const styles = StyleSheet.create({
     tabBarLabelActive: {
         fontSize: 10, 
         fontFamily:'regular',
-        color: '#F26F1D',
+        color: '#F09235',
     },
     
 });

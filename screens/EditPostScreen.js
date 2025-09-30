@@ -190,7 +190,7 @@ export const EditPostScreen = ({route}) => {
 
 
   const sendPostRequest = async () => {
-    const apiUrl = `http://185.129.51.171/api/posts/edit/${postData.id}/`; // Replace with your actual API endpoint
+    const apiUrl = `http://market.qorgau-city.kz/api/posts/edit/${postData.id}/`; 
     const formData = new FormData();
 
     formData.append('title', title);
@@ -290,7 +290,7 @@ export const EditPostScreen = ({route}) => {
           <Image style={{ height:16, width:8, transform:[{ rotate: isOpen ? '270deg' : '90deg' }], marginRight:5 }} source={require('../assets/arrow-right.png')} />
         </Pressable>
         {isOpen && (
-          <View style={{ backgroundColor:'#F9F6FF', borderEndEndRadius:5, marginTop:-3, borderBottomLeftRadius:5, borderColor:'#675BFB', borderWidth:1, paddingVertical:10 }}>
+          <View style={{ backgroundColor:'#F7F8F9', borderEndEndRadius:5, marginTop:-3, borderBottomLeftRadius:5, borderColor:'#D6D6D6', borderWidth:1, paddingVertical:10 }}>
             {items.map((item, index) => (
               <TouchableOpacity
                 key={index}
@@ -332,7 +332,7 @@ export const EditPostScreen = ({route}) => {
     <Text style={{ fontSize: 16, fontFamily: 'bold' }}>Добавьте фотографии</Text>
     <ScrollView horizontal={true} contentContainerStyle={{flexDirection:'row',alignItems:'center',marginTop:10,paddingBottom:15}}>
         <TouchableOpacity style={{ marginRight: 10 }} onPress={pickImage}>
-            <View style={{ width: 110, height: 110, backgroundColor: '#F9F6FF', borderRadius: 5, borderWidth: 1, borderColor: '#675BFB', justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ width: 110, height: 110, backgroundColor: '#F7F8F9', borderRadius: 5, borderWidth: 1, borderColor: '#D6D6D6', justifyContent: 'center', alignItems: 'center' }}>
                 <Image style={{ height: 25, width: 25 }} source={require('../assets/plusBlue.png')} />
             </View>
         </TouchableOpacity>
@@ -341,13 +341,13 @@ export const EditPostScreen = ({route}) => {
         horizontal
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
-            item.type === 'image' ? <Image source={{ uri: item.image ? item.image : item.uri }} style={{ width: 110, height: 110, borderRadius: 5, borderWidth: 1, borderColor: '#675BFB', marginRight: 10 }} /> :
+            item.type === 'image' ? <Image source={{ uri: item.image ? item.image : item.uri }} style={{ width: 110, height: 110, borderRadius: 5, borderWidth: 1, borderColor: '#D6D6D6', marginRight: 10 }} /> :
         
             <View>
                 <Video
                 isMuted={true}
                 ref={video}
-                style={{ width: 110, height: 110, borderRadius: 5, borderWidth: 1, borderColor: '#675BFB', marginRight: 10 }}
+                style={{ width: 110, height: 110, borderRadius: 5, borderWidth: 1, borderColor: '#D6D6D6', marginRight: 10 }}
                 source={{
                     uri: item.uri,
                 }}
@@ -372,8 +372,8 @@ export const EditPostScreen = ({route}) => {
           height: 50,
           borderWidth: 1,
           borderRadius: 5,
-          borderColor: '#675BFB',
-          backgroundColor: '#F9F6FF'
+          borderColor: '#D6D6D6',
+          backgroundColor: '#F7F8F9'
         }}
         placeholder={t('title.header')}
         maxLength={50}
@@ -388,8 +388,8 @@ export const EditPostScreen = ({route}) => {
           height: 50,
           borderWidth: 1,
           borderRadius: 5,
-          borderColor: '#675BFB',
-          backgroundColor: '#F9F6FF'
+          borderColor: '#D6D6D6',
+          backgroundColor: '#F7F8F9'
         }}
         value={cost}
         onChangeText={onChangeCost}
@@ -404,7 +404,7 @@ export const EditPostScreen = ({route}) => {
     </Pressable>
 
     {categoriesOpen && data ? 
-        <View style={{backgroundColor: '#F9F6FF',borderEndEndRadius: 5,marginTop:-3,borderBottomLeftRadius: 5,borderColor: '#675BFB',borderWidth: 1,paddingVertical:10}}>
+        <View style={{backgroundColor: '#F7F8F9',borderEndEndRadius: 5,marginTop:-3,borderBottomLeftRadius: 5,borderColor: '#D6D6D6',borderWidth: 1,paddingVertical:10}}>
             {data.map((item) => {
             return (
                 <TouchableOpacity
@@ -437,8 +437,8 @@ export const EditPostScreen = ({route}) => {
           paddingTop:20,
           borderWidth: 1,
           borderRadius: 5,
-          borderColor: '#675BFB',
-          backgroundColor: '#F9F6FF'
+          borderColor: '#D6D6D6',
+          backgroundColor: '#F7F8F9'
         }}
         value={content}
         onChangeText={onChangeContent}
@@ -460,8 +460,8 @@ export const EditPostScreen = ({route}) => {
           height: 50,
           borderWidth: 1,
           borderRadius: 5,
-          borderColor: '#675BFB',
-          backgroundColor: '#F9F6FF'
+          borderColor: '#D6D6D6',
+          backgroundColor: '#F7F8F9'
         }}
           value={brand}
           onChangeText={onChangeBrand}
@@ -477,8 +477,8 @@ export const EditPostScreen = ({route}) => {
           height: 50,
           borderWidth: 1,
           borderRadius: 5,
-          borderColor: '#675BFB',
-          backgroundColor: '#F9F6FF'
+          borderColor: '#D6D6D6',
+          backgroundColor: '#F7F8F9'
         }}
           value={color}
           onChangeText={onChangeColor}
@@ -500,8 +500,8 @@ export const EditPostScreen = ({route}) => {
           height: 50,
           borderWidth: 1,
           borderRadius: 5,
-          borderColor: '#675BFB',
-          backgroundColor: '#F9F6FF'
+          borderColor: '#D6D6D6',
+          backgroundColor: '#F7F8F9'
         }}
           value={engineVolume}
           onChangeText={onChangeEngineVolume}
@@ -516,8 +516,8 @@ export const EditPostScreen = ({route}) => {
           height: 50,
           borderWidth: 1,
           borderRadius: 5,
-          borderColor: '#675BFB',
-          backgroundColor: '#F9F6FF'
+          borderColor: '#D6D6D6',
+          backgroundColor: '#F7F8F9'
         }}
           value={numberOfOwners}
           onChangeText={onChangeNumberOfOwners}
@@ -538,8 +538,8 @@ export const EditPostScreen = ({route}) => {
       height: 50,
       borderWidth: 1,
       borderRadius: 5,
-      borderColor: '#675BFB',
-      backgroundColor: '#F9F6FF'
+      borderColor: '#D6D6D6',
+      backgroundColor: '#F7F8F9'
     }}
       value={numberOfRooms}
       onChangeText={onChangeNumberOfRooms}
@@ -555,8 +555,8 @@ export const EditPostScreen = ({route}) => {
       height: 50,
       borderWidth: 1,
       borderRadius: 5,
-      borderColor: '#675BFB',
-      backgroundColor: '#F9F6FF'
+      borderColor: '#D6D6D6',
+      backgroundColor: '#F7F8F9'
     }}
       value={totalArea}
       onChangeText={onChangeTotalArea}
@@ -582,8 +582,8 @@ export const EditPostScreen = ({route}) => {
       height: 50,
       borderWidth: 1,
       borderRadius: 5,
-      borderColor: '#675BFB',
-      backgroundColor: '#F9F6FF'
+      borderColor: '#D6D6D6',
+      backgroundColor: '#F7F8F9'
     }}
       value={house3}
       onChangeText={onChangeHouse3}
@@ -603,8 +603,8 @@ export const EditPostScreen = ({route}) => {
           height: 50,
           borderWidth: 1,
           borderRadius: 5,
-          borderColor: '#675BFB',
-          backgroundColor: '#F9F6FF'
+          borderColor: '#D6D6D6',
+          backgroundColor: '#F7F8F9'
         }}
           value={numberOfRooms}
           onChangeText={onChangeNumberOfRooms}
@@ -620,8 +620,8 @@ export const EditPostScreen = ({route}) => {
           height: 50,
           borderWidth: 1,
           borderRadius: 5,
-          borderColor: '#675BFB',
-          backgroundColor: '#F9F6FF'
+          borderColor: '#D6D6D6',
+          backgroundColor: '#F7F8F9'
         }}
           value={leaseTerm}
           onChangeText={onChangeLeaseTerm}
@@ -651,8 +651,8 @@ export const EditPostScreen = ({route}) => {
           height: 50,
           borderWidth: 1,
           borderRadius: 5,
-          borderColor: '#675BFB',
-          backgroundColor: '#F9F6FF'
+          borderColor: '#D6D6D6',
+          backgroundColor: '#F7F8F9'
         }}
           value={totalArea}
           onChangeText={onChangeTotalArea}
@@ -672,8 +672,8 @@ export const EditPostScreen = ({route}) => {
           height: 50,
           borderWidth: 1,
           borderRadius: 5,
-          borderColor: '#675BFB',
-          backgroundColor: '#F9F6FF'
+          borderColor: '#D6D6D6',
+          backgroundColor: '#F7F8F9'
         }}
           value={house3}
           onChangeText={onChangeHouse3}
@@ -696,8 +696,8 @@ export const EditPostScreen = ({route}) => {
             height: 50,
             borderWidth: 1,
             borderRadius: 5,
-            borderColor: '#675BFB',
-            backgroundColor: '#F9F6FF'
+            borderColor: '#D6D6D6',
+            backgroundColor: '#F7F8F9'
           }}
           options={{
             mask: '+79999999999'
@@ -717,8 +717,8 @@ export const EditPostScreen = ({route}) => {
             height: 50,
             borderWidth: 1,
             borderRadius: 5,
-            borderColor: '#675BFB',
-            backgroundColor: '#F9F6FF'
+            borderColor: '#D6D6D6',
+            backgroundColor: '#F7F8F9'
           }}
           options={{
             mask: '+79999999999'
@@ -737,8 +737,8 @@ export const EditPostScreen = ({route}) => {
             height: 50,
             borderWidth: 1,
             borderRadius: 5,
-            borderColor: '#675BFB',
-            backgroundColor: '#F9F6FF'
+            borderColor: '#D6D6D6',
+            backgroundColor: '#F7F8F9'
           }}
           value={site}
           onChangeText={onChangeSite}
@@ -754,8 +754,8 @@ export const EditPostScreen = ({route}) => {
             height: 50,
             borderWidth: 1,
             borderRadius: 5,
-            borderColor: '#675BFB',
-            backgroundColor: '#F9F6FF'
+            borderColor: '#D6D6D6',
+            backgroundColor: '#F7F8F9'
           }}
           value={telegram}
           onChangeText={onChangeTelegram}
@@ -771,8 +771,8 @@ export const EditPostScreen = ({route}) => {
             height: 50,
             borderWidth: 1,
             borderRadius: 5,
-            borderColor: '#675BFB',
-            backgroundColor: '#F9F6FF'
+            borderColor: '#D6D6D6',
+            backgroundColor: '#F7F8F9'
           }}
           value={tiktok}
           onChangeText={onChangeTiktok}
@@ -788,8 +788,8 @@ export const EditPostScreen = ({route}) => {
             height: 50,
             borderWidth: 1,
             borderRadius: 5,
-            borderColor: '#675BFB',
-            backgroundColor: '#F9F6FF'
+            borderColor: '#D6D6D6',
+            backgroundColor: '#F7F8F9'
           }}
           value={facebook}
           onChangeText={onChangeFacebook}
@@ -805,8 +805,8 @@ export const EditPostScreen = ({route}) => {
             height: 50,
             borderWidth: 1,
             borderRadius: 5,
-            borderColor: '#675BFB',
-            backgroundColor: '#F9F6FF'
+            borderColor: '#D6D6D6',
+            backgroundColor: '#F7F8F9'
           }}
           value={insta}
           onChangeText={onChangeInsta}
@@ -822,8 +822,8 @@ export const EditPostScreen = ({route}) => {
             height: 50,
             borderWidth: 1,
             borderRadius: 5,
-            borderColor: '#675BFB',
-            backgroundColor: '#F9F6FF'
+            borderColor: '#D6D6D6',
+            backgroundColor: '#F7F8F9'
           }}
           value={twogis}
           onChangeText={onChangeTwogis}
@@ -838,14 +838,14 @@ export const EditPostScreen = ({route}) => {
                 style={{
                 paddingVertical: 15,
                 width: 170,
-                backgroundColor: selectedCondition === 'Новый' ? '#675BFB' : '#F9F6FF',
+                backgroundColor: selectedCondition === 'Новый' ? '#D6D6D6' : '#F7F8F9',
                 borderRadius: 5,
                 alignItems: 'center',
-                borderColor: '#675BFB',
+                borderColor: '#D6D6D6',
                 borderWidth: 1,
                 }}
             >
-                <Text style={{ color: selectedCondition === 'Новый' ? '#F9F6FF' : '#675BFB', fontSize: 16 }}>Новый</Text>
+                <Text style={{ color: selectedCondition === 'Новый' ? '#F7F8F9' : '#D6D6D6', fontSize: 16 }}>Новый</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -854,14 +854,14 @@ export const EditPostScreen = ({route}) => {
                 marginLeft: 10,
                 paddingVertical: 15,
                 width: 170,
-                backgroundColor: selectedCondition === 'Б/У' ? '#675BFB' : '#F9F6FF',
+                backgroundColor: selectedCondition === 'Б/У' ? '#D6D6D6' : '#F7F8F9',
                 borderRadius: 5,
                 alignItems: 'center',
-                borderColor: '#675BFB',
+                borderColor: '#D6D6D6',
                 borderWidth: 1,
                 }}
             >
-                <Text style={{ color: selectedCondition === 'Б/У' ? '#F9F6FF' : '#675BFB', fontSize: 16 }}>Б/У</Text>
+                <Text style={{ color: selectedCondition === 'Б/У' ? '#F7F8F9' : '#D6D6D6', fontSize: 16 }}>Б/У</Text>
             </TouchableOpacity>
         </View>
 
@@ -872,14 +872,14 @@ export const EditPostScreen = ({route}) => {
                 style={{
                 paddingVertical: 15,
                 width: 170,
-                backgroundColor: selectedMortage === false ? '#675BFB' : '#F9F6FF',
+                backgroundColor: selectedMortage === false ? '#D6D6D6' : '#F7F8F9',
                 borderRadius: 5,
                 alignItems: 'center',
-                borderColor: '#675BFB',
+                borderColor: '#D6D6D6',
                 borderWidth: 1,
                 }}
             >
-                <Text style={{ color: selectedMortage === false ? '#F9F6FF' : '#675BFB', fontSize: 16 }}>Нет</Text>
+                <Text style={{ color: selectedMortage === false ? '#F7F8F9' : '#D6D6D6', fontSize: 16 }}>Нет</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -888,14 +888,14 @@ export const EditPostScreen = ({route}) => {
                 marginLeft: 10,
                 paddingVertical: 15,
                 width: 170,
-                backgroundColor: selectedMortage === true ? '#675BFB' : '#F9F6FF',
+                backgroundColor: selectedMortage === true ? '#D6D6D6' : '#F7F8F9',
                 borderRadius: 5,
                 alignItems: 'center',
-                borderColor: '#675BFB',
+                borderColor: '#D6D6D6',
                 borderWidth: 1,
                 }}
             >
-                <Text style={{ color: selectedMortage === true ? '#F9F6FF' : '#675BFB', fontSize: 16 }}>Да</Text>
+                <Text style={{ color: selectedMortage === true ? '#F7F8F9' : '#D6D6D6', fontSize: 16 }}>Да</Text>
             </TouchableOpacity>
         </View>
         
@@ -907,14 +907,14 @@ export const EditPostScreen = ({route}) => {
                 style={{
                 paddingVertical: 15,
                 width: 170,
-                backgroundColor: selectedDelivery === false ? '#675BFB' : '#F9F6FF',
+                backgroundColor: selectedDelivery === false ? '#D6D6D6' : '#F7F8F9',
                 borderRadius: 5,
                 alignItems: 'center',
-                borderColor: '#675BFB',
+                borderColor: '#D6D6D6',
                 borderWidth: 1,
                 }}
             >
-                <Text style={{ color: selectedDelivery === false ? '#F9F6FF' : '#675BFB', fontSize: 16 }}>Нет</Text>
+                <Text style={{ color: selectedDelivery === false ? '#F7F8F9' : '#D6D6D6', fontSize: 16 }}>Нет</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -923,14 +923,14 @@ export const EditPostScreen = ({route}) => {
                 marginLeft: 10,
                 paddingVertical: 15,
                 width: 170,
-                backgroundColor: selectedDelivery === true ? '#675BFB' : '#F9F6FF',
+                backgroundColor: selectedDelivery === true ? '#D6D6D6' : '#F7F8F9',
                 borderRadius: 5,
                 alignItems: 'center',
-                borderColor: '#675BFB',
+                borderColor: '#D6D6D6',
                 borderWidth: 1,
                 }}
             >
-                <Text style={{ color: selectedDelivery === true ? '#F9F6FF' : '#675BFB', fontSize: 16 }}>Да</Text>
+                <Text style={{ color: selectedDelivery === true ? '#F7F8F9' : '#D6D6D6', fontSize: 16 }}>Да</Text>
             </TouchableOpacity>
         </View>
 
@@ -941,7 +941,7 @@ export const EditPostScreen = ({route}) => {
                   start={{ x: 0, y: 0 }}
                   end={{ x: 0, y: 1 }}
                 >
-                  <Text style={{ color: '#F9F6FF', fontSize: 16 }}>Опубликовать</Text>
+                  <Text style={{ color: '#F7F8F9', fontSize: 16 }}>Опубликовать</Text>
                 </LinearGradient>
               </TouchableOpacity>
       </View>
@@ -955,9 +955,9 @@ const styles = StyleSheet.create({
       width: '100%',
       flexDirection: 'row',
       justifyContent: 'space-between',
-      backgroundColor: '#F9F6FF',
+      backgroundColor: '#F7F8F9',
       borderRadius: 5,
-      borderColor: '#675BFB',
+      borderColor: '#D6D6D6',
       borderWidth: 1,
       paddingHorizontal: 10,
       paddingVertical: 17,

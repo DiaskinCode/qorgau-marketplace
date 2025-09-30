@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { View, TextInput,  TouchableOpacity, TouchableWithoutFeedback, FlatList, ScrollView, KeyboardAvoidingView,Platform,RefreshControl, Dimensions, Image, Text } from 'react-native';
+import { View, TextInput,  TouchableOpacity, ScrollView, KeyboardAvoidingView,Platform,RefreshControl, Dimensions, Image, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import {useTranslation} from 'react-i18next'
@@ -11,6 +11,8 @@ export const SignUpScreen = () => {
     const [loginError, setLoginError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [password2Error, setPassword2Error] = useState('');
+
+    const {width} = Dimensions.get('window');
 
 
     const [login, onChangeLogin] = React.useState('');
@@ -33,14 +35,14 @@ export const SignUpScreen = () => {
     const validate = () => {
         let isValid = true;
     
-        if (!login.trim()) {
-            setLoginError(t('register.error.login_required'));
+        const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z\.]{2,5}))$/;
+        if (!login.trim() || !emailRegex.test(login)) {
+            setLoginError(t('register.error.email_required_or_invalid'));
             isValid = false;
         } else {
             setLoginError('');
         }
     
-        // Проверка первого пароля
         if (!password.trim()) {
             setPasswordError(t('register.error.password_required'));
             isValid = false;
@@ -51,7 +53,6 @@ export const SignUpScreen = () => {
             setPasswordError('');
         }
     
-        // Проверка второго пароля
         if (password !== password2) {
             setPassword2Error(t('register.error.passwords_do_not_match'));
             isValid = false;
@@ -76,20 +77,20 @@ export const SignUpScreen = () => {
         >
          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={{alignItems:'center',width:'90%',marginHorizontal:'5%',marginTop:80}}>
-            <Image style={{height:104,width:130,objectFit:'cover'}} source={require('../assets/logo.jpg')}/>
+            <Image style={{height:90,width:180,objectFit:'contain'}} source={require('../assets/logo.jpg')}/>
             <Text style={{ fontFamily: 'bold',fontSize:25, textAlign:'center',marginTop:20}} >{t('register.register_of_acc')}</Text>
             <Text style={{ fontFamily: 'regular',fontSize:15,color:"#96949D",width:255,lineHeight:21,marginTop:10, textAlign:'center' }} >{t('register.create_acc')}</Text>
 
             <View style={{marginTop:40}}>
                 <TextInput
-                    style={{width:350,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:5,borderColor:'#675BFB'}}
+                    style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}
                     onChangeText={onChangeLogin}
                     value={login}
                     placeholder={t('number_or_email')}
                 />
             </View>
             <View>
-                <View style={{marginTop:10,flexDirection:'row',alignItems:'center',width:350,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:5,borderColor:'#675BFB'}}>
+                <View style={{marginTop:10,flexDirection:'row',alignItems:'center',width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}>
                     <TextInput
                         style={{width:'90%'}}
                         onChangeText={onChangePassword}
@@ -100,12 +101,12 @@ export const SignUpScreen = () => {
                     <MaterialCommunityIcons 
                         name={showPassword ? 'eye-off' : 'eye'} 
                         size={24} 
-                        color="#675BFB"
+                        color="#D6D6D6"
                         style={{marginLeft: 10, }} 
                         onPress={toggleShowPassword} 
                     /> 
                 </View>
-                <View style={{marginTop:10,flexDirection:'row',alignItems:'center',width:350,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:5,borderColor:'#675BFB'}}>
+                <View style={{marginTop:10,flexDirection:'row',alignItems:'center',width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}>
                     <TextInput
                         style={{width:'90%'}}
                         onChangeText={onChangePassword2}
@@ -116,7 +117,7 @@ export const SignUpScreen = () => {
                     <MaterialCommunityIcons 
                         name={showPassword2 ? 'eye-off' : 'eye'} 
                         size={24} 
-                        color="#675BFB"
+                        color="#D6D6D6"
                         style={{marginLeft: 10, }} 
                         onPress={toggleShowPassword2} 
                     /> 
@@ -134,12 +135,11 @@ export const SignUpScreen = () => {
                         {password2Error ? <Text style={{color: 'red'}}>{password2Error}</Text> : null}
                     </View>
                 </View>
-                <TouchableOpacity onPress={handleRegistration} style={{paddingVertical:15,width:350,backgroundColor:'#F26F1D',borderRadius:5,alignItems:'center'}}>
+                <TouchableOpacity onPress={handleRegistration} style={{paddingVertical:15,width:width - 40,backgroundColor:'#F09235',borderRadius:10,alignItems:'center'}}>
                     <Text style={{color:'#FFF',fontSize:16,}}>{t('continue')}</Text>
                 </TouchableOpacity>
             </View>
         </View>
-        <Text style={{fontFamily:'medium',fontSize:14,bottom:45,textAlign:'center',color:'#24144E',position:'absolute',alignSelf:'center'}}>BEINE JARNAMA</Text>
         </ScrollView>
     </KeyboardAvoidingView>
     );

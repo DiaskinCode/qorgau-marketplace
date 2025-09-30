@@ -58,7 +58,7 @@ export const CreateHouseInfo = () => {
         <>
             <Text style={{fontFamily:'bold',fontSize:16,marginTop:20,marginBottom:10}}>Количество комнат</Text>
             <TextInput
-              style={{width:'100%',paddingHorizontal:10,height:50,borderWidth:1,borderRadius:5,borderColor:'#675BFB',backgroundColor:'#F9F6FF'}}
+              style={{width:'100%',paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6',backgroundColor:'#F7F8F9'}}
               onChangeText={onChangeHouse1}
               value={house1}
               placeholder="Количество комнат"
@@ -67,7 +67,7 @@ export const CreateHouseInfo = () => {
 
             <Text style={{fontFamily:'bold',fontSize:16,marginTop:20,marginBottom:10}}>Общая площадь</Text>
             <TextInput
-              style={{width:'100%',paddingHorizontal:10,height:50,borderWidth:1,borderRadius:5,borderColor:'#675BFB',backgroundColor:'#F9F6FF'}}
+              style={{width:'100%',paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6',backgroundColor:'#F7F8F9'}}
               onChangeText={onChangeHouse2}
               value={house2}
               placeholder="Общая площадь"
@@ -80,7 +80,7 @@ export const CreateHouseInfo = () => {
               <Image style={{ height: 16, width: 8,transform: [{ rotate: renovationOpen ? '270deg' : '90deg' }],marginRight: 5 }} source={require('../assets/arrow-right.png')} />
             </Pressable>
             {renovationOpen ? 
-                <View style={{backgroundColor: '#F9F6FF',borderEndEndRadius: 5,marginTop:-3,borderBottomLeftRadius: 5,borderColor: '#675BFB',borderWidth: 1,paddingVertical:10}}>
+                <View style={{backgroundColor: '#F7F8F9',borderEndEndRadius: 5,marginTop:-3,borderBottomLeftRadius: 5,borderColor: '#D6D6D6',borderWidth: 1,paddingVertical:10}}>
                     <TouchableOpacity 
                         onPress={() => {
                             setRenovation('Евро ремонт');
@@ -108,7 +108,7 @@ export const CreateHouseInfo = () => {
               <Image style={{ height: 16, width: 8,transform: [{ rotate: statementOpen ? '270deg' : '90deg' }],marginRight: 5 }} source={require('../assets/arrow-right.png')} />
             </Pressable>
             {heatingOpen ? 
-                <View style={{backgroundColor: '#F9F6FF',borderEndEndRadius: 5,marginTop:-3,borderBottomLeftRadius: 5,borderColor: '#675BFB',borderWidth: 1,paddingVertical:10}}>
+                <View style={{backgroundColor: '#F7F8F9',borderEndEndRadius: 5,marginTop:-3,borderBottomLeftRadius: 5,borderColor: '#D6D6D6',borderWidth: 1,paddingVertical:10}}>
                     <TouchableOpacity 
                         onPress={() => {
                             setHeating('Новый');
@@ -129,7 +129,7 @@ export const CreateHouseInfo = () => {
               <Image style={{ height: 16, width: 8,transform: [{ rotate: statementOpen ? '270deg' : '90deg' }],marginRight: 5 }} source={require('../assets/arrow-right.png')} />
             </Pressable>
             {propertyTypeOpen ? 
-                <View style={{backgroundColor: '#F9F6FF',borderEndEndRadius: 5,marginTop:-3,borderBottomLeftRadius: 5,borderColor: '#675BFB',borderWidth: 1,paddingVertical:10}}>
+                <View style={{backgroundColor: '#F7F8F9',borderEndEndRadius: 5,marginTop:-3,borderBottomLeftRadius: 5,borderColor: '#D6D6D6',borderWidth: 1,paddingVertical:10}}>
                     <TouchableOpacity 
                         onPress={() => {
                             setStatement('Новый');
@@ -150,7 +150,7 @@ export const CreateHouseInfo = () => {
               <Image style={{ height: 16, width: 8,transform: [{ rotate: statementOpen ? '270deg' : '90deg' }],marginRight: 5 }} source={require('../assets/arrow-right.png')} />
             </Pressable>
             {statementOpen ? 
-                <View style={{backgroundColor: '#F9F6FF',borderEndEndRadius: 5,marginTop:-3,borderBottomLeftRadius: 5,borderColor: '#675BFB',borderWidth: 1,paddingVertical:10}}>
+                <View style={{backgroundColor: '#F7F8F9',borderEndEndRadius: 5,marginTop:-3,borderBottomLeftRadius: 5,borderColor: '#D6D6D6',borderWidth: 1,paddingVertical:10}}>
                     <TouchableOpacity 
                         onPress={() => {
                             setStatement('Новый');
@@ -171,7 +171,7 @@ export const CreateHouseInfo = () => {
               <Image style={{ height: 16, width: 8,transform: [{ rotate: statementOpen ? '270deg' : '90deg' }],marginRight: 5 }} source={require('../assets/arrow-right.png')} />
             </Pressable>
             {statementOpen ? 
-                <View style={{backgroundColor: '#F9F6FF',borderEndEndRadius: 5,marginTop:-3,borderBottomLeftRadius: 5,borderColor: '#675BFB',borderWidth: 1,paddingVertical:10}}>
+                <View style={{backgroundColor: '#F7F8F9',borderEndEndRadius: 5,marginTop:-3,borderBottomLeftRadius: 5,borderColor: '#D6D6D6',borderWidth: 1,paddingVertical:10}}>
                     <TouchableOpacity 
                         onPress={() => {
                             setStatement('Новый');
@@ -189,7 +189,7 @@ export const CreateHouseInfo = () => {
 
             <Text style={{fontFamily:'bold',fontSize:16,marginTop:20,marginBottom:10}}>Год постройки</Text>
             <TextInput
-              style={{width:'100%',paddingHorizontal:10,height:50,borderWidth:1,borderRadius:5,borderColor:'#675BFB',backgroundColor:'#F9F6FF'}}
+              style={{width:'100%',paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6',backgroundColor:'#F7F8F9'}}
               onChangeText={onChangeHouse3}
               value={house3}
               placeholder="Год постройки"
@@ -204,9 +204,9 @@ const styles = StyleSheet.create({
       width: '100%',
       flexDirection: 'row',
       justifyContent: 'space-between',
-      backgroundColor: '#F9F6FF',
+      backgroundColor: '#F7F8F9',
       borderRadius: 5,
-      borderColor: '#675BFB',
+      borderColor: '#D6D6D6',
       borderWidth: 1,
       paddingHorizontal: 10,
       paddingVertical: 17,

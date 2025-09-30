@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginRight:10,
         borderWidth: 1,
-        borderColor: '#675BFB',
-        backgroundColor: '#F9F6FF',
+        borderColor: '#D6D6D6',
+        backgroundColor: '#F7F8F9',
     },
     icon: {
         width: 24,
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     closeButton: {
-        backgroundColor: '#675BFB',
+        backgroundColor: '#D6D6D6',
         padding: 10,
         borderRadius: 5,
         alignItems: 'center',

@@ -88,9 +88,9 @@ const styles = StyleSheet.create({
         marginTop:10,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: '#F9F6FF',
+        backgroundColor: '#F7F8F9',
         borderRadius: 5,
-        borderColor: '#675BFB',
+        borderColor: '#D6D6D6',
         borderWidth: 1,
     },
     Right: {
@@ -133,7 +133,7 @@ const InputStyles = StyleSheet.create({
         fontSize: 15,
         fontFamily: 'regular',
         width: '60%',
-        backgroundColor:'#F9F6FF',
+        backgroundColor:'#F7F8F9',
         justifyContent:'center',
         paddingHorizontal:10,
         margin: 0,
@@ -143,7 +143,7 @@ const InputStyles = StyleSheet.create({
         top: 0,
         width: InputWidth - 20,
         borderRadius: 5,
-        backgroundColor: '#F9F6FF',
+        backgroundColor: '#F7F8F9',
         zIndex: 999,
     },
     predefinedPlacesDescription: {
@@ -156,7 +156,7 @@ const InputStyles = StyleSheet.create({
     },
     row: {
         padding: 0,
-        backgroundColor: '#F9F6FF',
+        backgroundColor: '#F7F8F9',
         borderWidth:0,
         paddingLeft:10,
         paddingVertical:10,

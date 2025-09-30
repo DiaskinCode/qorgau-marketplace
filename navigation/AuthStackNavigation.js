@@ -6,6 +6,8 @@ import {LoginOrRegistrationScreen} from '../screens/LoginOrRegistrationScreen';
 import {ProfileRegistrationScreen} from '../screens/ProfileRegistrationScreen';
 import {SelectLanguageScreen} from '../screens/SelectLanguageScreen';
 import {View} from 'react-native';
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,6 +50,22 @@ const AuthStackNavigator = () => {
           ),
           })}/>
       <Stack.Screen name="Profile" component={ProfileRegistrationScreen} 
+        options={() => ({
+          headerShadowVisible: false,
+          title: null,
+          headerLeft: () => (
+            <View></View>
+          ),
+          })}/>
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} 
+        options={() => ({
+          headerShadowVisible: false,
+          title: null,
+          headerLeft: () => (
+            <View></View>
+          ),
+          })}/>
+      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} 
         options={() => ({
           headerShadowVisible: false,
           title: null,

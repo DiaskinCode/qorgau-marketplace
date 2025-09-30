@@ -9,7 +9,7 @@ export const ProfileadminScreen = () => {
 
   const fetchStats = async () => {
       try {
-          const response = await fetch('http://185.129.51.171/api/stats/');
+          const response = await fetch('http://market.qorgau-city.kz/api/stats/');
           const data = await response.json();
           setStats(data);
       } catch (error) {
@@ -26,12 +26,12 @@ export const ProfileadminScreen = () => {
   return (
     <ScrollView>
       <View style={{width:'90%',alignSelf:'center',marginTop:20,flexDirection:'row',flexWrap:'wrap',justifyContent:'space-between'}}>
-        <Image style={{alignSelf:'center',width:"100%",height:100,objectFit:'contain',marginBottom:60}} source={require('../assets/profileLogo.png')}/>
-        <View style={{width:'48%',backgroundColor:'#F9F6FF',borderRadius:20,padding:20}}>
+        <Image style={{alignSelf:'center',width:"100%",height:30,objectFit:'contain',marginBottom:100}} source={require('../assets/profileLogo.png')}/>
+        <View style={{width:'48%',backgroundColor:'#F7F8F9',borderRadius:20,padding:20}}>
           <Text style={{fontFamily:'medium',fontSize:40}}>{stats.user_count}</Text>
           <Text style={{fontFamily:'medium',fontSize:16,marginTop:10}}>Пользователей</Text>
         </View>
-        <TouchableOpacity onPress={() => {navigation.navigate('approve')}} style={{width:'48%',backgroundColor:'#F9F6FF',borderRadius:20,padding:20}}>
+        <TouchableOpacity onPress={() => {navigation.navigate('approve')}} style={{width:'48%',backgroundColor:'#F7F8F9',borderRadius:20,padding:20}}>
           <Text style={{fontFamily:'medium',fontSize:40}}>{stats.post_count}</Text>
           <Text style={{fontFamily:'medium',fontSize:16,marginTop:10}}>объявлений</Text>
         </TouchableOpacity>
@@ -45,9 +45,9 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#F9F6FF',
+    backgroundColor: '#F7F8F9',
     borderRadius: 5,
-    borderColor: '#675BFB',
+    borderColor: '#D6D6D6',
     borderWidth: 1,
     paddingHorizontal: 10,
     paddingVertical: 17,

@@ -10,6 +10,35 @@ import { enableScreens } from 'react-native-screens';
 import * as SplashScreen from 'expo-splash-screen';
 import { initReactI18next } from 'react-i18next';
 import { I18nextProvider } from 'react-i18next';
+import * as Notifications from "expo-notifications";
+import * as TaskManager from "expo-task-manager";
+import { NotificationProvider } from './context/NotificationContext';
+import Purchases from "react-native-purchases";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
+
+const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
+
+TaskManager.defineTask(
+  BACKGROUND_NOTIFICATION_TASK,
+  ({ data, error, executionInfo }) => {
+    console.log("✅ Received a notification in the background!", {
+      data,
+      error,
+      executionInfo,
+    });
+    // Do something with the notification data
+  }
+);
+
+Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
+
 
 SplashScreen.preventAutoHideAsync();
 
@@ -22,6 +51,14 @@ export default function App() {
   useEffect(() => {
     i18n.changeLanguage(selectedLanguage);
   }, [selectedLanguage]);
+
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      Purchases.configure({ apiKey: "appl_wCuCpLKagIWxpiYqcrNYZioGmGP" });
+    } else if (Platform.OS === "android") {
+      Purchases.configure({ apiKey: "goog_SOhwxVOHyeCjxadVfIrITqTHMrd" });
+    }
+  }, []);
 
   useEffect(() => {
     async function loadResourcesAndDataAsync() {
@@ -65,13 +102,15 @@ export default function App() {
   }
 
   return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <I18nextProvider i18n={i18n}>
-          <Navigation />
-        </I18nextProvider>
-      </PersistGate>
-    </Provider>
+    <NotificationProvider>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <I18nextProvider i18n={i18n}>
+            <Navigation />
+          </I18nextProvider>
+        </PersistGate>
+      </Provider>
+    </NotificationProvider>
   );
 }
 

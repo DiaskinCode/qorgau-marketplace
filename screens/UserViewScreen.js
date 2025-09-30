@@ -42,7 +42,7 @@ export const UserViewScreen = ({ route }) => {
               style={styles.avatar}
               source={
                 userData.profile_image
-                  ? {uri: `http://185.129.51.171${userData.profile_image}`}
+                  ? {uri: `http://market.qorgau-city.kz${userData.profile_image}`}
                   : require('../assets/profilePurple.png')
               }
             />

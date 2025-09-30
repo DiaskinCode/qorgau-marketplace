@@ -8,10 +8,15 @@ export const ProfileFavouriteScreen = () => {
   const { data: favouritesData, isLoading, isFetching, refetch } = useListFavouritesQuery();
   const [refreshing, setRefreshing] = useState(false);
   const [visibleItems, setVisibleItems] = useState([]);
+  const [page, setPage] = useState(1);
 
   const viewabilityConfig = {
     itemVisiblePercentThreshold: 50,
   };
+
+    const loadMoreItems = useCallback(() => {
+        setPage(currentPage => currentPage + 1);
+    }, [favouritesData?.results?.length, favouritesData?.total, isLoading]);
 
   const onViewableItemsChanged = useRef(({ viewableItems }) => {
     setVisibleItems(viewableItems.map(item => item.item.id));

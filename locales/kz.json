@@ -1,18 +1,35 @@
 {
   "tabs": {
-    "homec": "Басты",
-    "feed": "Лента",
+    "home": "Басты",
+    "feed": "Избранные",
     "create_new": "Жаңа жасау",
     "messages": "Хабарламалар",
     "profile": "Профиль"
   },
+  "categories_main": {
+    "services": "Қызметтер",
+    "products": "Тауарлар",
+    "findEmployee": "Жұмысшы табу",
+    "qorgauAi": "Qorgau AI",
+    "other": "Өзге",
+    "securityAgencies": "Қауіпсіздік агенттіктері",
+    "industrialSecurity": "Өнеркәсіптік қауіпсіздік",
+    "industrialSecurityEducation": "Өнеркәсіптік қауіпсіздіктің білім алуы"
+  },
+  "stories": {
+    "create": "Хабарлама қалай жасалынады",
+    "edit": "Хабарламаны өзгерту",
+    "security": "Қауіпсіздік"
+  },
+  "recommendation": "Ұсынымдар",
+  "recommendation_in_city": "Ұсынымдар қаладағы",
   "welcome": "Келіңіздер бастайық",
   "welcome_desc": "Сіз тіркелгі жасай аласыз немесе бар тіркелгіге кіре аласыз",
   "password": "Құпия сөз",
   "kaz": "Қазақ тілі",
   "rus": "Орыс тілі",
   "continue": "Жалғастыру",
-  "number_or_email": "Телефон немесе пошта",
+  "number_or_email": "Email",
   "select_language": {
     "select_language": "Тілді таңдаңыз",
     "you_could_change_language": "Сіз оны профиль параметрлерінде өзгерте аласыз"
@@ -24,8 +41,9 @@
     "profile_pic": "Профиль суреті",
     "write_name": "Атыңызды енгізіңіз",
     "error": {
-      "login_required": "Логин енгізу қажет.",
+      "login_required": "Имя пользователя енгізу қажет.",
       "password_required": "Құпия сөзді енгізу қажет.",
+      "email_required_or_invalid": "Жарамды электрондық поштаны енгізіңіз",
       "password_length": "Құпия сөз кемінде 6 таңбадан тұруы тиіс.",
       "passwords_do_not_match": "Құпия сөздер сәйкес келмейді.",
       "name_required": "Атын толтырыңыз",

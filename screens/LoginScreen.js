@@ -1,18 +1,21 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { View, TextInput,  TouchableOpacity, ScrollView, KeyboardAvoidingView, Image, Text, Platform,Alert,Modal, ActivityIndicator, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, TextInput,  TouchableOpacity, ScrollView, Image, Text, Platform,Alert,Modal, ActivityIndicator, StyleSheet, Dimensions } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { loginSuccess } from '../actions/authActions';
 import { useDispatch } from 'react-redux';
 import {useTranslation} from 'react-i18next'
+import { useNavigation } from '@react-navigation/native';
 
 export const LoginScreen = () => {
+    const navigation = useNavigation();
     const {t} = useTranslation();
     const [login, onChangeLogin] = React.useState('');
     const [password, onChangePassword] = React.useState('');
 
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const {width} = Dimensions.get('window');
 
 
     const [showPassword, setShowPassword] = useState(false); 
@@ -26,7 +29,7 @@ export const LoginScreen = () => {
             setError('Пожалуйста заполните пустые поля');
             return false;
         }
-        setError(''); // Clear previous errors
+        setError('');
         return true;
     };
 
@@ -34,11 +37,11 @@ export const LoginScreen = () => {
 
     const handleLogin = async () => {
         if (!validateForm()) {
-            return; // Stop the login process if validation fails
+            return;
         }
         setIsLoading(true); 
       try {
-          const response = await fetch('http://185.129.51.171/api/login/', {
+          const response = await fetch('http://market.qorgau-city.kz/api/login/', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
@@ -51,13 +54,25 @@ export const LoginScreen = () => {
   
           if (response.ok) {
               const data = await response.json();
+              console.log(data);
               const { id, username, email, profile, profile_image } = data.user;
               dispatch(loginSuccess({ id, username, email, profile, profile_image }, data.token));
-              console.log(data.token);
+              const parent = navigation.getParent();
+                if (parent) {
+                parent.reset({
+                    index: 0,
+                    routes: [{ name: 'root' }],
+                });
+                } else {
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'root' }],
+                });
+                }
           } else {
               console.log('Login failed');
               setIsLoading(false); 
-              Alert.alert('Логин или пароль не правильный', '')
+              Alert.alert('Имя пользователя или пароль не правильный', '')
           }
       } catch (error) {
           Alert.alert('Ошибка', error)
@@ -65,10 +80,12 @@ export const LoginScreen = () => {
   };
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={{ flex: 1 }}
-            >
+        <KeyboardAwareScrollView
+            contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }} 
+            enableOnAndroid={true}
+            extraScrollHeight={150}
+            keyboardShouldPersistTaps="handled"
+        >
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -84,23 +101,23 @@ export const LoginScreen = () => {
                 </View>
                 </View>
             </Modal>
-             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+             <ScrollView contentContainerStyle={{ flex: 1 }}>
                 <View style={{ alignItems: 'center', width: '90%', marginHorizontal: '5%', marginTop: 80 }}>
-                    <Image style={{height:104,width:130,objectFit:'cover'}} source={require('../assets/logo.jpg')}/>
+                    <Image style={{height:90,width:180,objectFit:'contain'}} source={require('../assets/logo.jpg')}/>
                     <Text style={{ fontFamily: 'bold',fontSize:25, textAlign:'center',marginTop:20}} >{t('login.login_to_acc')}</Text>
                     <Text style={{ fontFamily: 'regular',fontSize:15,color:"#96949D",width:253,lineHeight:21,marginTop:20, textAlign:'center' }} ></Text>
                     <View style={{marginTop:40}}>
-                        <Text style={{fontFamily:'medium' ,marginBottom:10,fontSize:14}}>{t('number_or_email')}</Text>
+                        <Text style={{fontFamily:'medium' ,marginBottom:10,fontSize:14}}>{t('register.write_name')}</Text>
                         <TextInput
-                            style={{width:350,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:5,borderColor:'#675BFB'}}
+                            style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}
                             onChangeText={onChangeLogin}
                             value={login}
                             placeholder={t('login.input_fields')}
                         />
                     </View>
-                    <View style={{marginTop:15}}>
+                    <View style={{marginTop:15,width: width - 40}}>
                         <Text style={{fontFamily:'medium' ,marginBottom:10,fontSize:14}}>{t('password')}</Text>
-                        <View style={{flexDirection:'row',alignItems:'center',width:350,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:5,borderColor:'#675BFB'}}>
+                        <View style={{flexDirection:'row',alignItems:'center',width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}>
                             <TextInput
                                 style={{width:'90%'}}
                                 onChangeText={onChangePassword}
@@ -111,25 +128,29 @@ export const LoginScreen = () => {
                             <MaterialCommunityIcons 
                                 name={showPassword ? 'eye-off' : 'eye'} 
                                 size={24} 
-                                color="#675BFB"
+                                color="#D6D6D6"
                                 style={{marginLeft: 10, }} 
                                 onPress={toggleShowPassword} 
                             /> 
                         </View>
                     </View>
+
                     <View style={{marginTop:20,justifyContent:'center'}}>
+
                         {error ? <Text style={{color: 'red', textAlign: 'center', marginBottom: 15}}>{error}</Text> : null}
-                        <TouchableOpacity onPress={handleLogin} style={{paddingVertical:15,width:350,backgroundColor:'#F26F1D',borderRadius:5,alignItems:'center'}}>
+                        <TouchableOpacity onPress={handleLogin} style={{paddingVertical:15,width:width - 40,backgroundColor:'#F09235',borderRadius:10,alignItems:'center'}}>
                             <Text style={{color:'#FFF',fontSize:16,}}>{t('login.login')}</Text>
                         </TouchableOpacity>
-                        {/* <TouchableOpacity>
-                            <Text style={{marginTop:10, color:'#96949D',fontSize:15}}>Забыли пароль?</Text>
-                        </TouchableOpacity> */}
+
+                        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+                            <Text style={{marginTop:30, color:'#96949D',fontSize:15, textAlign:'center'}}>
+                                Забыли пароль?
+                            </Text>
+                        </TouchableOpacity>
                     </View>
-                    <Text style={{fontFamily:'medium',fontSize:14,marginTop:95,marginBottom:35,textAlign:'center',color:'#24144E'}}>BEINE JARNAMA</Text>
                 </View>
             </ScrollView>
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
     );
   }
 

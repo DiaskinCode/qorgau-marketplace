@@ -48,8 +48,8 @@ function HeaderIcon(props) {
 }
 const styles = StyleSheet.create({
   Icon: {
-      width: 12,
-      height: 24,
+      width: 16,
+      height: 32,
       resizeMode: 'contain'
   },
   HeaderRight: {

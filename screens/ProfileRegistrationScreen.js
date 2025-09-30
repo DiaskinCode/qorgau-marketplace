@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput,  TouchableOpacity, KeyboardAvoidingView,Platform, ScrollView, Image, Text, Modal, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, TextInput,  TouchableOpacity, KeyboardAvoidingView,Platform, ScrollView, Image, Text, Modal, ActivityIndicator, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { loginSuccess } from '../actions/authActions';
@@ -12,7 +12,10 @@ export const ProfileRegistrationScreen = ({route}) => {
     const [name, onChangeName] = useState('');
     const dispatch = useDispatch()
     const [image, setImage] = useState(null);
+    const navigation = useNavigation();
 
+    const { width } = Dimensions.get('window');
+    
     const [nameError, setNameError] = useState('');
     const [imageError, setImageError] = useState('');
 
@@ -27,19 +30,11 @@ export const ProfileRegistrationScreen = ({route}) => {
         isValid = false;
     } else if (/[\s_]/.test(name)) {
         // Проверяем наличие пробелов или символов подчеркивания
-        setNameError('Введите логин без пробелов и специальных знаков');
+        setNameError('Введите Имя пользователя без пробелов и специальных знаков');
         isValid = false;
     } else {
         setNameError('');
     }
-  
-      // Проверка изображения
-      if (!image) {
-          setImageError(t('register.error.image_required'));
-          isValid = false;
-      } else {
-          setImageError('');
-      }
   
       return isValid;
   };  
@@ -81,15 +76,13 @@ export const ProfileRegistrationScreen = ({route}) => {
         formData.append('username', name);
         formData.append('password', password);
         formData.append('email', login);
-        formData.append('profile_image', {
-          uri: image,
-          type: 'image/jpeg', // or your image mime type
-          name: 'profile_image.jpg',
-        });
+        if (image) {
+          formData.append('profile_image', { uri: image, type: 'image/jpeg', name: 'profile.jpg' });
+        }
         formData.append('profile.phone_number', ''); // add your phone number
     
         try {
-          const response = await fetch('http://185.129.51.171:8000/api/register/', {
+          const response = await fetch('http://market.qorgau-city.kz/api/register/', {
             method: 'POST',
             body: formData,
             headers: {
@@ -102,8 +95,20 @@ export const ProfileRegistrationScreen = ({route}) => {
             const data = await response.json();
             // Handle successful registration, e.g., navigate to the next screen
             dispatch(loginSuccess(data.user, data.token));
+            const parent = navigation.getParent();
+            if (parent) {
+            parent.reset({
+                index: 0,
+                routes: [{ name: 'root' }],
+            });
+            } else {
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'root' }],
+            });
+            }
           } else {
-            alert('Пользователь с таким логином уже существует','');
+            alert('Пользователь с таким Имя пользователяом уже существует','');
             setIsLoading(false)
             console.error('Registration failed:', response.status);
           }
@@ -134,16 +139,16 @@ export const ProfileRegistrationScreen = ({route}) => {
       </Modal>
        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={{alignItems:'center',width:'90%',marginHorizontal:'5%',marginTop:80}}>
-            <Image style={{height:104,width:130,objectFit:'cover'}} source={require('../assets/logo.jpg')}/>
+            <Image style={{height:90,width:180,objectFit:'contain'}} source={require('../assets/logo.jpg')}/>
             <Text style={{ fontFamily: 'bold',fontSize:25, textAlign:'center',marginTop:20}} >{t('register.register_of_acc')}</Text>
             <Text style={{ fontFamily: 'regular',fontSize:15,color:"#96949D",width:255,lineHeight:21,marginTop:10, textAlign:'center' }} >{t('register.create_acc')}</Text>
 
 
             <TouchableOpacity style={{marginTop:40}} onPress={pickImage}>
                 {image ? (
-                    <Image source={{ uri: image }} style={{ width: 110, height: 110, borderRadius:15,borderWidth:1,borderColor:'#675BFB' }} />
+                    <Image source={{ uri: image }} style={{ width: 110, height: 110, borderRadius:15,borderWidth:1,borderColor:'#D6D6D6' }} />
                 ) : (
-                    <View style={{ width: 110, height: 110, backgroundColor: '#F9F6FF', borderRadius: 15,borderWidth:1,borderColor:'#675BFB', justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ width: 110, height: 110, backgroundColor: '#F7F8F9', borderRadius: 15,borderWidth:1,borderColor:'#D6D6D6', justifyContent: 'center', alignItems: 'center' }}>
                         <Image style={{height:25,width:25,marginTop:20}} source={require('../assets/plus.jpg')} />
                         <Text style={{ fontFamily:'regular',fontSize:14,color:'#96949D',marginTop:10, }}>{t('register.profile_pic')}</Text>
                     </View>
@@ -152,7 +157,7 @@ export const ProfileRegistrationScreen = ({route}) => {
 
             <View style={{marginTop:40}}>
                 <TextInput
-                    style={{width:350,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:5,borderColor:'#675BFB'}}
+                    style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}
                     onChangeText={onChangeName}
                     value={name}
                     placeholder={t('register.write_name')}
@@ -162,12 +167,11 @@ export const ProfileRegistrationScreen = ({route}) => {
             { nameError ? <Text style={{ color: 'red', marginTop: 15,alignSelf:'flex-start' }}>{nameError}</Text> : null }
             { imageError ? <Text style={{ color: 'red', marginTop: 15,alignSelf:'flex-start' }}>{imageError}</Text> : null }
             <View style={{marginTop:20,justifyContent:'center'}}>
-                <TouchableOpacity onPress={handleRegistration} style={{paddingVertical:15,width:350,backgroundColor:'#F26F1D',borderRadius:5,alignItems:'center'}}>
+                <TouchableOpacity onPress={handleRegistration} style={{paddingVertical:15,width:width - 40,backgroundColor:'#F09235',borderRadius:10,alignItems:'center'}}>
                     <Text style={{color:'#FFF',fontSize:16,}}>{t('continue')}</Text>
                 </TouchableOpacity>
             </View>
         </View>
-        <Text style={{fontFamily:'medium',fontSize:14,bottom:45,textAlign:'center',color:'#24144E',position:'absolute',alignSelf:'center'}}>BEINE JARNAMA</Text>
         </ScrollView>
       </KeyboardAvoidingView>
     );

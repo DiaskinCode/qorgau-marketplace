@@ -17,20 +17,20 @@ export const ProfileDeletedScreen = () => {
   const renderNotActivePostCard = (item) => {
     return (
         <View style={{marginBottom:10}}>
-            <View style={{flexDirection:'row',borderWidth:1,borderColor:'#F26F1D',borderRadius:5,position:'relative',alignItems:'center'}}>
+            <View style={{flexDirection:'row',borderWidth:1,borderColor:'#F09235',borderRadius:10,position:'relative',alignItems:'center'}}>
               {item.images[0].type === 'video' ? 
                       <Video
                       isMuted={true}
                       ref={video}
                       style={{width:120,height:120,borderTopLeftRadius:5,borderTopRightRadius:5,marginRight:10}}
                       source={{
-                          uri: `http://185.129.51.171${item.images[0].image}`,
+                          uri: `http://market.qorgau-city.kz${item.images[0].image}`,
                       }}
                       resizeMode={ResizeMode.COVER}
                       isLooping
                       />
                   :
-                    <Image style={{width:120,height:120,borderTopLeftRadius:5,borderTopRightRadius:5,marginRight:10}} source={{uri:`http://185.129.51.171${item.images[0].image}`}}/>
+                    <Image style={{width:120,height:120,borderTopLeftRadius:5,borderTopRightRadius:5,marginRight:10}} source={{uri:`http://market.qorgau-city.kz${item.images[0].image}`}}/>
                   }
               <View style={{paddingHorizontal:7}}>
                   <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
@@ -41,15 +41,15 @@ export const ProfileDeletedScreen = () => {
                   </View>
                   <View style={{flexDirection:'row',marginTop:4}}>
                         <View style={{borderRadius:2,overflow:'hidden',marginRight:2}}>
-                          <Text style={{fontFamily:'bold-italic',backgroundColor:'#675BFB',fontSize:9.5,color:'#fff',paddingHorizontal:3}}>{item.condition}</Text>
+                          <Text style={{fontFamily:'bold-italic',backgroundColor:'#D6D6D6',fontSize:9.5,color:'#fff',paddingHorizontal:3}}>{item.condition}</Text>
                         </View>
                         {item.mortage ?
                         <View style={{borderRadius:2,overflow:'hidden',marginRight:4}}>
-                          <Text style={{fontFamily:'bold-italic',backgroundColor:'#675BFB',fontSize:9.5,color:'#fff',paddingHorizontal:3}}>в рассрочку</Text>
+                          <Text style={{fontFamily:'bold-italic',backgroundColor:'#D6D6D6',fontSize:9.5,color:'#fff',paddingHorizontal:3}}>в рассрочку</Text>
                         </View> : null}
                         {item.delivery ?
                         <View style={{borderRadius:2,overflow:'hidden'}}>
-                          <Text style={{fontFamily:'bold-italic',backgroundColor:'#675BFB',fontSize:9.5,color:'#fff',paddingHorizontal:5}}>доставка</Text>
+                          <Text style={{fontFamily:'bold-italic',backgroundColor:'#D6D6D6',fontSize:9.5,color:'#fff',paddingHorizontal:5}}>доставка</Text>
                         </View> : null}
                       </View>
                   <Text style={{fontFamily:'regular',fontSize:10,color:'#96949D',marginTop:5}}>{item.geolocation}</Text>

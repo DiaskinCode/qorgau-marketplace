@@ -3,6 +3,7 @@ import { View, Image, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {CreatePostScreen} from '../screens/CreatePostScreen'
+import {CreatePostCategoryScreen} from '../screens/CreatePostCategoryScreen'
 import {CreatePostSuccessScreen} from '../screens/CreatePostSuccessScreen'
 import {CreatePostTarrifsScreen} from '../screens/CreatePostTarrifsScreen'
 import {CreatePostPayScreen} from '../screens/CreatePostPayScreen'
@@ -12,6 +13,19 @@ const Main = createNativeStackNavigator();
 export default function CreatePostStackNavigation() {
     return (
         <Main.Navigator>
+            <Main.Screen 
+                name='CreatePostCategory' 
+                component={CreatePostCategoryScreen}
+                options={({ navigation }) => ({
+                    headerShadowVisible:false,
+                    title: null,
+                    headerLeft: () => (
+                        <View style={styles.HeaderRight}>
+                            <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
+                            <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Новое объявления</Text>
+                        </View>
+                    ),
+                    })}/>
             <Main.Screen 
                 name='CreatePost' 
                 component={CreatePostScreen}
@@ -77,8 +91,8 @@ function HeaderIcon(props) {
 }
 const styles = StyleSheet.create({
     Icon: {
-        width: 12,
-        height: 24,
+        width: 16,
+        height: 32,
         resizeMode: 'contain'
     },
     HeaderRight: {

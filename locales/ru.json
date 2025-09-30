@@ -1,18 +1,35 @@
 {
     "tabs": {
       "home": "Главная",
-      "feed": "Лента",
+      "feed": "Избранные",
       "create_new": "Создать новое",
       "messages": "Сообщения",
       "profile": "Профиль"
     },
+    "categories_main": {
+      "services": "Услуги",
+      "products": "Товары",
+      "findEmployee": "Найти работника",
+      "qorgauAi": "Qorgau AI",
+      "other": "Другое",
+      "securityAgencies": "Агентства безопасности",
+      "industrialSecurity": "Пром. Без",
+      "industrialSecurityEducation": "Обучение в \n пром. Без "
+    },
+    "stories": {
+      "create": "Как создать объявление",
+      "edit": "Изменить объявление",
+      "security": "Безопасность платформы"
+    },
+    "recommendation": "Рекомендации",
+    "recommendation_in_city": "Рекомендации для {{city}}",
     "welcome": "Давайте начнем",
     "welcome_desc": "Вы можете зарегистрировать аккаунт или войти в сущствующий",
     "password": "Пароль",
     "kaz":"Казахский",
     "rus":"Русский",
     "continue":"Продолжить",
-    "number_or_email": "Телефон или почта",
+    "number_or_email": "Электронная почта",
     "select_language": {
       "select_language":"Выберите язык",
       "you_could_change_language": "Вы можете изменить его в настройках вашего профиля"
@@ -22,10 +39,11 @@
       "register_of_acc": "Регистрация аккаунта",
       "create_acc": "Создайте аккаунт чтобы пользоваться всеми функциями приложения",
       "profile_pic": "Фото профиля",
-      "write_name": "Введите ваше имя",
+      "write_name": "Введите ваше имя пользователя",
       "error": {
-        "login_required": "Требуется ввести логин.",
+        "login_required": "Требуется ввести имя пользователя.",
         "password_required": "Требуется ввести пароль.",
+        "email_required_or_invalid": "Введите действительный электронный адрес.",
         "password_length": "Пароль должен быть не менее 6 символов.",
         "passwords_do_not_match": "Пароли не совпадают.",
         "name_required": "Заполните имя",

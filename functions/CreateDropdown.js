@@ -16,7 +16,7 @@ export const createDropdown = (state, setState, options) => {
           <Image style={{ height:16, width:8, transform:[{ rotate: open ? '270deg' : '90deg' }], marginRight:5 }} source={require('../assets/arrow-right.png')} />
         </Pressable>
         {open && (
-          <View style={{ backgroundColor:'#F9F6FF', borderEndEndRadius:5, marginTop:-3, borderBottomLeftRadius:5, borderColor:'#675BFB', borderWidth:1, paddingVertical:10 }}>
+          <View style={{ backgroundColor:'#F7F8F9', borderEndEndRadius:5, marginTop:-3, borderBottomLeftRadius:5, borderColor:'#D6D6D6', borderWidth:1, paddingVertical:10 }}>
             {options.items.map((item, index) => (
               <TouchableOpacity
                 key={index}
@@ -39,9 +39,9 @@ export const createDropdown = (state, setState, options) => {
       width: '100%',
       flexDirection: 'row',
       justifyContent: 'space-between',
-      backgroundColor: '#F9F6FF',
+      backgroundColor: '#F7F8F9',
       borderRadius: 5,
-      borderColor: '#675BFB',
+      borderColor: '#D6D6D6',
       borderWidth: 1,
       paddingHorizontal: 10,
       paddingVertical: 17,
