@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PushTokenCreateView,CategoryList,TariffViewSet,search_by_sub_category,search_by_global_category,subcategory_list,user_profile, posts_by_user, delete_user,update_post,post_list,post_list_map, PostDetail, register, login_view,create_post,search_posts,active_posts, not_active_posts, deleted_posts, paid_posts, deactivate_post, activate_post, delete_post, pay_post,sort_by_category_posts, UserProfileUpdateView, create_connection,income_messages, post_list_city,stats_view, approve_post, admin_posts, add_to_favourites, remove_from_favourites, list_favourites, sort_by_category_city_posts
+from .views import PushTokenCreateView,CategoryList,TariffViewSet,request_email_verification,confirm_email_verification,search_by_sub_category,search_by_global_category,subcategory_list,user_profile, posts_by_user, delete_user,update_post,post_list,post_list_map, PostDetail, register, login_view,create_post,search_posts,active_posts, not_active_posts, deleted_posts, paid_posts, deactivate_post, activate_post, delete_post, pay_post,sort_by_category_posts, UserProfileUpdateView, create_connection,income_messages, post_list_city,stats_view, approve_post, admin_posts, add_to_favourites, remove_from_favourites, list_favourites, sort_by_category_city_posts, request_password_reset, reset_password
 
 urlpatterns = [
     path('push-tokens/', PushTokenCreateView.as_view(), name='push-token-create'),
@@ -26,6 +26,12 @@ urlpatterns = [
     
     path('register/', register, name='register'),
     path('login/', login_view, name='login'),
+    path('password-reset/request/', request_password_reset, name='request_password_reset'),
+    path('password-reset/confirm/', reset_password, name='reset_password'),
+    path('email/verify/request/', request_email_verification, name='request_email_verification'),
+    path('email/verify/confirm/', confirm_email_verification, name='confirm_email_verification'),
+
+
     path('search_posts/', search_posts, name='search-posts'),
     path('active_posts/', active_posts, name='active-posts'),
     path('admin_posts/', admin_posts, name='active-posts'),

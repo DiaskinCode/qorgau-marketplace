@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 
 from django.utils.timezone import make_aware, is_naive, now
 from datetime import datetime, timedelta, time
-
+from django.core.cache import cache
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 import hashlib
@@ -30,6 +30,60 @@ from django.db import transaction
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from pushnotifications.notifications import send_new_post_notification
+from django.utils import timezone
+import random
+
+CODE_TTL_SECONDS = 10 * 60  # 10 минут
+
+def _code_cache_key(email: str) -> str:
+    return f"email_verify:{email.lower()}"
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+@parser_classes([JSONParser])
+def request_email_verification(request):
+    email = (request.data.get('email') or '').strip()
+    if not email:
+        return Response({"detail": "email is required"}, status=400)
+
+    # генерируем 6-значный код
+    code = f"{random.randint(0, 999999):06d}"
+
+    # кладём в кэш
+    cache.set(_code_cache_key(email), code, CODE_TTL_SECONDS)
+
+    # отправляем письмо
+    send_mail(
+        subject="Your verification code",
+        message=f"Your verification code is: {code}\nIt will expire in 10 minutes.",
+        from_email="oralbekov.dias19@gmail.com",
+        recipient_list=[email],
+        fail_silently=False,
+    )
+
+    return Response({"detail": "verification code sent"}, status=200)
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+@parser_classes([JSONParser])
+def confirm_email_verification(request):
+    email = (request.data.get('email') or '').strip()
+    code  = (request.data.get('code') or '').strip()
+
+    if not email or not code:
+        return Response({"detail": "email and code are required"}, status=400)
+
+    cached = cache.get(_code_cache_key(email))
+    if not cached:
+        return Response({"detail": "code not found or expired"}, status=400)
+
+    if code != cached:
+        return Response({"detail": "invalid code"}, status=400)
+
+    # Можно пометить в кэше, что подтвержден (или удалить код)
+    cache.delete(_code_cache_key(email))
+    # Можно также создать флаг: cache.set(f"email_verified:{email}", True, 15*60)
+    return Response({"ok": True}, status=200)
 
 class TariffViewSet(viewsets.ModelViewSet):
     queryset = Tariff.objects.all()
@@ -369,6 +423,68 @@ def login_view(request):
         })
 
     return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def request_password_reset(request):
+    email = request.data.get('email')
+    if not email:
+        return Response({"detail": "Email required"}, status=400)
+
+    try:
+        user = UserProfile.objects.get(email=email)
+    except UserProfile.DoesNotExist:
+        return Response({"detail": "User not found"}, status=404)
+
+    code = str(random.randint(100000, 999999))
+    user.reset_code = code           # поле reset_code нужно добавить в профиль
+    user.reset_expires = timezone.now() + timedelta(minutes=10)
+    user.save()
+    print(email)
+
+    send_mail(
+        "Сброс пароля",
+        f"Ваш код для сброса пароля: {code}",
+        "oralbekov.dias19@gmail.com",
+        [email],
+        fail_silently=False,
+    )
+
+    return Response({"detail": "Reset code sent"})
+
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def reset_password(request):
+    email = request.data.get('email')
+    code = request.data.get('code')
+    new_password = request.data.get('new_password')
+
+    if not all([email, code, new_password]):
+        return Response({"detail": "Email, code and new_password are required"}, status=400)
+
+    try:
+        user = UserProfile.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({"detail": "User not found"}, status=404)
+
+    if user.reset_code != code:
+        return Response({"detail": "Invalid code"}, status=400)
+    if user.reset_expires < timezone.now():
+        return Response({"detail": "Code expired"}, status=400)
+
+    user.user.set_password(new_password)
+    user.user.save()
+
+    # очистим код, чтобы нельзя было использовать повторно
+    user.reset_code = None
+    user.reset_expires = None
+    user.save()
+
+    return Response({"detail": "Password updated successfully"})
+
 
 
 @api_view(['POST'])

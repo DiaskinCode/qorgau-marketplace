@@ -7,6 +7,9 @@ class UserProfile(models.Model):
     profile_image = models.ImageField(upload_to='profile_images/',default='defaults/avatar.png', null=True, blank=True)
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
+    reset_code = models.CharField(max_length=6, null=True, blank=True)
+    reset_expires = models.DateTimeField(null=True, blank=True)
+
 
     class Meta:
         verbose_name = 'Профиль'
