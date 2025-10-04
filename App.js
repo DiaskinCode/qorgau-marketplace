@@ -91,6 +91,9 @@ export default function App() {
       kz: {
         translation: require('./locales/kz.json')
       },
+      en: {
+        translation: require('./locales/en.json')
+      },
       ru: {
         translation: require('./locales/ru.json')
       }

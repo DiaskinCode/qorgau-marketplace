@@ -8,6 +8,7 @@ import {SelectLanguageScreen} from '../screens/SelectLanguageScreen';
 import {View} from 'react-native';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import ResetPasswordScreen from '../screens/ResetPasswordScreen';
+import EmailVerificationScreen from '../screens/EmailVerificationScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -66,6 +67,14 @@ const AuthStackNavigator = () => {
           ),
           })}/>
       <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} 
+        options={() => ({
+          headerShadowVisible: false,
+          title: null,
+          headerLeft: () => (
+            <View></View>
+          ),
+          })}/>
+      <Stack.Screen name="EmailVerification" component={EmailVerificationScreen} 
         options={() => ({
           headerShadowVisible: false,
           title: null,

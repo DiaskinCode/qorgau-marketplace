@@ -6,6 +6,7 @@ import { ProfilePolicyScreen } from '../screens/ProfilePolicyScreen';
 import { ProfileTermsScreen } from '../screens/ProfileTermsScreen';
 import { ProfileAboutScreen } from '../screens/ProfileAboutScreen';
 import { ProfileTariffsScreen } from '../screens/ProfileTariffsScreen';
+import { useTranslation } from 'react-i18next';
 import { ProfileActiveScreen } from '../screens/ProfileActiveScreen';
 import { ProfileApproveScreen } from '../screens/ProfileApproveScreen';
 import { ProfileNotActiveScreen } from '../screens/ProfileNotActiveScreen';
@@ -21,6 +22,7 @@ import {CreatePostPayScreen} from '../screens/CreatePostPayScreen'
 const Stack = createNativeStackNavigator();
 
 const ProfileStackNavigator = () => {
+    const { t } = useTranslation();
   return (
     <Stack.Navigator>
       <Stack.Screen name="Profile"
@@ -31,7 +33,7 @@ const ProfileStackNavigator = () => {
           headerLeft: () => (
               <View style={styles.HeaderRight}>
                   <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Ваш профиль</Text>
+                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>{t('headers.profile')}</Text>
               </View>
           ),
           })}/>
@@ -43,7 +45,7 @@ const ProfileStackNavigator = () => {
           headerLeft: () => (
               <View style={styles.HeaderRight}>
                   <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                  <Text style={{fontFamily:'bold',fontSize:16,marginLeft:15}}>Политика конфиденциальности</Text>
+                  <Text style={{fontFamily:'bold',fontSize:16,marginLeft:15}}>{t('headers.policy')}</Text>
               </View>
           ),
           })}/>
@@ -55,7 +57,7 @@ const ProfileStackNavigator = () => {
           headerLeft: () => (
               <View style={styles.HeaderRight}>
                   <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                  <Text style={{fontFamily:'bold',fontSize:16,marginLeft:15}}>Условия пользования</Text>
+                  <Text style={{fontFamily:'bold',fontSize:16,marginLeft:15}}>{t('headers.terms')}</Text>
               </View>
           ),
           })}/>
@@ -67,7 +69,7 @@ const ProfileStackNavigator = () => {
           headerLeft: () => (
               <View style={styles.HeaderRight}>
                   <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                  <Text style={{fontFamily:'bold',fontSize:16,marginLeft:15}}>О приложении</Text>
+                  <Text style={{fontFamily:'bold',fontSize:16,marginLeft:15}}>{t('headers.about')}</Text>
               </View>
           ),
           })}/>
@@ -79,7 +81,7 @@ const ProfileStackNavigator = () => {
           headerLeft: () => (
               <View style={styles.HeaderRight}>
                   <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Тарифы</Text>
+                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>{t('headers.tariffs')}</Text>
               </View>
           ),
           })}/>
@@ -91,7 +93,7 @@ const ProfileStackNavigator = () => {
           headerLeft: () => (
               <View style={styles.HeaderRight}>
                   <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Активные</Text>
+                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>{t('headers.active')}</Text>
               </View>
           ),
           })}/>
@@ -103,7 +105,7 @@ const ProfileStackNavigator = () => {
           headerLeft: () => (
               <View style={styles.HeaderRight}>
                   <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                  <Text style={{fontFamily:'medium',fontSize:18,marginLeft:15}}>Редактирование поста</Text>
+                  <Text style={{fontFamily:'medium',fontSize:18,marginLeft:15}}>{t('headers.editPost')}</Text>
               </View>
           ),
           })}/>
@@ -115,7 +117,7 @@ const ProfileStackNavigator = () => {
           headerLeft: () => (
               <View style={styles.HeaderRight}>
                   <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Модерация</Text>
+                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>{t('headers.moderation')}</Text>
               </View>
           ),
           })}/>
@@ -127,7 +129,7 @@ const ProfileStackNavigator = () => {
           headerLeft: () => (
               <View style={styles.HeaderRight}>
                   <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Избранные</Text>
+                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>{t('headers.favourites')}</Text>
               </View>
           ),
           })}/>
@@ -139,7 +141,7 @@ const ProfileStackNavigator = () => {
           headerLeft: () => (
               <View style={styles.HeaderRight}>
                   <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Не активные</Text>
+                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>{t('headers.notActive')}</Text>
               </View>
           ),
           })}/>
@@ -151,7 +153,7 @@ const ProfileStackNavigator = () => {
           headerLeft: () => (
               <View style={styles.HeaderRight}>
                   <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Не оплаченные</Text>
+                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>{t('headers.notPayed')}</Text>
               </View>
           ),
           })}/>
@@ -163,7 +165,7 @@ const ProfileStackNavigator = () => {
           headerLeft: () => (
               <View style={styles.HeaderRight}>
                   <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Удаленные</Text>
+                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>{t('headers.deleted')}</Text>
               </View>
           ),
           })}/>
@@ -175,7 +177,7 @@ const ProfileStackNavigator = () => {
           headerLeft: () => (
               <View style={styles.HeaderRight}>
                   <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Админ панель</Text>
+                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>{t('headers.admin')}</Text>
               </View>
           ),
           })}/>
@@ -187,7 +189,7 @@ const ProfileStackNavigator = () => {
           headerLeft: () => (
               <View style={styles.HeaderRight}>
                   <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Настройки профиля</Text>
+                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>{t('headers.settings')}</Text>
               </View>
           ),
           })}/>
@@ -201,7 +203,7 @@ const ProfileStackNavigator = () => {
                 headerLeft: () => (
                     <View style={styles.HeaderRight}>
                         <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                        <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Тарифы</Text>
+                        <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>{t('headers.tariffs')}</Text>
                     </View>
                 ),
             })}/>
@@ -214,7 +216,7 @@ const ProfileStackNavigator = () => {
                 headerLeft: () => (
                     <View style={styles.HeaderRight}>
                         <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                        <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Тарифы</Text>
+                        <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>{t('headers.tariffs')}</Text>
                     </View>
                 ),
             })}/>

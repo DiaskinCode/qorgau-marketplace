@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Image, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import { useTranslation } from 'react-i18next';
 import {CreatePostScreen} from '../screens/CreatePostScreen'
 import {CreatePostCategoryScreen} from '../screens/CreatePostCategoryScreen'
 import {CreatePostSuccessScreen} from '../screens/CreatePostSuccessScreen'
@@ -11,6 +11,7 @@ import {CreatePostPayScreen} from '../screens/CreatePostPayScreen'
 const Main = createNativeStackNavigator();
 
 export default function CreatePostStackNavigation() {
+    const { t } = useTranslation();
     return (
         <Main.Navigator>
             <Main.Screen 
@@ -22,7 +23,7 @@ export default function CreatePostStackNavigation() {
                     headerLeft: () => (
                         <View style={styles.HeaderRight}>
                             <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                            <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Новое объявления</Text>
+                            <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>{t('headers.newPost')}</Text>
                         </View>
                     ),
                     })}/>
@@ -35,7 +36,7 @@ export default function CreatePostStackNavigation() {
                     headerLeft: () => (
                         <View style={styles.HeaderRight}>
                             <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                            <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Новое объявления</Text>
+                            <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>{t('headers.newPost')}</Text>
                         </View>
                     ),
                     })}/>

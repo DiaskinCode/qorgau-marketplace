@@ -223,8 +223,8 @@ export const HomeScreen = () => {
       { id: 2, name: t('categories_main.products'),        icon: <Ionicons name="cart-outline" size={26} color={ORANGE} /> },
       { id: 3, name: t('categories_main.findEmployee'),    icon: <Ionicons name="person-search-outline" size={26} color={ORANGE} /> as any || <MaterialCommunityIcons name="account-search-outline" size={26} color={ORANGE} /> },
       { id: 99, name: t('categories_main.qorgauAi'),       icon: <Ionicons name="sparkles-outline" size={26} color={ORANGE} /> },
-      { id: 4, name: t('categories_main.other'),           icon: <Ionicons name="apps-outline" size={26} color={ORANGE} /> },
       { id: 7, name: t('categories_main.industrialSecurityEducation'), icon: <Ionicons name="school-outline" size={26} color={ORANGE} /> },
+      { id: 4, name: t('categories_main.other'),           icon: <Ionicons name="apps-outline" size={26} color={ORANGE} /> },
     ],
     [t]
   );
@@ -314,7 +314,7 @@ export const HomeScreen = () => {
 
         {/* Категории */}
         <View style={styles.sectionRow}>
-          <Text style={styles.sectionTitle}>Категории</Text>
+          <Text style={styles.sectionTitle}>{t('category.header')}</Text>
         </View>
 
         <View style={styles.categoryGrid}>
@@ -464,13 +464,13 @@ const styles = StyleSheet.create({
     width: '95%', alignSelf: 'center', marginTop: 8, marginBottom: 15 
   },
   categoryTile: {
-    width: '31.8%', backgroundColor: LIGHT_ORANGE, borderRadius: 16, height: 95, paddingHorizontal: 20, marginBottom: 12,
+    width: '31.8%', backgroundColor: LIGHT_ORANGE, borderRadius: 16, height: 95, paddingHorizontal: 15, marginBottom: 12,
     borderWidth: 1, borderColor: ORANGE + '33', justifyContent: 'center'
   },
   categoryIconWrap: {
     borderRadius: 12, marginBottom: 6,
   },
-  categoryText: { fontSize: 14, fontFamily: 'medium', color: '#333', textAlign: 'left' },
+  categoryText: { fontSize: 13, fontFamily: 'medium', color: '#333', textAlign: 'left' },
 
   cityChip: {
     flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 10, height: 34,

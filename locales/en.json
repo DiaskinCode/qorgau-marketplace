@@ -1,0 +1,352 @@
+{
+    "tabs": {
+      "home": "Home",
+      "feed": "Favourites",
+      "create_new": "Create New",
+      "messages": "Messages",
+      "profile": "Profile"
+    },
+    "headers": {
+      "newPost": "New Post",
+      "tariffs": "Tariffs",
+      "profile": "Your Profile",
+      "policy": "Privacy Policy",
+      "terms": "Terms of Use",
+      "about": "About the App",
+      "active": "Active",
+      "editPost": "Edit Post",
+      "moderation": "Moderation",
+      "favourites": "Favourites",
+      "notActive": "Inactive",
+      "notPayed": "Unpaid",
+      "deleted": "Deleted",
+      "admin": "Admin Panel",
+      "settings": "Profile Settings"
+    },
+    "categories_main": {
+      "services": "Services",
+      "products": "Products",
+      "findEmployee": "Find Employee",
+      "qorgauAi": "Qorgau AI",
+      "other": "Other",
+      "securityAgencies": "Security Agencies",
+      "industrialSecurity": "Industrial Safety",
+      "industrialSecurityEducation": "Training with Certificate"
+    },
+    "stories": {
+      "create": "How to Create a Post",
+      "edit": "Edit a Post",
+      "security": "Platform Safety"
+    },
+    "recommendation": "Recommendations",
+    "recommendation_in_city": "Recommendations for {{city}}",
+    "welcome": "Let's get started",
+    "welcome_desc": "You can create a new account or log in to an existing one",
+    "password": "Password",
+    "kaz": "Kazakh",
+    "rus": "Russian",
+    "continue": "Continue",
+    "number_or_email": "Email",
+    "select_language": {
+      "select_language": "Select Language",
+      "you_could_change_language": "You can change it later in your profile settings"
+    },
+    "register": {
+      "register": "Sign Up",
+      "register_of_acc": "Account Registration",
+      "create_acc": "Create an account to access all features of the app",
+      "profile_pic": "Profile Photo",
+      "write_name": "Enter your username",
+      "error": {
+        "login_required": "Username is required.",
+        "password_required": "Password is required.",
+        "email_required_or_invalid": "Please enter a valid email address.",
+        "password_length": "Password must be at least 6 characters.",
+        "passwords_do_not_match": "Passwords do not match.",
+        "name_required": "Name is required.",
+        "image_required": "Profile photo is required."
+      }
+    },
+    "contacts": {
+      "title": "Contact Information",
+      "phone": "Phone Number",
+      "whatsapp": "WhatsApp Number",
+      "site": "Website Link",
+      "telegram": "Telegram Link",
+      "tiktok": "TikTok Link",
+      "facebook": "Facebook Link",
+      "instagram": "Instagram Link",
+      "twogis": "2GIS Link",
+      "publish": "Publish",
+      "placeholders": {
+        "phone": "+7 777 777 777",
+        "whatsapp": "777 777 7777"
+      }
+    },
+    "create": {
+      "heading": "Create Post in {{category}}",
+      "media": {
+        "title": "Add Photos and Videos",
+        "error": "Please add at least one photo or video",
+        "hint": "Video helps buyers better understand the product. Add a short clip and sell faster!"
+      },
+      "globalType": {
+        "title": "Type of Product or Service",
+        "options": {
+          "industrial": "Industrial Safety",
+          "fire": "Fire Safety",
+          "security": "Security"
+        }
+      }
+    },
+    "createCategory": {
+      "screenTitle": "Select Category",
+      "lockTitle": "To create a post",
+      "lockSubtitle": "Log in or sign up",
+      "authCta": "Log In / Sign Up",
+      "categories": {
+        "services": "Services",
+        "products": "Products",
+        "findEmployee": "Find Employee",
+        "securityAgencies": "Security Agencies",
+        "industrialSafety": "Industrial Safety",
+        "fireSafetyTraining": "Fire Safety Training",
+        "other": "Other"
+      }
+    },
+    "login": {
+      "login": "Log In",
+      "login_to_acc": "Log in to your account",
+      "input_fields": "Input Field",
+      "forgot_password": "Forgot Password?",
+      "no_acc": "Don't have an account?"
+    },
+    "main": {
+      "hello": "Hello",
+      "lets": "Let's check new posts",
+      "search_catalog": "Search the catalog"
+    },
+    "categories": {
+      "transport": "Transport",
+      "work": "Jobs",
+      "real_estate": "Real Estate",
+      "exchange_free": "Exchange / Free",
+      "electronics": "Electronics",
+      "hobbies_sports_recreation": "Hobbies / Sports / Recreation",
+      "childrens_world": "Children's World",
+      "products": "Products",
+      "services": "Services",
+      "clothing_shoes": "Clothing / Shoes",
+      "animals": "Animals",
+      "home_furniture": "Home / Furniture",
+      "buy": "Buying",
+      "garden_plants": "Garden / Plants",
+      "construction_renovation": "Construction & Renovation",
+      "design_interior": "Design & Interior"
+    },
+    "extra_info": "Additional Information",
+    "product_statement": "Product Condition",
+    "post": "Publish",
+    "title": {
+      "header": "Title",
+      "min_length_instruction": "Enter at least 16 characters",
+      "length_display": "{title.length}/70",
+      "placeholder": "Post title"
+    },
+    "price": {
+      "header": "Price",
+      "placeholder": "Enter price"
+    },
+    "category": {
+      "header": "Category",
+      "placeholder": "Select a category"
+    },
+    "description": {
+      "header": "Description",
+      "min_length_instruction": "Enter at least 40 characters",
+      "length_display": "{content.length}/9000",
+      "placeholder": "Describe your product or service in detail"
+    },
+    "profileSettings": {
+      "avatar": {
+        "placeholder": "Profile Photo"
+      },
+      "name": {
+        "label": "Your Name",
+        "placeholder": "Enter your name"
+      },
+      "phone": {
+        "label": "Phone Number",
+        "placeholder": "+7 777 777 7777"
+      },
+      "email": {
+        "label": "Login Email",
+        "placeholder": "Enter your email"
+      },
+      "language": {
+        "label": "Language",
+        "kz": "Kazakh",
+        "ru": "Russian",
+        "en": "English",
+        "placeholder": "Select language"
+      },
+      "actions": {
+        "updateProfile": "Update Profile",
+        "logout": "Log Out",
+        "deleteAccount": "Delete Account"
+      },
+      "modal": {
+        "updating": "Updating profile..."
+      },
+      "alerts": {
+        "galleryPermTitle": "Permission",
+        "galleryPermBody": "Gallery access permission is required"
+      },
+      "delete": {
+        "title": "Delete Account?",
+        "message": "This action cannot be undone: your profile and data will be permanently deleted.",
+        "confirm": "Delete",
+        "startedTitle": "Deletion Started",
+        "startedBody": "Your account will be deleted shortly.",
+        "forbidden": "You can only delete your own account.",
+        "notFound": "User not found.",
+        "errorGeneric": "Deletion error (code {{code}}).",
+        "userUnknown": "Unable to identify user."
+      },
+      "common": {
+        "cancel": "Cancel",
+        "error": "Error",
+        "network": "Network Error",
+        "forbidden": "Access denied",
+        "tryLater": "Try again later"
+      }
+    },
+    "profileMain": {
+      "cta": {
+        "title": "Log in to your account",
+        "subtitle": "To manage your profile and create/edit posts, please log in.",
+        "login": "Log In",
+        "signup": "Sign Up"
+      },
+      "myPosts": "My Posts",
+      "posts": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "unpaid": "Unpaid",
+        "deleted": "Deleted"
+      },
+      "settings": "Profile Settings",
+      "adminPanel": "Admin Panel",
+      "other": "Other",
+      "otherTerms": "Terms of Use",
+      "otherPolicy": "Privacy Policy",
+      "otherAbout": "About the App"
+    },
+    "profileProductCard": {
+      "noPhoto": "No photo",
+      "defaults": {
+        "city": "Astana",
+        "date": "Today, 15:24"
+      },
+      "actions": {
+        "approve": "Approve",
+        "deactivate": "Deactivate",
+        "activate": "Activate",
+        "restore": "Restore",
+        "reject": "Reject",
+        "edit": "Edit",
+        "promote": "Promote",
+        "pay": "Pay"
+      }
+    },
+    "location": {
+      "header": "Location",
+      "placeholder": "Select city",
+      "options": ["Astana", "Almaty", "Shymkent", "Kyzylorda"]
+    },
+    "additional_fields": {
+      "brand": {
+        "header": "Brand",
+        "placeholder": "Enter brand"
+      },
+      "color": {
+        "header": "Color",
+        "placeholder": "Select color"
+      },
+      "fuel_type": {
+        "header": "Fuel Type",
+        "placeholder": "Select fuel type",
+        "options": ["Petrol", "Diesel", "Electric", "Hybrid"]
+      },
+      "engine_volume": {
+        "header": "Engine Volume",
+        "placeholder": "Enter engine volume"
+      },
+      "number_of_owners": {
+        "header": "Number of Owners",
+        "placeholder": "Enter number of previous owners"
+      },
+      "number_of_rooms": {
+        "header": "Number of Rooms",
+        "placeholder": "Enter number of rooms"
+      },
+      "total_area": {
+        "header": "Total Area",
+        "placeholder": "Enter total area (sqm)"
+      },
+      "year_of_construction": {
+        "header": "Year of Construction",
+        "placeholder": "Enter year of construction"
+      },
+      "lease_term": {
+        "header": "Lease Term",
+        "placeholder": "Enter lease term"
+      },
+      "renovation": {
+        "header": "Renovation",
+        "placeholder": "Select renovation type",
+        "options": ["Euro-renovation", "Partial renovation", "White frame", "Black frame"]
+      },
+      "heating": {
+        "header": "Heating",
+        "placeholder": "Select heating type",
+        "options": ["Air", "Electric", "Water", "Centralized"]
+      },
+      "bathroom": {
+        "header": "Bathroom",
+        "placeholder": "Select bathroom type",
+        "options": ["Separate", "Combined"]
+      },
+      "property_type": {
+        "header": "Property Type",
+        "placeholder": "Select property type",
+        "options": ["Owner", "Shared ownership"]
+      },
+      "furniture": {
+        "header": "Furniture",
+        "placeholder": "Enter level of furnishing",
+        "options": ["Fully furnished", "Partly furnished", "Unfurnished"]
+      },
+      "building_type": {
+        "header": "Building Type",
+        "placeholder": "Select building type",
+        "options": ["Brick", "Panel"]
+      },
+      "statement": {
+        "header": "Condition",
+        "placeholder": "Select product condition",
+        "options": ["New", "Used"]
+      },
+      "body": {
+        "header": "Body Type",
+        "placeholder": "Select body type",
+        "options": ["Crossover", "Coupe", "Sedan", "Hatchback", "Liftback", "Coupe", "Roadster", "Targa"]
+      },
+      "transmission": {
+        "header": "Transmission",
+        "placeholder": "Select transmission type",
+        "options": ["Automatic", "Manual"]
+      }
+    }
+  }
+  

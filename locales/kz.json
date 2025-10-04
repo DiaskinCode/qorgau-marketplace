@@ -1,11 +1,28 @@
 {
   "tabs": {
     "home": "Басты",
-    "feed": "Избранные",
+    "feed": "Таңдаулылар",
     "create_new": "Жаңа жасау",
     "messages": "Хабарламалар",
     "profile": "Профиль"
   },
+  "headers": {
+    "newPost": "Жаңа хабарландыру",
+    "tariffs": "Тарифтер",
+    "profile": "Профиліңіз",
+    "policy": "Құпиялылық саясаты",
+    "terms": "Пайдалану шарттары",
+    "about": "Қолданба туралы",
+    "active": "Белсенділер",
+    "editPost": "Жарнаманы өңдеу",
+    "moderation": "Модерация",
+    "favourites": "Таңдаулылар",
+    "notActive": "Белсенді емес",
+    "notPayed": "Төленбеген",
+    "deleted": "Жойылған",
+    "admin": "Админ панелі",
+    "settings": "Профиль баптаулары"
+  }, 
   "categories_main": {
     "services": "Қызметтер",
     "products": "Тауарлар",
@@ -15,7 +32,7 @@
     "securityAgencies": "Қауіпсіздік агенттіктері",
     "industrialSecurity": "Өнеркәсіптік қауіпсіздік",
     "industrialSecurityEducation": "Өнеркәсіптік қауіпсіздіктің білім алуы"
-  },
+  }, 
   "stories": {
     "create": "Хабарлама қалай жасалынады",
     "edit": "Хабарламаны өзгерту",
@@ -50,10 +67,151 @@
       "image_required": "Профиль суреті қажет."
     }
   },
+  "profileSettings": {
+    "avatar": {
+      "placeholder": "Профиль фотосы"
+    },
+    "name": {
+      "label": "Атыңыз",
+      "placeholder": "Атыңызды енгізіңіз"
+    },
+    "phone": {
+      "label": "Телефон нөмірі",
+      "placeholder": "+7 777 777 7777"
+    },
+    "email": {
+      "label": "Кіру поштаңыз",
+      "placeholder": "Поштаны енгізіңіз"
+    },
+    "language": {
+      "label": "Тіл",
+      "kz": "Қазақша",
+      "ru": "Орысша",
+      "en": "Английский",
+      "placeholder": "Тілді таңдаңыз"
+    },
+    "actions": {
+      "updateProfile": "Профильді өзгерту",
+      "logout": "Аккаунттан шығу",
+      "deleteAccount": "Аккаунтты жою"
+    },
+    "modal": {
+      "updating": "Профиль өңделіп жатыр..."
+    },
+    "alerts": {
+      "galleryPermTitle": "Рұқсат",
+      "galleryPermBody": "Галереяға қолжетімділікке рұқсат қажет"
+    },
+    "delete": {
+      "title": "Аккаунтты жою?",
+      "message": "Бұл әрекет қайтымсыз: профиль және деректер жойылады.",
+      "confirm": "Жою",
+      "startedTitle": "Жою басталды",
+      "startedBody": "Аккаунт жақын арада жойылады.",
+      "forbidden": "Тек өз аккаунтыңызды ғана жоя аласыз.",
+      "notFound": "Пайдаланушы табылмады.",
+      "errorGeneric": "Жою қатесі (код {{code}}).",
+      "userUnknown": "Пайдаланушыны анықтау мүмкін болмады."
+    },
+    "common": {
+      "cancel": "Бас тарту",
+      "error": "Қате",
+      "network": "Желі қатесі",
+      "forbidden": "Қатынауға тыйым салынған",
+      "tryLater": "Кейінірек көріңіз"
+    }
+  },
+    "profileMain": {
+      "cta": {
+        "title": "Аккаунтқа кіріңіз",
+        "subtitle": "Профильді басқару және хабарландыруларды қосу/өзгерту үшін аккаунтқа кіріңіз.",
+        "login": "Кіру",
+        "signup": "Тіркелу"
+      },
+      "myPosts": "Менің хабарландыруларым",
+      "posts": {
+        "active": "Белсенді",
+        "inactive": "Белсенді емес",
+        "unpaid": "Төленбеген",
+        "deleted": "Жойылған"
+      },
+      "settings": "Профиль баптаулары",
+      "adminPanel": "Әкімші панелі",
+      "other": "Басқа",
+      "otherTerms": "Қолдану шарттары",
+      "otherPolicy": "Құпиялылық саясаты",
+      "otherAbout": "Қосымша туралы"
+    },
+    "profileProductCard": {
+      "noPhoto": "Фото жоқ",
+      "defaults": {
+        "city": "Астана",
+        "date": "Бүгін, 15:24"
+      },
+      "actions": {
+        "approve": "Бекіту",
+        "deactivate": "Белсенділікті өшіру",
+        "activate": "Белсендіру",
+        "restore": "Қалпына келтіру",
+        "reject": "Қайтару",
+        "edit": "Өңдеу",
+        "promote": "Жарнамалау",
+        "pay": "Төлеу"
+      }
+    },
+    "contacts": {
+      "title": "Байланыс деректері",
+      "phone": "Телефон нөмірі",
+      "whatsapp": "WhatsApp нөмірі",
+      "site": "Сайтқа сілтеме",
+      "telegram": "Telegram сілтемесі",
+      "tiktok": "TikTok сілтемесі",
+      "facebook": "Facebook сілтемесі",
+      "instagram": "Instagram сілтемесі",
+      "twogis": "2GIS сілтемесі",
+      "publish": "Жариялау",
+      "placeholders": {
+        "phone": "+7 777 777 777",
+        "whatsapp": "777 777 7777"
+      }
+    },
+    "create": {
+      "heading": "Хабарландыру беру {{category}}",
+      "media": {
+        "title": "Фотолар мен видеоны қосыңыз",
+        "error": "Кемінде бір фото немесе видео қосыңыз",
+        "hint": "Видео сатып алушыға тауарды жақсырақ бағалауға көмектеседі. Қысқа ролик қоссаңыз — тезірек сатасыз!"
+      },
+      "globalType": {
+        "title": "Тауар немесе қызмет түрі",
+        "options": {
+          "industrial": "Өндірістік қауіпсіздік",
+          "fire": "Өрт қауіпсіздігі",
+          "security": "Күзет қауіпсіздігі"
+        }
+      }
+    },
+    "createCategory": {
+      "screenTitle": "Санатты таңдаңыз",
+      "lockTitle": "Хабарландыру жариялау үшін",
+      "lockSubtitle": "Кіріңіз немесе тіркеліңіз",
+      "authCta": "Кіру / Тіркелу",
+      "categories": {
+        "services": "Қызметтер",
+        "products": "Тауарлар",
+        "findEmployee": "Қызметкер табу",
+        "securityAgencies": "Күзет агенттіктері",
+        "industrialSafety": "Өндірістік қауіпсіздік",
+        "fireSafetyTraining": "Өрт қауіпсіздігі бойынша оқу",
+        "other": "Басқа"
+      }
+    },
   "login": {
     "login": "Кіру",
     "login_to_acc": "Өз тіркелгіңізге кіріңіз",
-    "input_fields": "Енгізу өрістері"
+    "input_fields": "Енгізу өрістері",
+    "forgot_password": "Құпия сөзіңізді ұмыттыңыз ба?",
+    "no_acc": "Есептік жазбаңыз жоқ па?"
   },
   "main": {
     "hello": "Сәлеметсіз бе",

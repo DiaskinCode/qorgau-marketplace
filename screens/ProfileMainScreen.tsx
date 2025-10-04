@@ -4,53 +4,53 @@ import { View, StyleSheet, TouchableOpacity, ScrollView, Text, ActivityIndicator
 import { useSelector } from 'react-redux';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 export const ProfileMainScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.auth.user);
   const [isImageLoading, setImageLoading] = useState(true);
 
-
-  // --- Если пользователь НЕ авторизован: показываем красивый CTA-блок ---
   if (!isAuthenticated) {
     return (
       <ScrollView>
         <View style={styles.wrapper}>
           <View style={styles.ctaCard}>
             <Ionicons name="person-outline" size={40} color="#F09235" />
-            <Text style={styles.ctaTitle}>Войдите в аккаунт</Text>
-            <Text style={styles.ctaText}>
-              Чтобы управлять профилем и размещать/редактировать объявления, пожалуйста, войдите в аккаунт.
-            </Text>
-            <TouchableOpacity style={styles.ctaButton} onPress={() => navigation.navigate('Auth', { screen: 'Login' })}>
-              <Text style={styles.ctaButtonText}>Войти</Text>
+            <Text style={styles.ctaTitle}>{t('profileMain.cta.title')}</Text>
+            <Text style={styles.ctaText}>{t('profileMain.cta.subtitle')}</Text>
+            <TouchableOpacity
+              style={styles.ctaButton}
+              onPress={() => navigation.navigate('Auth', { screen: 'Login' })}
+            >
+              <Text style={styles.ctaButtonText}>{t('profileMain.cta.login')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.outlineButton}
               onPress={() => navigation.navigate('Auth', { screen: 'Signup' })}
             >
-              <Text style={styles.outlineButtonText}>Зарегистрироваться</Text>
+              <Text style={styles.outlineButtonText}>{t('profileMain.cta.signup')}</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Подсказки-«серые» пункты меню — можно тапать, перекидываем на авторизацию */}
-          <Text style={styles.sectionTitle}>Мои объявления</Text>
+          <Text style={styles.sectionTitle}>{t('profileMain.myPosts')}</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Auth', { screen: 'Signup' })} style={styles.profileButtonDisabled}>
-            <Text style={styles.profileButtonText}>Активные</Text>
+            <Text style={styles.profileButtonText}>{t('profileMain.posts.active')}</Text>
             <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('Auth', { screen: 'Signup' })} style={styles.profileButtonDisabled}>
-            <Text style={styles.profileButtonText}>Не активные</Text>
+            <Text style={styles.profileButtonText}>{t('profileMain.posts.inactive')}</Text>
             <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('Auth', { screen: 'Signup' })} style={styles.profileButtonDisabled}>
-            <Text style={styles.profileButtonText}>Не оплаченные</Text>
+            <Text style={styles.profileButtonText}>{t('profileMain.posts.unpaid')}</Text>
             <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('Auth', { screen: 'Signup' })} style={styles.profileButtonDisabled}>
-            <Text style={styles.profileButtonText}>Удаленные</Text>
+            <Text style={styles.profileButtonText}>{t('profileMain.posts.deleted')}</Text>
             <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
           </TouchableOpacity>
         </View>
@@ -58,10 +58,9 @@ export const ProfileMainScreen = () => {
     );
   }
 
-  // --- Если пользователь авторизован: показываем прежний экран ---
   return (
     <ScrollView>
-      <View horizontal={false} style={{ paddingBottom: 110, paddingTop: 20, width: '90%', alignSelf: 'center' }}>
+      <View style={{ paddingBottom: 110, paddingTop: 20, width: '90%', alignSelf: 'center' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
           {isImageLoading && <ActivityIndicator style={{ position: 'absolute', width: 170, height: 170 }} />}
           <Image
@@ -79,7 +78,7 @@ export const ProfileMainScreen = () => {
             <Text style={{ fontSize: 14, fontFamily: 'regular', marginBottom: 10 }}>{user?.email}</Text>
             <TouchableOpacity onPress={() => { navigation.navigate('ProfileSettings' as never); }} style={{ flexDirection: 'row' }}>
               <Image style={{ width: 16, height: 16 }} source={require('../assets/profile_settings.png')} />
-              <Text style={{ fontSize: 14, fontFamily: 'regular', marginLeft: 6 }}>настройки профиля</Text>
+              <Text style={{ fontSize: 14, fontFamily: 'regular', marginLeft: 6 }}>{t('profileMain.settings')}</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity onPress={() => { navigation.navigate('Favourite' as never); }} style={{ position: 'absolute', right: 10, top: 10 }}>
@@ -89,40 +88,40 @@ export const ProfileMainScreen = () => {
 
         {user?.username === 'admin' ? (
           <TouchableOpacity onPress={() => { navigation.navigate('admin' as never); }} style={styles.profileButton}>
-            <Text style={{ fontFamily: 'medium', fontSize: 16, opacity: 0.8 }}>Админ панель</Text>
+            <Text style={{ fontFamily: 'medium', fontSize: 16, opacity: 0.8 }}>{t('profileMain.adminPanel')}</Text>
             <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
           </TouchableOpacity>
         ) : null}
 
-        <Text style={styles.sectionTitle}>Мои объявления</Text>
+        <Text style={styles.sectionTitle}>{t('profileMain.myPosts')}</Text>
         <TouchableOpacity onPress={() => { navigation.navigate('active' as never); }} style={styles.profileButton}>
-          <Text style={styles.profileButtonText}>Активные</Text>
+          <Text style={styles.profileButtonText}>{t('profileMain.posts.active')}</Text>
           <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => { navigation.navigate('notactive' as never); }} style={styles.profileButton}>
-          <Text style={styles.profileButtonText}>Не активные</Text>
+          <Text style={styles.profileButtonText}>{t('profileMain.posts.inactive')}</Text>
           <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => { navigation.navigate('notpayed' as never); }} style={styles.profileButton}>
-          <Text style={styles.profileButtonText}>Не оплаченные</Text>
+          <Text style={styles.profileButtonText}>{t('profileMain.posts.unpaid')}</Text>
           <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => { navigation.navigate('deleted' as never); }} style={styles.profileButton}>
-          <Text style={styles.profileButtonText}>Удаленные</Text>
+          <Text style={styles.profileButtonText}>{t('profileMain.posts.deleted')}</Text>
           <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
         </TouchableOpacity>
 
-        <Text style={styles.sectionTitle}>Другое</Text>
+        <Text style={styles.sectionTitle}>{t('profileMain.other')}</Text>
         <TouchableOpacity onPress={() => { navigation.navigate('Terms' as never); }} style={styles.profileButton}>
-          <Text style={styles.profileButtonText}>Условия пользования</Text>
+          <Text style={styles.profileButtonText}>{t('profileMain.otherTerms')}</Text>
           <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => { navigation.navigate('Policy' as never); }} style={styles.profileButton}>
-          <Text style={styles.profileButtonText}>Политика конфиденциальности</Text>
+          <Text style={styles.profileButtonText}>{t('profileMain.otherPolicy')}</Text>
           <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => { navigation.navigate('about' as never); }} style={styles.profileButton}>
-          <Text style={styles.profileButtonText}>О приложении</Text>
+          <Text style={styles.profileButtonText}>{t('profileMain.otherAbout')}</Text>
           <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
         </TouchableOpacity>
       </View>
@@ -131,101 +130,26 @@ export const ProfileMainScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  wrapper: {
-    paddingBottom: 110,
-    paddingTop: 30,
-    width: '90%',
-    alignSelf: 'center',
-  },
+  wrapper: { paddingBottom: 110, paddingTop: 30, width: '90%', alignSelf: 'center' },
   ctaCard: {
-    backgroundColor: '#fff',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#e6e6e6',
-    padding: 18,
-    alignItems: 'center',
-    marginBottom: 24,
+    backgroundColor: '#fff', borderRadius: 14, borderWidth: 1, borderColor: '#e6e6e6',
+    padding: 18, alignItems: 'center', marginBottom: 24,
   },
-  ctaTitle: {
-    fontFamily: 'medium',
-    fontSize: 20,
-    color: '#141517',
-    marginTop: 16,
-    marginBottom: 6,
-  },
-  ctaText: {
-    fontFamily: 'regular',
-    fontSize: 14,
-    color: '#6B7280',
-    textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: 14,
-  },
-  ctaButton: {
-    width: '100%',
-    borderRadius: 10,
-    backgroundColor: '#F09235',
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  ctaButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontFamily: 'medium',
-  },
-  outlineButton: {
-    width: '100%',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#F09235',
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  outlineButtonText: {
-    color: '#F09235',
-    fontSize: 15,
-    fontFamily: 'medium',
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontFamily: 'medium',
-    marginTop: 10,
-    marginBottom: 20,
-  },
+  ctaTitle: { fontFamily: 'medium', fontSize: 20, color: '#141517', marginTop: 16, marginBottom: 6 },
+  ctaText: { fontFamily: 'regular', fontSize: 14, color: '#6B7280', textAlign: 'center', lineHeight: 20, marginBottom: 14 },
+  ctaButton: { width: '100%', borderRadius: 10, backgroundColor: '#F09235', paddingVertical: 14, alignItems: 'center', marginBottom: 8 },
+  ctaButtonText: { color: '#fff', fontSize: 16, fontFamily: 'medium' },
+  outlineButton: { width: '100%', borderRadius: 10, borderWidth: 1, borderColor: '#F09235', paddingVertical: 12, alignItems: 'center' },
+  outlineButtonText: { color: '#F09235', fontSize: 15, fontFamily: 'medium' },
+  sectionTitle: { fontSize: 24, fontFamily: 'medium', marginTop: 10, marginBottom: 20 },
   profileButton: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#fafafa',
-    borderRadius: 12,
-    borderColor: '#e0e0e0',
-    borderWidth: 1,
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    marginBottom: 10,
+    width: '100%', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fafafa',
+    borderRadius: 12, borderColor: '#e0e0e0', borderWidth: 1, paddingHorizontal: 15, paddingVertical: 15, marginBottom: 10,
   },
   profileButtonDisabled: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#f3f4f6',
-    borderRadius: 12,
-    borderColor: '#e5e7eb',
-    borderWidth: 1,
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    marginBottom: 10,
-    opacity: 0.7,
+    width: '100%', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#f3f4f6',
+    borderRadius: 12, borderColor: '#e5e7eb', borderWidth: 1, paddingHorizontal: 15, paddingVertical: 15, marginBottom: 10, opacity: 0.7,
   },
-  profileButtonText: {
-    fontFamily: 'medium',
-    fontSize: 16,
-    opacity: 0.85,
-  },
-  chevron: {
-    height: 16,
-    width: 8,
-    resizeMode: 'contain',
-  },
+  profileButtonText: { fontFamily: 'medium', fontSize: 16, opacity: 0.85 },
+  chevron: { height: 16, width: 8, resizeMode: 'contain' },
 });

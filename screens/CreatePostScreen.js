@@ -119,6 +119,22 @@ export const CreatePostScreen = () => {
       return false;
     }
 
+    if (!content.trim()) {
+      hasError = true;
+      contentRef.current?.setNativeProps?.({ style: { borderColor: 'red', borderWidth: 1 } });
+    
+      // скроллим к полю описания
+      contentRef.current?.measureLayout(
+        scrollViewRef.current,
+        (x, y) => {
+          scrollViewRef.current.scrollTo({ y: y - 40, animated: true });
+        }
+      );
+    } else {
+      contentRef.current?.setNativeProps?.({ style: { borderColor: '#c4c4c4', borderWidth: 1 } });
+    }
+    
+
     if (!city) {
       setCityError('Выберите город');
       mediaRef.current?.measureLayout(
@@ -146,6 +162,8 @@ export const CreatePostScreen = () => {
     if (hasError) return false;
     return true;
   };
+
+  
 
   // Permissions
   useEffect(() => {
@@ -428,7 +446,9 @@ export const CreatePostScreen = () => {
         </Modal>
 
         <View style={{ marginTop: 20, marginBottom: 150, width: '90%', alignSelf: 'center' }}>
-          <Text style={{ fontFamily: 'medium', fontSize: 22, marginTop: 10 }}>{`Подать объявление ${categoryParam}`}</Text>
+          <Text style={{ fontFamily: 'medium', fontSize: 22, marginTop: 10 }}>
+            {t('create.heading', { category: categoryParam })}
+          </Text>
 
           <Text style={{ fontFamily: 'medium', fontSize: 18, marginTop: 20 }}>{t('title.header')}</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10, marginTop: 5 }}>
@@ -515,7 +535,7 @@ export const CreatePostScreen = () => {
 
           {(categoryIdParam === 1 || categoryIdParam === 2) && (
             <CreateDropdown
-              title={'Вид товара или услуги'}
+              title={t('create.globalType.title')}
               placeholder={t('category.placeholder')}
               isOpen={openDropdown === 'global'}
               toggleOpen={() => toggleDropdown('global')}
@@ -528,9 +548,17 @@ export const CreatePostScreen = () => {
           )}
 
           <View ref={mediaRef} style={{ marginTop: 30, borderRadius: 10 }}>
-            <Text style={{ fontSize: 18, fontFamily: 'medium' }}>Добавьте фотографии и видео</Text>
-            {mediaError && <Text style={{ color: 'red', marginVertical: 5 }}>Добавьте хоть одно фото или видео</Text>}
-            <Text style={{ marginTop: 5, fontSize: 14, opacity: .6, fontFamily: 'regular' }}>Видео помогает покупателю лучше оценить товар. Добавьте короткий ролик и вы продадите быстрее!</Text>
+            <Text style={{ fontSize: 18, fontFamily: 'medium' }}>
+              {t('create.media.title')}
+            </Text>
+            {mediaError && (
+              <Text style={{ color: 'red', marginVertical: 5 }}>
+                {t('create.media.error')}
+              </Text>
+            )}
+            <Text style={{ marginTop: 5, fontSize: 14, opacity: .6, fontFamily: 'regular' }}>
+              {t('create.media.hint')}
+            </Text>
 
             <ScrollView horizontal contentContainerStyle={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, paddingBottom: 15 }}>
               <TouchableOpacity style={{ marginRight: 10 }} onPress={chooseMedia}>
@@ -629,156 +657,106 @@ export const CreatePostScreen = () => {
             ]}
           />
 
-          <Text style={{ fontFamily: 'medium', fontSize: 18, marginTop: 20, }}>Контактные данные</Text>
+          <Text style={{ fontFamily: 'medium', fontSize: 18, marginTop: 20 }}>
+            {t('contacts.title')}
+          </Text>
+
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
             <View style={{ width: '48%', marginTop: 10 }}>
-              <Text style={{ fontFamily: 'medium', opacity: .7, fontSize: 12, marginBottom: 10, }}>Номер телефона</Text>
-              <TextInputMask
-                type={'custom'}
-                placeholder="+7 777 777 777"
-                ref={phoneRef}
-                style={{
-                  width: '100%',
-                  paddingHorizontal: 10,
-                  height: 50,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  borderColor: phoneError ? 'red' : '#c4c4c4',
-                  backgroundColor: '#F7F8F9'
-                }}
-                options={{ mask: '+79999999999' }}
-                value={phone}
-                onChangeText={(text) => {
-                  onChangePhone(text);
-                  if (text.trim() !== '') setPhoneError(false);
-                }}
-              />
+              <Text style={styles.label}>
+                {t('contacts.phone')}
+              </Text>
+              <TextInputMask type={'custom'} placeholder="+7 777 777 777" ref={phoneRef} style={{ width: '100%', paddingHorizontal: 10, height: 50, borderWidth: 1, borderRadius: 10, borderColor: phoneError ? 'red' : '#c4c4c4', backgroundColor: '#F7F8F9' }} options={{ mask: '+79999999999' }} value={phone} onChangeText={(text) => { onChangePhone(text); if (text.trim() !== '') setPhoneError(false); }} />
             </View>
+
             <View style={{ width: '48%', marginTop: 10 }}>
-              <Text style={{ fontFamily: 'medium', opacity: .7, fontSize: 12, marginBottom: 10, }}>Номер телефона Whatsapp</Text>
+              <Text style={styles.label}>{t('contacts.whatsapp')}</Text>
               <TextInputMask
                 type={'custom'}
-                placeholder="777 777 7777"
-                style={{
-                  width: '100%',
-                  paddingHorizontal: 10,
-                  height: 50,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  borderColor: '#c4c4c4',
-                  backgroundColor: '#F7F8F9'
-                }}
+                placeholder={t('contacts.placeholders.whatsapp')}
+                style={styles.input}
                 options={{ mask: '+79999999999' }}
                 value={whatsapp}
                 onChangeText={onChangeWhatsapp}
               />
             </View>
+
             <View style={{ width: '48%', marginTop: 10 }}>
-              <Text style={{ fontFamily: 'medium', opacity: .7, fontSize: 12, marginBottom: 10, }}>Ссылка на сайт</Text>
+              <Text style={styles.label}>{t('contacts.site')}</Text>
               <TextInput
                 placeholder="https://"
-                style={{
-                  width: '100%',
-                  paddingHorizontal: 10,
-                  height: 50,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  borderColor: '#c4c4c4',
-                  backgroundColor: '#F7F8F9'
-                }}
+                style={styles.input}
                 value={site}
                 onChangeText={onChangeSite}
               />
             </View>
+
             <View style={{ width: '48%', marginTop: 10 }}>
-              <Text style={{ fontFamily: 'medium', opacity: .7, fontSize: 12, marginBottom: 10, }}>Ссылка на телеграм</Text>
+              <Text style={styles.label}>{t('contacts.telegram')}</Text>
               <TextInput
                 placeholder="https://t.me/"
-                style={{
-                  width: '100%',
-                  paddingHorizontal: 10,
-                  height: 50,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  borderColor: '#c4c4c4',
-                  backgroundColor: '#F7F8F9'
-                }}
+                style={styles.input}
                 value={telegram}
                 onChangeText={onChangeTelegram}
               />
             </View>
+
             <View style={{ width: '48%', marginTop: 10 }}>
-              <Text style={{ fontFamily: 'medium', opacity: .7, fontSize: 12, marginBottom: 10, }}>Ссылка на TikTok</Text>
+              <Text style={styles.label}>{t('contacts.tiktok')}</Text>
               <TextInput
                 placeholder="https://tiktok.com/@"
-                style={{
-                  width: '100%',
-                  paddingHorizontal: 10,
-                  height: 50,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  borderColor: '#c4c4c4',
-                  backgroundColor: '#F7F8F9'
-                }}
+                style={styles.input}
                 value={tiktok}
                 onChangeText={onChangeTiktok}
               />
             </View>
+
             <View style={{ width: '48%', marginTop: 10 }}>
-              <Text style={{ fontFamily: 'medium', opacity: .7, fontSize: 12, marginBottom: 10, }}>Ссылка на FaceBook</Text>
+              <Text style={styles.label}>{t('contacts.facebook')}</Text>
               <TextInput
                 placeholder="https://facebook.com/"
-                style={{
-                  width: '100%',
-                  paddingHorizontal: 10,
-                  height: 50,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  borderColor: '#c4c4c4',
-                  backgroundColor: '#F7F8F9'
-                }}
+                style={styles.input}
                 value={facebook}
                 onChangeText={onChangeFacebook}
               />
             </View>
+
             <View style={{ width: '48%', marginTop: 10 }}>
-              <Text style={{ fontFamily: 'medium', opacity: .7, fontSize: 12, marginBottom: 10, }}>Ссылка на Instagram</Text>
+              <Text style={styles.label}>{t('contacts.instagram')}</Text>
               <TextInput
                 placeholder="https://instagram.com/"
-                style={{
-                  width: '100%',
-                  paddingHorizontal: 10,
-                  height: 50,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  borderColor: '#c4c4c4',
-                  backgroundColor: '#F7F8F9'
-                }}
+                style={styles.input}
                 value={insta}
                 onChangeText={onChangeInsta}
               />
             </View>
+
             <View style={{ width: '48%', marginTop: 10 }}>
-              <Text style={{ fontFamily: 'medium', opacity: .7, fontSize: 12, marginBottom: 10, }}>Ссылка на 2gis</Text>
+              <Text style={styles.label}>{t('contacts.twogis')}</Text>
               <TextInput
                 placeholder="https://2gis.kz/"
-                style={{
-                  width: '100%',
-                  paddingHorizontal: 10,
-                  height: 50,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  borderColor: '#c4c4c4',
-                  backgroundColor: '#F7F8F9'
-                }}
+                style={styles.input}
                 value={twogis}
                 onChangeText={onChangeTwogis}
               />
             </View>
           </View>
 
-          <TouchableOpacity onPress={sendPostRequest} style={{ borderRadius: 10, overflow: 'hidden', marginBottom: 20, marginTop: 40, backgroundColor: '#F09235', paddingVertical: 15, alignItems: 'center' }}>
-            <Text style={{ color: '#F7F8F9', fontSize: 16 }}>Опубликовать</Text>
+          <TouchableOpacity
+            onPress={sendPostRequest}
+            style={{
+              borderRadius: 10,
+              overflow: 'hidden',
+              marginBottom: 20,
+              marginTop: 40,
+              backgroundColor: '#F09235',
+              paddingVertical: 15,
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ color: '#F7F8F9', fontSize: 16 }}>
+              {t('contacts.publish')}
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -830,6 +808,18 @@ const styles = StyleSheet.create({
       fontFamily:'medium',
       fontSize:18,
       textAlign: 'center',
+    },
+    input: {
+      width: '100%',
+      paddingHorizontal: 10,
+      height: 50,
+      borderWidth: 1,
+      borderRadius: 10,
+      borderColor: '#c4c4c4',
+      backgroundColor: '#F7F8F9',
+    },
+    label: {
+      fontFamily: 'medium', opacity: .7, fontSize: 12, marginBottom: 10
     },
   });
   

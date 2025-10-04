@@ -32,7 +32,7 @@ export default function BottomTabNavigation () {
                         if (isTablet) {
                           return null;
                         } else {
-                          return <Text style={{ fontSize: 10, fontFamily: 'regular', color: '#9C9C9C' }}>{route.name}</Text>;
+                          return <Text style={{ fontSize: 9, fontFamily: 'regular', color: '#9C9C9C' }}>{route.name}</Text>;
                         }
                       },
                     tabBarStyle: {
@@ -53,7 +53,17 @@ export default function BottomTabNavigation () {
                 >
                 <Tab.Screen name="HomeTab" component={MainStackNavigator}
                     options={{
-                        tabBarLabel: t('tabs.home'),
+                        tabBarLabel: ({ focused, color }) => (
+                            <Text
+                              style={{
+                                fontSize: 9,
+                                fontFamily: 'regular',
+                                color: focused ? '#F09235' : '#9C9C9C', // активный / неактивный
+                              }}
+                            >
+                              {t('tabs.home')}
+                            </Text>
+                          ),
                         tabBarIcon: ({focused}) => focused ? 
                         <TabIcon image={require('../assets/mainIconActive.png')}/> : 
                         <TabIcon image={require('../assets/mainIcon.png')}/>,
@@ -134,12 +144,12 @@ const styles = StyleSheet.create({
         height:20,
     },
     tabBarLabel: {
-        fontSize: 10, 
+        fontSize: 9, 
         fontFamily:'regular',
         color: '#9C9C9C',
     },
     tabBarLabelActive: {
-        fontSize: 10, 
+        fontSize: 9, 
         fontFamily:'regular',
         color: '#F09235',
     },

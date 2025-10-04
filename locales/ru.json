@@ -6,6 +6,23 @@
       "messages": "Сообщения",
       "profile": "Профиль"
     },
+    "headers": {
+      "newPost": "Новое объявление",
+      "tariffs": "Тарифы",
+      "profile": "Ваш профиль",
+      "policy": "Политика конфиденциальности",
+      "terms": "Условия пользования",
+      "about": "О приложении",
+      "active": "Активные",
+      "editPost": "Редактирование поста",
+      "moderation": "Модерация",
+      "favourites": "Избранные",
+      "notActive": "Не активные",
+      "notPayed": "Не оплаченные",
+      "deleted": "Удаленные",
+      "admin": "Админ панель",
+      "settings": "Настройки профиля"
+    },
     "categories_main": {
       "services": "Услуги",
       "products": "Товары",
@@ -14,7 +31,7 @@
       "other": "Другое",
       "securityAgencies": "Агентства безопасности",
       "industrialSecurity": "Пром. Без",
-      "industrialSecurityEducation": "Обучение в \n пром. Без "
+      "industrialSecurityEducation": "Обучение с сертификатом"
     },
     "stories": {
       "create": "Как создать объявление",
@@ -50,10 +67,59 @@
         "image_required": "Фото профиля обязателен"
       }
     },
+    "contacts": {
+    "title": "Контактные данные",
+    "phone": "Номер телефона",
+    "whatsapp": "Номер телефона WhatsApp",
+    "site": "Ссылка на сайт",
+    "telegram": "Ссылка на Telegram",
+    "tiktok": "Ссылка на TikTok",
+    "facebook": "Ссылка на Facebook",
+    "instagram": "Ссылка на Instagram",
+    "twogis": "Ссылка на 2GIS",
+    "publish": "Опубликовать",
+    "placeholders": {
+      "phone": "+7 777 777 777",
+      "whatsapp": "777 777 7777"
+    }
+  },
+  "create": {
+    "heading": "Подать объявление {{category}}",
+    "media": {
+      "title": "Добавьте фотографии и видео",
+      "error": "Добавьте хоть одно фото или видео",
+      "hint": "Видео помогает покупателю лучше оценить товар. Добавьте короткий ролик — и вы продадите быстрее!"
+    },
+    "globalType": {
+      "title": "Вид товара или услуги",
+      "options": {
+        "industrial": "Промышленная безопасность",
+        "fire": "Пожарная безопасность",
+        "security": "Охранная безопасность"
+      }
+    }
+  },
+  "createCategory": {
+    "screenTitle": "Выберите категорию",
+    "lockTitle": "Чтобы создать объявление",
+    "lockSubtitle": "Войдите или зарегистрируйтесь",
+    "authCta": "Войти / Зарегистрироваться",
+    "categories": {
+      "services": "Услуги",
+      "products": "Товары",
+      "findEmployee": "Найти сотрудника",
+      "securityAgencies": "Охранные агентства",
+      "industrialSafety": "Промышленная безопасность",
+      "fireSafetyTraining": "Обучение по пожарной безопасности",
+      "other": "Прочее"
+    }
+  },
     "login": {
         "login": "Войти",
         "login_to_acc": "Войдите в свой аккаунт",
-        "input_fields": "Поле для ввода"
+        "input_fields": "Поле для ввода",
+        "forgot_password": "Забыли пароль?",
+        "no_acc": "Нет аккаунта?"
     },
     "main":{
       "hello":"Здравствуйте",
@@ -101,6 +167,98 @@
       "length_display": "{content.length}/9000",
       "placeholder": "Подробно описывайте ваш товар или услугу"
     },
+    "profileSettings": {
+    "avatar": {
+      "placeholder": "Фото профиля"
+    },
+    "name": {
+      "label": "Ваше имя",
+      "placeholder": "Введите ваше имя"
+    },
+    "phone": {
+      "label": "Номер телефона",
+      "placeholder": "+7 777 777 7777"
+    },
+    "email": {
+      "label": "Почта для входа",
+      "placeholder": "Введите почту"
+    },
+    "language": {
+      "label": "Язык",
+      "kz": "Қазақша",
+      "ru": "Русский",
+      "en": "Английский",
+      "placeholder": "Выберите язык"
+    },
+    "actions": {
+      "updateProfile": "Изменить профиль",
+      "logout": "Выйти из аккаунта",
+      "deleteAccount": "Удалить аккаунт"
+    },
+    "modal": {
+      "updating": "Редактирование профиля..."
+    },
+    "alerts": {
+      "galleryPermTitle": "Разрешение",
+      "galleryPermBody": "Нужно разрешение на доступ к галерее"
+    },
+    "delete": {
+      "title": "Удалить аккаунт?",
+      "message": "Это действие необратимо: профиль и персональные данные будут удалены.",
+      "confirm": "Удалить",
+      "startedTitle": "Удаление запущено",
+      "startedBody": "Аккаунт будет удалён в ближайшее время.",
+      "forbidden": "Можно удалить только свой аккаунт.",
+      "notFound": "Пользователь не найден.",
+      "errorGeneric": "Ошибка удаления (код {{code}}).",
+      "userUnknown": "Не удалось определить пользователя."
+    },
+    "common": {
+      "cancel": "Отмена",
+      "error": "Ошибка",
+      "network": "Сетевая ошибка",
+      "forbidden": "Доступ запрещён",
+      "tryLater": "Попробуйте позже"
+    }
+  },
+  "profileMain": {
+    "cta": {
+      "title": "Войдите в аккаунт",
+      "subtitle": "Чтобы управлять профилем и размещать/редактировать объявления, пожалуйста, войдите в аккаунт.",
+      "login": "Войти",
+      "signup": "Зарегистрироваться"
+    },
+    "myPosts": "Мои объявления",
+    "posts": {
+      "active": "Активные",
+      "inactive": "Не активные",
+      "unpaid": "Не оплаченные",
+      "deleted": "Удаленные"
+    },
+    "settings": "Настройки профиля",
+    "adminPanel": "Админ панель",
+    "other": "Другое",
+    "otherTerms": "Условия пользования",
+    "otherPolicy": "Политика конфиденциальности",
+    "otherAbout": "О приложении"
+  },
+  "profileProductCard": {
+    "noPhoto": "Нет фото",
+    "defaults": {
+      "city": "Астана",
+      "date": "Сегодня, 15:24"
+    },
+    "actions": {
+      "approve": "Одобрить",
+      "deactivate": "Деактивировать",
+      "activate": "Активировать",
+      "restore": "Восстановить",
+      "reject": "Отклонить",
+      "edit": "Редактировать",
+      "promote": "Рекламировать",
+      "pay": "Оплатить"
+    }
+  },
     "location": {
       "header": "Местоположение",
       "placeholder": "Выберите город",

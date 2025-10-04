@@ -8,7 +8,7 @@ export const ProfilePolicyScreen = () => {
     return (
       <ScrollView>
         <View style={{width:'90%',alignSelf:'center'}}>
-          <Image style={{width:165,height:126,alignSelf:'center',marginTop:20}} source={require('../assets/profileLogo.png')}/>
+          <Image style={{width:95,height:36,alignSelf:'center',objectFit:'contain',marginTop:20}} source={require('../assets/logo.jpg')}/>
           <Text style={{fontFamily:'regular',fontSize:14,lineHeight:17,marginTop:20}}>Политика конфиденциальности
 
 Общие положения
